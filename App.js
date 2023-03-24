@@ -23,17 +23,19 @@ export default function App() {
     <Stack.Screen name="Start" component={Start} />
     <Stack.Screen name="Login" component={Login} />
     <Stack.Screen name="Signup" component={Signup} />
-    </>
-  )
 
-  const AppStack = (
-    <>
     <Stack.Screen name="Home" component={Home} />
     <Stack.Screen name="Gallery" component={Gallery} />
     <Stack.Screen name="Profile" component={Profile} />
     <Stack.Screen name="Create" component={Create} />
     <Stack.Screen name="Follow" component={Follow} />
     <Stack.Screen name="EditProfile" component={EditProfile} />
+    </>
+  )
+
+  const AppStack = (
+    <>
+
     </>
   )
 

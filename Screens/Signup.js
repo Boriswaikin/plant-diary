@@ -1,7 +1,7 @@
-import { View, Text } from 'react-native'
+import { View, Text, Button, TextInput } from 'react-native'
 import React, { useState } from 'react'
 
-export default function Signup() {
+export default function Signup({ navigation }) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
