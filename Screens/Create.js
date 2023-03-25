@@ -1,7 +1,7 @@
 import { View, Text, Button, TextInput, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
 
-export default function Create({ navigation, editItem }) {
+export default function Create({ navigation, route }) {
   const [photos, setPhotos] = useState(['url1','url2']);
   const [species, setSpecies] = useState();
   const [location, setLocation] = useState();
@@ -9,12 +9,12 @@ export default function Create({ navigation, editItem }) {
   const [edit, setEdit] = useState(false);
 
   useEffect(()=>{
-    if (editItem) {
+    if (route.params  && route.params.editItem) {
       setEdit(true);
-      setPhotos(editItem.photos);
-      setLocations(editItem.location);
-      setStory(editItem.story);
-      setSpecies(editItem.species);
+      setPhotos(route.params.editItem.photos);
+      setLocations(route.params.editItem.location);
+      setStory(route.params.editItem.story);
+      setSpecies(route.params.editItem.species);
     }
   },[])
 
