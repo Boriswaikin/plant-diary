@@ -45,10 +45,10 @@ export default function Follow({ navigation, route }) {
 
   return (
     <View>
-      <View>
+      {/* <View>
         <Button title='Followers' disabled={followState} onPress={()=>changeToFollowers()} />
         <Button title='Followings' disabled={!followState} onPress={()=>changeToFollowings()} />
-      </View>
+      </View> */}
       <View>
         <FlatList
         data={users}

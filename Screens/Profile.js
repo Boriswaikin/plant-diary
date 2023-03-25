@@ -17,7 +17,7 @@ export default function Profile({ navigation, route }) {
     } else {
       // let currentProfile = getProfile(selfId);
       // setProfile(currentProfile);
-      const temp = {id:'uds29df',head:'head-url',name:'david',postCount:10,followers:34,followings:45,achievements:['achievement-1','achievement-2'],diaries:['342','234','809']};
+      const temp = {id:'uds29df',head:'head-url',name:'david',postCount:10,follower:34,following:45,achievements:['achievement-1','achievement-2'],diaries:['342','234','809']};
       setProfile(temp);
     }
     
@@ -44,10 +44,10 @@ export default function Profile({ navigation, route }) {
       <View>
         <Text>User head photo: {profile.head}</Text>
         <Text>User name: {profile.name}</Text>
-        {self && <Button title='Edit Profile' onPress={()=>navigation.navigate('EditProfile')}/>}
+        {self && <Button title='Edit Profile' onPress={()=>navigation.navigate('Edit Profile')}/>}
         <Text>Post number: {profile.postCount}</Text>
-        <Pressable onPress={()=>navigation.navigate('Follow', {id:profile.id,followState:true})}><Text>Followers: {profile.followers}</Text></Pressable>
-        <Pressable onPress={()=>navigation.navigate('Follow', {id:profile.id,followState:false})}><Text>Followings: {profile.followings}</Text></Pressable>
+        <Pressable onPress={()=>navigation.navigate('Follow', {screen: 'Follower', params: {id:profile.id}, name: profile.name})}><Text>Follower: {profile.follower}</Text></Pressable>
+        <Pressable onPress={()=>navigation.navigate('Follow', {screen: 'Following', params: {id:profile.id}, name: profile.name})}><Text>Following: {profile.following}</Text></Pressable>
         {!self && following && <Button title="Following" onPress={()=>pressUnfollow()} />}
         {!self && !following && <Button title="Follow" onPress={()=>pressFollow()} />}
         <Text>Achievement</Text>

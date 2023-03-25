@@ -10,7 +10,7 @@ const Tab = createBottomTabNavigator();
 export default function BottomTab() {
   return (
     <Tab.Navigator screenOptions={{headerShown: false}}>
-      <Tab.Screen name="TopTab" component={TopTab} />
+      <Tab.Screen name="Home" component={TopTab} />
       <Tab.Screen name="Create" component={Create} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>

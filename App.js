@@ -9,6 +9,7 @@ import Follow from './Screens/Follow';
 import EditProfile from './Screens/EditProfile';
 import BottomTab from './Screens/BottomTab';
 import { SafeAreaView } from 'react-native';
+import FollowTab from './Screens/FollowTab';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,8 +29,8 @@ export default function App() {
     <>
     <Stack.Screen name="Plant Diary" component={BottomTab} />
     <Stack.Screen name="Gallery" component={Gallery} />
-    <Stack.Screen name="Follow" component={Follow} />
-    <Stack.Screen name="EditProfile" component={EditProfile} />
+    <Stack.Screen name="Follow" component={FollowTab} options={{headerShown: true}}/>
+    <Stack.Screen name="Edit Profile" component={EditProfile} options={{headerShown: true}}/>
     </>
   )
 
