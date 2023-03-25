@@ -1,4 +1,4 @@
-import { View, Text, Button, FlatList, TextInput } from 'react-native'
+import { View, Text, Button, FlatList, TextInput, SafeAreaView } from 'react-native'
 import React, { useState } from 'react'
 import DiaryItem from '../DiaryItem';
 
@@ -11,10 +11,10 @@ export default function Home({ navigation }) {
   }
 
   return (
-    <View>
+    <SafeAreaView>
       <View>
-        <Button title='Recommend' />
-        <Button title='Subscribed' />
+        {/* <Button title='Recommend' />
+        <Button title='Subscribed' /> */}
         <TextInput placeholder='search a plant' value={search} onChangeText={setSearch} />
         <Button title='Search' />
         <Button title='Sort by' />
@@ -34,6 +34,6 @@ export default function Home({ navigation }) {
         <Button title='Create a Diary' onPress={()=>navigation.navigate('Create')} />
         <Button title='Go to My Profile' onPress={()=>navigation.navigate('Profile')} />
       </View> */}
-    </View>
+    </SafeAreaView>
   )
 }
