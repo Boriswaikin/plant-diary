@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Button } from 'react-native'
+import { View, Text, FlatList, Button, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 
 export default function Profile({ navigation, route }) {
@@ -46,8 +46,8 @@ export default function Profile({ navigation, route }) {
         <Text>User name: {profile.name}</Text>
         {self && <Button title='Edit Profile' onPress={()=>navigation.navigate('EditProfile')}/>}
         <Text>Post number: {profile.postCount}</Text>
-        <Text>Followers: {profile.followers}</Text>
-        <Text>Followings: {profile.followings}</Text>
+        <Pressable onPress={()=>navigation.navigate('Follow', {id:profile.id,followState:true})}><Text>Followers: {profile.followers}</Text></Pressable>
+        <Pressable onPress={()=>navigation.navigate('Follow', {id:profile.id,followState:false})}><Text>Followings: {profile.followings}</Text></Pressable>
         {!self && following && <Button title="Following" onPress={()=>pressUnfollow()} />}
         {!self && !following && <Button title="Follow" onPress={()=>pressFollow()} />}
         <Text>Achievement</Text>
