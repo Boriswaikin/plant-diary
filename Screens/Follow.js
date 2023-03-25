@@ -33,12 +33,14 @@ export default function Follow({ navigation, route }) {
   function pressFollow(id) {
     // followUser(selfId,thirdId);
     console.log('Follow user', id);
+    // update id user relationship 
   }
 
   function pressUnfollow(id) {
     // unfollowUser(selfId,thirdId);
     // setFollowing(false);
     console.log('Unfollow user', id);
+    // update id user relationship 
   }
 
   return (

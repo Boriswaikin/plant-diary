@@ -71,11 +71,11 @@ export default function Profile({ navigation, route }) {
         }}
          />
       </View>
-      <View>
+      {/* <View>
         <Button title='Home' onPress={()=>navigation.navigate('Home')} />
         <Button title='Create a Diary' onPress={()=>navigation.navigate('Create')} />
         <Button title='Profile' disabled={true} />
-      </View>
+      </View> */}
     </View>
   )
 }

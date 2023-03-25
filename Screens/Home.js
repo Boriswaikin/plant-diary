@@ -29,11 +29,11 @@ export default function Home({ navigation }) {
           }}
         />
       </View>
-      <View>
+      {/* <View>
         <Button title='Home' disabled={true} />
         <Button title='Create a Diary' onPress={()=>navigation.navigate('Create')} />
         <Button title='Go to My Profile' onPress={()=>navigation.navigate('Profile')} />
-      </View>
+      </View> */}
     </View>
   )
 }
