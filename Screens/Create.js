@@ -3,20 +3,39 @@ import React, { useEffect, useState } from 'react'
 
 export default function Create({ navigation, route }) {
   const [photos, setPhotos] = useState(['url1','url2']);
-  const [species, setSpecies] = useState();
-  const [location, setLocation] = useState();
-  const [story, setStory] = useState();
+  const [species, setSpecies] = useState("");
+  const [location, setLocation] = useState("");
+  const [story, setStory] = useState("");
   const [edit, setEdit] = useState(false);
 
   useEffect(()=>{
-    if (route.params  && route.params.editItem) {
+    if (route.params  && route.params.diaryId) {
       setEdit(true);
-      setPhotos(route.params.editItem.photos);
-      setLocations(route.params.editItem.location);
-      setStory(route.params.editItem.story);
-      setSpecies(route.params.editItem.species);
+      const currentDiary = getDiary(route.params.diaryId);
+      setPhotos(currentDiary.photos);
+      setLocations(currentDiary.location);
+      setStory(currentDiary.story);
+      setSpecies(currentDiary.species);
     }
   },[])
+
+  function pressCreateDiary() {
+    // createDiary(photos, species, location, story);
+    console.log("A diary created");
+    navigation.goBack();
+  }
+
+  function pressUpdateDiary() {
+    // updateDiary(route.params.diaryId, photos, species, location, story);
+    console.log("A diary updated");
+    navigation.goBack();
+  }
+
+  function pressDeleteDiary() {
+    // deleteDiary(route.params.diaryId);
+    console.log("A diary deleted");
+    navigation.goBack();
+  }
 
   return (
     <View>
@@ -40,12 +59,12 @@ export default function Create({ navigation, route }) {
       </View>
       <View>
         {edit ? 
-          <Button title='Delete' onPress={()=>deleteDiary(editItem.id)} /> 
+          <Button title='Delete' onPress={()=>pressDeleteDiary(editItem.id)} /> 
           : <Button title='Cancel' onPress={()=>navigation.goBack()} />
         }
         {edit ? 
-          <Button title='Confirm' onPress={()=>updateDiary(editItem.id, photos, species, location, story)} /> 
-          : <Button title='Create' onPress={()=>createDiary(photos, species, location, story)} />
+          <Button title='Confirm' onPress={()=>pressUpdateDiary()} /> 
+          : <Button title='Create' onPress={()=>pressCreateDiary()} />
         }
         
         
