@@ -7,7 +7,7 @@ export default function EditProfile({ navigation }) {
 
   function pressEditProfile() {
     console.log("profile updated");
-    navigation.goBack();
+    navigation.navigate('Profile');
   }
 
   return (

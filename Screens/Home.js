@@ -2,29 +2,26 @@ import { View, Text, Button, FlatList, TextInput, SafeAreaView } from 'react-nat
 import React, { useState } from 'react'
 import DiaryItem from '../DiaryItem';
 
-export default function Home({ navigation }) {
-  const [diaries, setDiaries] = useState([{species:'bamboo',date:'2023-03-24',location:'Downtown Vancouver',likes:4},{species:'rose',date:'2023-03-21',location:'Surrey',likes:16}]);
-  const [search, setSearch] = useState();
-
-  function diaryPressed(item) {
-    navigation.navigate('Gallery', {item:item})
-  }
+export default function Home({ navigation, route }) {
+  const [diaries, setDiaries] = useState([{author:'lesly',species:'bamboo',date:'2023-03-24',location:'Downtown Vancouver',likes:4},{author:'boris',species:'rose',date:'2023-03-21',location:'Surrey',likes:16}]);
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("");
+  const [recommend, setRecommend] = useState(route.params.recommend);
 
   return (
     <SafeAreaView>
+      {recommend && 
       <View>
-        {/* <Button title='Recommend' />
-        <Button title='Subscribed' /> */}
         <TextInput placeholder='search a plant' value={search} onChangeText={setSearch} />
         <Button title='Search' />
         <Button title='Sort by' />
-      </View>
+      </View>}
       <View>
         <FlatList
           data={diaries}
           renderItem={({item})=>{
             return (
-              <DiaryItem item={item} onDiaryPressed={()=>diaryPressed(item)} />
+              <DiaryItem item={item} />
             )
           }}
         />
