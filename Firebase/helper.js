@@ -12,6 +12,7 @@ import {
 	querySnapshot,
 } from "firebase/firestore";
 import { firestore } from "./firebase-setup";
+import { auth } from "./firebase-setup";
 // Add a new document with a generated id.
 export async function createDiary(diary) {
 	//console.log("call create diary function");
@@ -121,7 +122,8 @@ export async function getDiaryBySpecies(species) {
 }
 export async function createProfile(user) {
 	//console.log("call create diary function");
-	const docRef = await addDoc(collection(firestore, "profile"), {
+	const docRef1 = await addDoc(collection(firestore, "profile"), {
+		uid: auth.currentUser.uid,
 		name: user.name,
 		email: user.email,
 		achievement: user.achievement,
@@ -131,24 +133,32 @@ export async function createProfile(user) {
 		postCount: user.postCount,
 		favouritePlant: user.favouritePlant,
 	});
+	const docRef2 = await addDoc(collection(firestore, "follower"), {
+		userUid: auth.currentUser.uid,
+		follower: [],
+	});
+	const docRef3 = await addDoc(collection(firestore, "following"), {
+		userUid: auth.currentUser.uid,
+		following: [],
+	});
 	console.log("Profile written with ID: ", docRef.id);
 }
 
-export async function editProfile(id, updateField) {
+export async function editProfile(uid, updateField) {
 	try {
 		//console.log("call edit diary function");
-		const docRef = doc(firestore, "profile", id);
+		const docRef = doc(firestore, "profile", uid);
 		await updateDoc(docRef, updateField);
-		console.log("Document updated with ID: ", id);
+		console.log("Document updated with ID: ", uid);
 	} catch (err) {
 		console.log(err);
 	}
 }
 
-export async function getProfileById(id) {
+export async function getProfileById(uid) {
 	try {
 		//console.log("call get diary");
-		const docRef = doc(firestore, "profile", id);
+		const docRef = doc(firestore, "profile", uid);
 		const docSnap = await getDoc(docRef);
 		if (docSnap.exists()) {
 			//console.log(docSnap.data());
@@ -156,6 +166,45 @@ export async function getProfileById(id) {
 		} else {
 			console.log("user does not exist");
 		}
+	} catch (err) {
+		console.log(err);
+	}
+}
+
+export async function getFollowerByUser(uid) {
+	try {
+		//console.log("call get diaries");
+		const q = query(
+			collection(firestore, "follower"),
+			where("userUid", "==", uid)
+		);
+		const unsubscribe = onSnapshot(q, (querySnapshot) => {
+			// const followers = [];
+			// querySnapshot.forEach((doc) => {
+			// 	followers.push(doc.data());
+			// });
+			console.log(querySnapshot.data());
+			return querySnapshot.data();
+		});
+	} catch (err) {
+		console.log(err);
+	}
+}
+export async function getFollowingByUser(uid) {
+	try {
+		//console.log("call get diaries");
+		const q = query(
+			collection(firestore, "following"),
+			where("userUid", "==", uid)
+		);
+		const unsubscribe = onSnapshot(q, (querySnapshot) => {
+			// const followers = [];
+			// querySnapshot.forEach((doc) => {
+			// 	followers.push(doc.data());
+			// });
+			console.log(querySnapshot.data());
+			return querySnapshot.data();
+		});
 	} catch (err) {
 		console.log(err);
 	}
