@@ -20,17 +20,18 @@ export async function createDiary(diary) {
 	});
 	console.log("Diary written with ID: ", docRef.id);
 }
-// export async function deleteDiary(id) {
-// 	try {
-// 		await deleteDoc(doc(firestore, "diary", id));
-// 		console.log("Document deleted with ID: ", id);
-// 	} catch (err) {
-// 		console.log(err);
-// 	}
-// }
+export async function deleteDiary(id) {
+	try {
+		//console.log("call delete diary function");
+		await deleteDoc(doc(firestore, "diary", id));
+		console.log("Document deleted with ID: ", id);
+	} catch (err) {
+		console.log(err);
+	}
+}
 
 export async function editDiary(id, updateField) {
-	console.log("call edit diary function");
+	//console.log("call edit diary function");
 	const docRef = doc(firestore, "diary", id);
 	await updateDoc(docRef, updateField);
 	console.log("Document updated with ID: ", id);
