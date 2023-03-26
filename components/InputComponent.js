@@ -36,7 +36,7 @@ const styles = (props) =>
       padding: props.padding,
       borderRadius: props.radius,
       marginTop: props.marginTop,
-      marginLeft:props.marginLeft,
+      marginLeft: props.marginLeft,
     },
   });
 export default InputComponent;

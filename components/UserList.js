@@ -4,28 +4,22 @@ import React from "react";
 import UserItem from "./UserItem";
 
 export default function UserList() {
+  const itemData = [
+    {
+      id: "1",
+      postImage:
+        "https://raw.githubusercontent.com/AboutReact/sampleresource/master/old_logo.png",
+      name: "Peter",
+    },
+  ];
 
-  const itemData=[{
-    id:'1',
-    postImage:
-            "https://raw.githubusercontent.com/AboutReact/sampleresource/master/old_logo.png",
-    name: "Peter"
-        },
-  ]
-  
   return (
     <View style={styles.bottomContaineer}>
       <FlatList
         contentContainerStyle={styles.contentContainerStyle}
         data={itemData}
         renderItem={({ item }) => {
-          return (
-            <UserItem
-              UserItem={item}
-              UserItemPressed={() => {
-              }}
-            />
-          );
+          return <UserItem UserItem={item} UserItemPressed={() => {}} />;
         }}
       />
     </View>

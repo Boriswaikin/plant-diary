@@ -1,4 +1,4 @@
-import { View, StyleSheet, Platform } from "react-native";
+import { View, StyleSheet } from "react-native";
 import React from "react";
 
 /**
@@ -17,15 +17,7 @@ import React from "react";
  * @returns the card configuration
  */
 const CardComponent = (props) => {
-  return (
-    <View
-      style={[
-        styles(props).body,
-      ]}
-    >
-      {props.children}
-    </View>
-  );
+  return <View style={[styles(props).body]}>{props.children}</View>;
 };
 const styles = (props) =>
   StyleSheet.create({
