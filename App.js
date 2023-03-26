@@ -6,17 +6,28 @@ import Login from './Screens/Login';
 import Signup from './Screens/Signup';
 import Gallery from './Screens/Gallery';
 import Profile from './Screens/Profile';
-import Follow from './Screens/Follow';
 import EditProfile from './Screens/EditProfile';
 import BottomTab from './Screens/BottomTab';
 import { SafeAreaView } from 'react-native';
 import FollowTab from './Screens/FollowTab';
+import { auth } from './Firebase/firebase-setup';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
 
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+      onAuthStateChanged(auth, (user)=>{
+          if (user) {
+              setIsAuthenticated(true);
+          } else {
+              setIsAuthenticated(false);
+          }
+      });
+  },[]);
 
   const AuthStack = (
     <>
