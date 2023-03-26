@@ -48,7 +48,7 @@ export async function editDiary(id, updateField) {
 
 export async function getDiaryById(id) {
 	try {
-		console.log("call get diary");
+		//console.log("call get diary");
 		const docRef = doc(firestore, "diary", id);
 		const docSnap = await getDoc(docRef);
 		if (docSnap.exists()) {
@@ -64,7 +64,7 @@ export async function getDiaryById(id) {
 
 export async function getDiaryByUser(userId) {
 	try {
-		console.log("call get diaries");
+		//console.log("call get diaries");
 		const q = query(
 			collection(firestore, "diary"),
 			where("userId", "==", userId)
@@ -83,7 +83,7 @@ export async function getDiaryByUser(userId) {
 }
 export async function getDiaryByLocation(location) {
 	try {
-		console.log("call get diaries by location");
+		// console.log("call get diaries by location");
 		const q = query(
 			collection(firestore, "diary"),
 			where("location", "==", location)
@@ -102,7 +102,7 @@ export async function getDiaryByLocation(location) {
 }
 export async function getDiaryBySpecies(species) {
 	try {
-		console.log("call get diaries by location");
+		// console.log("call get diaries by location");
 		const q = query(
 			collection(firestore, "diary"),
 			where("species", "==", species)
@@ -118,4 +118,18 @@ export async function getDiaryBySpecies(species) {
 	} catch (err) {
 		console.log(err);
 	}
+}
+export async function createProfile(user) {
+	//console.log("call create diary function");
+	const docRef = await addDoc(collection(firestore, "profile"), {
+		name: user.name,
+		email: user.email,
+		achievement: user.achievement,
+		followerCount: user.followerCount,
+		followingCount: user.followingCount,
+		headPhoto: user.headPhoto,
+		postCount: user.postCount,
+		favouritePlant: user.favouritePlant,
+	});
+	console.log("Profile written with ID: ", docRef.id);
 }
