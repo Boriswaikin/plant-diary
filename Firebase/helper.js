@@ -7,6 +7,9 @@ import {
 	updateDoc,
 	getDoc,
 	query,
+	where,
+	onSnapshot,
+	querySnapshot,
 } from "firebase/firestore";
 import { firestore } from "./firebase-setup";
 // Add a new document with a generated id.
@@ -43,7 +46,7 @@ export async function editDiary(id, updateField) {
 	}
 }
 
-export async function getDiary(id) {
+export async function getDiaryById(id) {
 	try {
 		console.log("call get diary");
 		const docRef = doc(firestore, "diary", id);
@@ -54,6 +57,25 @@ export async function getDiary(id) {
 		} else {
 			console.log("diary does not exist");
 		}
+	} catch (err) {
+		console.log(err);
+	}
+}
+
+export async function getDiaryByUser(userId) {
+	try {
+		console.log("call get diaries");
+		const q = query(
+			collection(firestore, "diary"),
+			where("userId", "==", userId)
+		);
+		const unsubscribe = onSnapshot(q, (querySnapshot) => {
+			const diaries = [];
+			querySnapshot.forEach((doc) => {
+				diaries.push(doc.data());
+			});
+			console.log(diaries);
+		});
 	} catch (err) {
 		console.log(err);
 	}
