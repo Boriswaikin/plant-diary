@@ -100,3 +100,22 @@ export async function getDiaryByLocation(location) {
 		console.log(err);
 	}
 }
+export async function getDiaryBySpecies(species) {
+	try {
+		console.log("call get diaries by location");
+		const q = query(
+			collection(firestore, "diary"),
+			where("species", "==", species)
+		);
+		const unsubscribe = onSnapshot(q, (querySnapshot) => {
+			const diaries = [];
+			querySnapshot.forEach((doc) => {
+				diaries.push(doc.data());
+			});
+			console.log(diaries);
+			return diaries;
+		});
+	} catch (err) {
+		console.log(err);
+	}
+}
