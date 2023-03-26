@@ -123,25 +123,25 @@ export async function getDiaryBySpecies(species) {
 export async function createProfile(user) {
 	//console.log("call create diary function");
 	const docRef1 = await addDoc(collection(firestore, "profile"), {
-		// uid: auth.currentUser.uid,
-		uid: "12345",
+		uid: auth.currentUser.uid,
+		// uid: user.id,
 		name: user.name,
 		email: user.email,
-		achievement: user.achievement,
-		followerCount: user.followerCount,
-		followingCount: user.followingCount,
-		headPhoto: user.headPhoto,
-		postCount: user.postCount,
-		favouritePlant: user.favouritePlant,
+		achievement: [],
+		followerCount: 0,
+		followingCount: 0,
+		headPhoto: null,
+		postCount: 0,
+		favouritePlant: null,
 	});
 	const docRef2 = await addDoc(collection(firestore, "follower"), {
-		// userUid: auth.currentUser.uid,
-		uid: "12345",
+		userUid: auth.currentUser.uid,
+		// uid: "12345",
 		follower: [],
 	});
 	const docRef3 = await addDoc(collection(firestore, "following"), {
-		// userUid: auth.currentUser.uid,
-		uid: "12345",
+		userUid: auth.currentUser.uid,
+		// uid: "12345",
 		following: [],
 	});
 	console.log("Profile written with ID: ", docRef1.id);

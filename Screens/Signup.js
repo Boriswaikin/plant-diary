@@ -2,6 +2,7 @@ import { View, Text, Button, TextInput, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
 import { auth } from '../Firebase/firebase-setup';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createProfile } from '../Firebase/helper';
 
 export default function Signup({ navigation }) {
   const [email, setEmail] = useState("");
@@ -19,6 +20,7 @@ export default function Signup({ navigation }) {
   } else {
       try {
           await createUserWithEmailAndPassword(auth, email, password);
+          await createProfile({name:name,email:email});
       } catch (err) {
           console.log("signup err", err);
       }
