@@ -144,3 +144,19 @@ export async function editProfile(id, updateField) {
 		console.log(err);
 	}
 }
+
+export async function getProfileById(id) {
+	try {
+		//console.log("call get diary");
+		const docRef = doc(firestore, "profile", id);
+		const docSnap = await getDoc(docRef);
+		if (docSnap.exists()) {
+			//console.log(docSnap.data());
+			return docSnap.data();
+		} else {
+			console.log("user does not exist");
+		}
+	} catch (err) {
+		console.log(err);
+	}
+}
