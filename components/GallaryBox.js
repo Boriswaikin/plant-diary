@@ -35,3 +35,39 @@ function Gallary({postImage}) {
   </View>
 }  
 
+export default function GallaryBox() {
+    const [currentImage,setCurrentImage]=useState(0);
+    const itemChanged = useRef((item)=>{
+      const numberOfPost=item.viewableItems[0].index;
+      setCurrentImage(numberOfPost);
+    })
+  return (
+    <View>
+      <FlatList
+        data ={itemData}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        keyExtractor={(item)=>item.id}
+        renderItem={({item})=>{
+            return <Gallary postImage={item.postImage}></Gallary>;
+        
+        }}
+        onViewableItemsChanged={itemChanged.current}
+      /> 
+      <View style={{
+          flexDirection:"row",
+          justifyContent:"center",
+          alignItems:"center",
+          marginTop:10,}}>
+        {itemData.map((item,index)=> {
+        return <View 
+          key={item.id}
+          style={{
+          width:7,height:7,borderRadius:8,marginRight:2,backgroundColor:
+          index === currentImage? "blue": "gray"}}/>})}
+      </View>
+    </View>
+  )
+}
+
