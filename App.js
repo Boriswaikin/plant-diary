@@ -5,6 +5,7 @@ import Start from './Screens/Start';
 import Login from './Screens/Login';
 import Signup from './Screens/Signup';
 import Gallery from './Screens/Gallery';
+import Profile from './Screens/Profile';
 import Follow from './Screens/Follow';
 import EditProfile from './Screens/EditProfile';
 import BottomTab from './Screens/BottomTab';
@@ -31,6 +32,7 @@ export default function App() {
     <Stack.Screen name="Gallery" component={Gallery} />
     <Stack.Screen name="Follow" component={FollowTab} options={{headerShown: true}}/>
     <Stack.Screen name="Edit Profile" component={EditProfile} options={{headerShown: true}}/>
+    <Stack.Screen name="Third Profile" component={Profile} options={{headerShown: true}}/>
     </>
   )
 

@@ -8,11 +8,11 @@ export default function Profile({ navigation, route }) {
   const [following, setFollowing] = useState(false);
 
   useEffect(()=>{
-    if (route.params && route.params.userProfileId) {
-      let currentProfile = getProfile(route.params.userProfileId);
+    if (route.params && route.params.userId) {
+      let currentProfile = getProfile(route.params.userId);
       setProfile(currentProfile);
       setSelf(false);
-      // let relation = checkRelation(selfId, thirdId);
+      // let relation = checkRelation(id);
       // setFollowing(relation);
     } else {
       // let currentProfile = getProfile(selfId);
@@ -20,7 +20,14 @@ export default function Profile({ navigation, route }) {
       const temp = {id:'uds29df',head:'head-url',name:'david',postCount:10,follower:34,following:45,achievements:['achievement-1','achievement-2'],diaries:['342','234','809']};
       setProfile(temp);
     }
-    
+
+    console.log(route.name);
+    if (route.name == 'Third Profile') {
+      navigation.setOptions({
+        title: profile.name,
+      })
+    }
+
     // const diaryList = profile.diaries.map((x) => ({diaryId:x,diaryPic:getDiary(x)[0]}));
     const diaryList = [{diaryId:123, diaryPic:'pic-url1'}, {diaryId:234, diaryPic:'pic-url2'}]
     setDiaries(diaryList);
