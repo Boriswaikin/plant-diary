@@ -17,21 +17,26 @@ export default function DiaryCard() {
       > 
       <View style={{flexDirection:'row', justifyContent:"space-around"}}>
       <Icon
-         width={150}
-         height={125}
+         width={120}
+         height={100}
          marginTop={20}
         source="https://raw.githubusercontent.com/AboutReact/sampleresource/master/old_logo.png"
         />
         <Grid
            numColumns={2} 
-           width={120}
+           width={100}
            alignSelf="flex-end"
            marginTop={10}
            marginRight={40} ></Grid>
       </View>
       <View style={{marginTop:10,flexDirection:'row', justifyContent:"space-around"}}>
         <View style={{flexDirection:'column'}}>
-            <Text>Profile Pic</Text>
+        <Icon
+              width={40}
+              height={40}
+              borderRadius={20}
+            source="https://raw.githubusercontent.com/AboutReact/sampleresource/master/old_logo.png"
+            />
             <Text>Name</Text>
         </View>
         <Text style={{alignSelf:"center"}}>Random Text Story </Text>
