@@ -123,7 +123,8 @@ export async function getDiaryBySpecies(species) {
 export async function createProfile(user) {
 	//console.log("call create diary function");
 	const docRef1 = await addDoc(collection(firestore, "profile"), {
-		uid: auth.currentUser.uid,
+		// uid: auth.currentUser.uid,
+		uid: "12345",
 		name: user.name,
 		email: user.email,
 		achievement: user.achievement,
@@ -134,31 +135,33 @@ export async function createProfile(user) {
 		favouritePlant: user.favouritePlant,
 	});
 	const docRef2 = await addDoc(collection(firestore, "follower"), {
-		userUid: auth.currentUser.uid,
+		// userUid: auth.currentUser.uid,
+		uid: "12345",
 		follower: [],
 	});
 	const docRef3 = await addDoc(collection(firestore, "following"), {
-		userUid: auth.currentUser.uid,
+		// userUid: auth.currentUser.uid,
+		uid: "12345",
 		following: [],
 	});
-	console.log("Profile written with ID: ", docRef.id);
+	console.log("Profile written with ID: ", docRef1.id);
 }
 
-export async function editProfile(uid, updateField) {
+export async function editProfile(id, updateField) {
 	try {
 		//console.log("call edit diary function");
-		const docRef = doc(firestore, "profile", uid);
+		const docRef = doc(firestore, "profile", id);
 		await updateDoc(docRef, updateField);
-		console.log("Document updated with ID: ", uid);
+		console.log("Document updated with ID: ", id);
 	} catch (err) {
 		console.log(err);
 	}
 }
 
-export async function getProfileById(uid) {
+export async function getProfileById(id) {
 	try {
 		//console.log("call get diary");
-		const docRef = doc(firestore, "profile", uid);
+		const docRef = doc(firestore, "profile", id);
 		const docSnap = await getDoc(docRef);
 		if (docSnap.exists()) {
 			//console.log(docSnap.data());
@@ -170,21 +173,36 @@ export async function getProfileById(uid) {
 		console.log(err);
 	}
 }
+export async function getProfileByUid(uid) {
+	try {
+		//console.log("call get diaries");
+		const q = query(collection(firestore, "profile"), where("uid", "==", uid));
+		const unsubscribe = onSnapshot(q, (querySnapshot) => {
+			const users = [];
+			querySnapshot.forEach((doc) => {
+				users.push(doc.data());
+			});
+			console.log(users);
+			// console.log(querySnapshot[0].data());
+			return users;
+		});
+	} catch (err) {
+		console.log(err);
+	}
+}
 
 export async function getFollowerByUser(uid) {
 	try {
 		//console.log("call get diaries");
-		const q = query(
-			collection(firestore, "follower"),
-			where("userUid", "==", uid)
-		);
+		const q = query(collection(firestore, "follower"), where("uid", "==", uid));
 		const unsubscribe = onSnapshot(q, (querySnapshot) => {
-			// const followers = [];
-			// querySnapshot.forEach((doc) => {
-			// 	followers.push(doc.data());
-			// });
-			console.log(querySnapshot.data());
-			return querySnapshot.data();
+			const followers = [];
+			querySnapshot.forEach((doc) => {
+				followers.push(doc.data());
+			});
+			//console.log(querySnapshot.data());
+			console.log(followers);
+			return followers;
 		});
 	} catch (err) {
 		console.log(err);
@@ -195,15 +213,16 @@ export async function getFollowingByUser(uid) {
 		//console.log("call get diaries");
 		const q = query(
 			collection(firestore, "following"),
-			where("userUid", "==", uid)
+			where("uid", "==", uid)
 		);
 		const unsubscribe = onSnapshot(q, (querySnapshot) => {
-			// const followers = [];
-			// querySnapshot.forEach((doc) => {
-			// 	followers.push(doc.data());
-			// });
-			console.log(querySnapshot.data());
-			return querySnapshot.data();
+			const followings = [];
+			querySnapshot.forEach((doc) => {
+				followings.push(doc.data());
+			});
+			// console.log(querySnapshot);
+			console.log(followings);
+			return followings;
 		});
 	} catch (err) {
 		console.log(err);
