@@ -133,3 +133,14 @@ export async function createProfile(user) {
 	});
 	console.log("Profile written with ID: ", docRef.id);
 }
+
+export async function editProfile(id, updateField) {
+	try {
+		//console.log("call edit diary function");
+		const docRef = doc(firestore, "profile", id);
+		await updateDoc(docRef, updateField);
+		console.log("Document updated with ID: ", id);
+	} catch (err) {
+		console.log(err);
+	}
+}
