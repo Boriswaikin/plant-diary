@@ -75,6 +75,26 @@ export async function getDiaryByUser(userId) {
 				diaries.push(doc.data());
 			});
 			console.log(diaries);
+			return diaries;
+		});
+	} catch (err) {
+		console.log(err);
+	}
+}
+export async function getDiaryByLocation(location) {
+	try {
+		console.log("call get diaries by location");
+		const q = query(
+			collection(firestore, "diary"),
+			where("location", "==", location)
+		);
+		const unsubscribe = onSnapshot(q, (querySnapshot) => {
+			const diaries = [];
+			querySnapshot.forEach((doc) => {
+				diaries.push(doc.data());
+			});
+			console.log(diaries);
+			return diaries;
 		});
 	} catch (err) {
 		console.log(err);
