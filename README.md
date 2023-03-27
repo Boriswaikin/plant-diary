@@ -87,9 +87,13 @@ Add following function:
 - followUser(id)
 - unfollowUser(id)
 - checkRelation(id)
-- searchDiaryByLocation(location)
-- searchDiaryBySpecies(species)
 - like(diaryId)
+
+Other comments:
+- all user id are uid
+- change the id to uid in getDiaryByUser(uid), editProfile(uid, ...), getProfileById(uid) ...
+- after create a diary, add diaryId in to the diaris list in user's profile.
+
 
 **Navigation and Screens**
 - Add CRUD functions
