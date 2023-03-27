@@ -10,6 +10,7 @@ import {
 	where,
 	onSnapshot,
 	querySnapshot,
+	getDocs,
 } from "firebase/firestore";
 import { firestore } from "./firebase-setup";
 import { auth } from "./firebase-setup";
@@ -22,7 +23,7 @@ export async function createDiary(diary) {
 		species: diary.species,
 		location: diary.location,
 		date: diary.date,
-		userId: diary.userId,
+		userId: auth.currentUser.uid,
 	});
 	console.log("Diary written with ID: ", docRef.id);
 }
@@ -70,14 +71,13 @@ export async function getDiaryByUser(userId) {
 			collection(firestore, "diary"),
 			where("userId", "==", userId)
 		);
-		const unsubscribe = onSnapshot(q, (querySnapshot) => {
-			const diaries = [];
-			querySnapshot.forEach((doc) => {
-				diaries.push(doc.data());
-			});
-			console.log(diaries);
-			return diaries;
+		const querySnapshot = await getDocs(q);
+		const diaries = [];
+		querySnapshot.forEach((doc) => {
+			diaries.push(doc.data());
 		});
+		console.log(diaries);
+		return diaries;
 	} catch (err) {
 		console.log(err);
 	}
@@ -89,14 +89,13 @@ export async function getDiaryByLocation(location) {
 			collection(firestore, "diary"),
 			where("location", "==", location)
 		);
-		const unsubscribe = onSnapshot(q, (querySnapshot) => {
-			const diaries = [];
-			querySnapshot.forEach((doc) => {
-				diaries.push(doc.data());
-			});
-			console.log(diaries);
-			return diaries;
+		const querySnapshot = await getDocs(q);
+		const diaries = [];
+		querySnapshot.forEach((doc) => {
+			diaries.push(doc.data());
 		});
+		console.log(diaries);
+		return diaries;
 	} catch (err) {
 		console.log(err);
 	}
@@ -108,14 +107,13 @@ export async function getDiaryBySpecies(species) {
 			collection(firestore, "diary"),
 			where("species", "==", species)
 		);
-		const unsubscribe = onSnapshot(q, (querySnapshot) => {
-			const diaries = [];
-			querySnapshot.forEach((doc) => {
-				diaries.push(doc.data());
-			});
-			console.log(diaries);
-			return diaries;
+		const querySnapshot = await getDocs(q);
+		const diaries = [];
+		querySnapshot.forEach((doc) => {
+			diaries.push(doc.data());
 		});
+		console.log(diaries);
+		return diaries;
 	} catch (err) {
 		console.log(err);
 	}
@@ -127,12 +125,13 @@ export async function createProfile(user) {
 		// uid: user.id,
 		name: user.name,
 		email: user.email,
-		achievement: [],
-		followerCount: 0,
-		followingCount: 0,
-		headPhoto: null,
-		postCount: 0,
-		favouritePlant: null,
+		achievement: ['very', 'good'],
+		followerCount: 32,
+		followingCount: 48,
+		headPhoto: 'default',
+		postCount: 10,
+		favouritePlant: 'default',
+		diaries: ['123','434','809'],
 	});
 	const docRef2 = await addDoc(collection(firestore, "follower"), {
 		userUid: auth.currentUser.uid,
@@ -177,15 +176,15 @@ export async function getProfileByUid(uid) {
 	try {
 		//console.log("call get diaries");
 		const q = query(collection(firestore, "profile"), where("uid", "==", uid));
-		const unsubscribe = onSnapshot(q, (querySnapshot) => {
-			const users = [];
-			querySnapshot.forEach((doc) => {
-				users.push(doc.data());
-			});
-			console.log(users);
-			// console.log(querySnapshot[0].data());
-			return users;
+		const querySnapshot = await getDocs(q);
+		const users = [];
+		querySnapshot.forEach((doc) => {
+			users.push(doc.data());
 		});
+		// console.log(users[0]);
+		// console.log(querySnapshot[0].data());
+		return users[0];
+
 	} catch (err) {
 		console.log(err);
 	}
@@ -195,15 +194,14 @@ export async function getFollowerByUser(uid) {
 	try {
 		//console.log("call get diaries");
 		const q = query(collection(firestore, "follower"), where("uid", "==", uid));
-		const unsubscribe = onSnapshot(q, (querySnapshot) => {
-			const followers = [];
-			querySnapshot.forEach((doc) => {
-				followers.push(doc.data());
-			});
-			//console.log(querySnapshot.data());
-			console.log(followers);
-			return followers;
+		const querySnapshot = await getDocs(q);
+		const followers = [];
+		querySnapshot.forEach((doc) => {
+			followers.push(doc.data());
 		});
+		//console.log(querySnapshot.data());
+		// console.log(followers);
+		return followers;
 	} catch (err) {
 		console.log(err);
 	}
@@ -215,15 +213,14 @@ export async function getFollowingByUser(uid) {
 			collection(firestore, "following"),
 			where("uid", "==", uid)
 		);
-		const unsubscribe = onSnapshot(q, (querySnapshot) => {
-			const followings = [];
-			querySnapshot.forEach((doc) => {
-				followings.push(doc.data());
-			});
-			// console.log(querySnapshot);
-			console.log(followings);
-			return followings;
+		const querySnapshot = await getDocs(q);
+		const followings = [];
+		querySnapshot.forEach((doc) => {
+			followings.push(doc.data());
 		});
+		// console.log(querySnapshot);
+		// console.log(followings);
+		return followings;
 	} catch (err) {
 		console.log(err);
 	}
@@ -236,14 +233,13 @@ export async function searchDiary(species) {
 			collection(firestore, "diary"),
 			where("species", "==", species)
 		);
-		const unsubscribe = onSnapshot(q, (querySnapshot) => {
-			const diaries = [];
-			querySnapshot.forEach((doc) => {
-				diaries.push(doc.data());
-			});
-			console.log(diaries);
-			return diaries;
+		const querySnapshot = await getDocs(q);
+		const diaries = [];
+		querySnapshot.forEach((doc) => {
+			diaries.push(doc.data());
 		});
+		console.log(diaries);
+		return diaries;
 	} catch (err) {
 		console.log(err);
 	}

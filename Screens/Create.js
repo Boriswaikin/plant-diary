@@ -1,5 +1,6 @@
 import { View, Text, Button, TextInput, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
+import { createDiary, deleteDiary, editDiary, getDiaryById } from '../Firebase/helper';
 
 export default function Create({ navigation, route }) {
   const [photos, setPhotos] = useState(['url1','url2']);
@@ -11,29 +12,54 @@ export default function Create({ navigation, route }) {
   useEffect(()=>{
     if (route.params  && route.params.diaryId) {
       setEdit(true);
-      const currentDiary = getDiary(route.params.diaryId);
+      const currentDiary = getDiaryById(route.params.diaryId);
       setPhotos(currentDiary.photos);
       setLocations(currentDiary.location);
-      setStory(currentDiary.story);
+      setStory(currentDiary.description);
       setSpecies(currentDiary.species);
     }
   },[])
 
-  function pressCreateDiary() {
+  async function pressCreateDiary() {
     // createDiary(photos, species, location, story);
     console.log("A diary created");
+    try {
+      await createDiary({		
+        photos: photos,
+        description: story,
+        species: species,
+        location: location,
+        date: Date.now()});
+    } catch (err) {
+      console.log(err);
+    }
     navigation.goBack();
   }
 
-  function pressUpdateDiary() {
+  async function pressUpdateDiary() {
     // updateDiary(route.params.diaryId, photos, species, location, story);
     console.log("A diary updated");
+    try {
+      await editDiary(route.params.diaryId, {		
+        photos: photos,
+        description: story,
+        species: species,
+        location: location,
+        date: Date.now()});
+    } catch (err) {
+      console.log(err);
+    }
     navigation.goBack();
   }
 
-  function pressDeleteDiary() {
+  async function pressDeleteDiary() {
     // deleteDiary(route.params.diaryId);
     console.log("A diary deleted");
+    try {
+      await deleteDiary(route.params.diaryId);
+    } catch (err) {
+      console.log(err);
+    }
     navigation.goBack();
   }
 
