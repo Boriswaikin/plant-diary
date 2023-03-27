@@ -101,6 +101,21 @@ Other comments:
 - How to add multiple images?
 - implement the style of screens
 
-
+**Screenshots**
+<p float="left">
+<img src="./images/start.png"  width="150" />
+<img src="./images/login.png"  width="150" />
+<img src="./images/signup.png"  width="150" />
+</p>
+<p float="left">
+<img src="./images/recommend.png"  width="150" />
+<img src="./images/create.png"  width="150" />
+<img src="./images/profile.png"  width="150" />
+</p>
+<p float="left">
+<img src="./images/gallery.png"  width="150" />
+<img src="./images/follow.png"  width="150" />
+<img src="./images/editprofile.png"  width="150" />
+</p>
 
 #### Iteration 2 
