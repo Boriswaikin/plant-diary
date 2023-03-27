@@ -2,6 +2,7 @@ import { View, Text, FlatList, Button, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { getProfileById, getProfileByUid } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
+import { signOut } from 'firebase/auth';
 
 export default function Profile({ navigation, route }) {
   const [profile, setProfile] = useState({});
@@ -84,6 +85,7 @@ export default function Profile({ navigation, route }) {
         }}
          />
       </View>
+      {self && <Button title="Logout" onPress={()=>signOut(auth)} />}
       {/* <View>
         <Button title='Home' onPress={()=>navigation.navigate('Home')} />
         <Button title='Create a Diary' onPress={()=>navigation.navigate('Create')} />

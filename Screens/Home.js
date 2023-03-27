@@ -5,11 +5,9 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import DiaryCard from '../components/DiaryCard';
 import GalleryBox from '../components/GallaryBox';
 import SearchBar from '../components/SearchBar';
-import { signOut } from 'firebase/auth';
-import { auth } from '../Firebase/firebase-setup';
 
 export default function Home({ navigation, route }) {
-  const [diaries, setDiaries] = useState([{author:'lesly',species:'bamboo',date:'2023-03-24',location:'Downtown Vancouver', story:'this is my bamboo',likes:4},{author:'boris',species:'rose',date:'2023-03-21',location:'Surrey',story:'this is my rose',likes:16}]);
+  const [diaries, setDiaries] = useState([{uid:'InsBmnicOLXLK3LAm1m2gdk5ND32',author:'lesly',species:'bamboo',date:'2023-03-24',location:'Downtown Vancouver', story:'this is my bamboo',likes:4},{uid:'InsBmnicOLXLK3LAm1m2gdk5ND32',author:'boris',species:'rose',date:'2023-03-21',location:'Surrey',story:'this is my rose',likes:16}]);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("recommand");
   const [open, setOpen] = useState(false);
@@ -52,7 +50,6 @@ export default function Home({ navigation, route }) {
             )
           }}
         />
-        <Button title="Logout" onPress={()=>signOut(auth)} />
       </View>
       {/* <View>
         <Button title='Home' disabled={true} />

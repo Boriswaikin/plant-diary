@@ -1,9 +1,9 @@
-import { View, Text, Button } from 'react-native'
+import { View, Text, Button, StyleSheet } from 'react-native'
 import React from 'react'
 
 export default function Start({navigation}) {
   return (
-    <View>
+    <View style={styles.container}>
       <Text>Plant Diary</Text>
       <Text>Share a beautiful journey of your favourite plant!</Text>
       <Button title='Login' onPress={()=>navigation.navigate('Login')} />
@@ -11,3 +11,12 @@ export default function Start({navigation}) {
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+      flex: 1,
+      textAlign: 'center',
+      justifyContent: 'center',
+      alignItems: 'center',
+  },
+})

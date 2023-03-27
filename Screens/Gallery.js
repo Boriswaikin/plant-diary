@@ -7,7 +7,7 @@ export default function Gallery({ navigation, route }) {
   return (
     <View>
         <Text>author:</Text>
-        <PressableButton buttonPressed={()=>navigation.navigate('Third Profile')}> 
+        <PressableButton buttonPressed={()=>navigation.navigate('Third Profile', {id:route.params.item.uid, name:route.params.item.author})}> 
           <Text>{route.params.item.author}</Text> 
         </PressableButton>
         <Text>[url][url][url][url]</Text>
