@@ -1,43 +1,51 @@
 import { View, Text, Button, FlatList } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import UserList from '../components/UserList';
+import { getFollowerByUser, getFollowingByUser } from '../Firebase/helper';
 
 export default function Follow({ navigation, route }) {
 
   const [users, setUsers] = useState([{id:1314, name:'hana', head:'head-url-1', following:true},{id:1315, name:'john', head:'head-url-2',following:false}]);
   const [followState, setFollowState] = useState(route.params.followState);
 
-  // useEffect(()=>{
-  //   if (followState) {
-  //     let userList = getFollowers(route.params.id);
-  //     setUsers(userList);
-  //   } else {
-  //     let userList = getFollowings(route.params.id);
-  //     setUsers(userList);
-  //   }
-  // },[]);
+  useEffect(()=>{
+    (async()=>{
+      if (followState) {
+      console.log("get follower",route.params.id);
+      let userList = await getFollowerByUser(route.params.id);
+      setUsers((prev)=>userList);
+      // console.log(route.params.id, users);
+    } else {
+      console.log("get following",route.params.id);
+      let userList = await getFollowingByUser(route.params.id);
+      setUsers((prev)=>userList);
+      // console.log(route.params.id, users);
+    }
+    })();
+  },[]);
 
-  function changeToFollowers() {
-    // let userList = getFollowers(route.params.id);
+  function changeToFollower() {
+    // let userList = getFollower(route.params.id);
     // setUsers(userList);
-    console.log("change to followers list");
+    console.log("change to follower list");
     setFollowState(true);
   }
 
-  function changeToFollowings() {
-    // let userList = getFollowings(route.params.id);
+  function changeToFollowing() {
+    // let userList = getFollowing(route.params.id);
     // setUsers(userList);
-    console.log("change to followings list");
+    console.log("change to following list");
     setFollowState(false);
   }
 
   function pressFollow(id) {
-    // followUser(selfId,thirdId);
+    // followUser(id);
     console.log('Follow user', id);
     // update id user relationship 
   }
 
   function pressUnfollow(id) {
-    // unfollowUser(selfId,thirdId);
+    // unfollowUser(id);
     // setFollowing(false);
     console.log('Unfollow user', id);
     // update id user relationship 
@@ -46,8 +54,8 @@ export default function Follow({ navigation, route }) {
   return (
     <View>
       {/* <View>
-        <Button title='Followers' disabled={followState} onPress={()=>changeToFollowers()} />
-        <Button title='Followings' disabled={!followState} onPress={()=>changeToFollowings()} />
+        <Button title='Followers' disabled={followState} onPress={()=>changeToFollower()} />
+        <Button title='Followings' disabled={!followState} onPress={()=>changeToFollowing()} />
       </View> */}
       <View>
         <FlatList
@@ -64,6 +72,7 @@ export default function Follow({ navigation, route }) {
         }}
         />
       </View>
+      <UserList />
     </View>
   )
 }

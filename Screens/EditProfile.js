@@ -1,11 +1,13 @@
 import { View, Text, Button, TextInput } from 'react-native'
 import React, { useState } from 'react'
+import { editProfile } from '../Firebase/helper';
 
-export default function EditProfile({ navigation }) {
-  const [newname, setNewname] = useState("");
+export default function EditProfile({ navigation, route }) {
+  const [newname, setNewname] = useState(route.params.profile.name);
   const [favplant, setFavplant] = useState("");
 
-  function pressEditProfile() {
+  async function pressEditProfile() {
+    await editProfile(route.params.profile.id, {name:newname,favplant:favplant});
     console.log("profile updated");
     navigation.navigate('Profile');
   }

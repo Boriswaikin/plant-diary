@@ -5,17 +5,29 @@ import Start from './Screens/Start';
 import Login from './Screens/Login';
 import Signup from './Screens/Signup';
 import Gallery from './Screens/Gallery';
-import Follow from './Screens/Follow';
+import Profile from './Screens/Profile';
 import EditProfile from './Screens/EditProfile';
 import BottomTab from './Screens/BottomTab';
 import { SafeAreaView } from 'react-native';
 import FollowTab from './Screens/FollowTab';
+import { auth } from './Firebase/firebase-setup';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
 
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+      onAuthStateChanged(auth, (user)=>{
+          if (user) {
+              setIsAuthenticated(true);
+          } else {
+              setIsAuthenticated(false);
+          }
+      });
+  },[]);
 
   const AuthStack = (
     <>
@@ -31,6 +43,7 @@ export default function App() {
     <Stack.Screen name="Gallery" component={Gallery} />
     <Stack.Screen name="Follow" component={FollowTab} options={{headerShown: true}}/>
     <Stack.Screen name="Edit Profile" component={EditProfile} options={{headerShown: true}}/>
+    <Stack.Screen name="Third Profile" component={Profile} options={{headerShown: true}}/>
     </>
   )
 

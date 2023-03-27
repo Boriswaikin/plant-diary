@@ -1,10 +1,13 @@
-import { View, Text, Button, FlatList, TextInput, SafeAreaView } from 'react-native'
+import { View, Text, Button, FlatList, TextInput, SafeAreaView, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import DiaryItem from '../DiaryItem';
 import DropDownPicker from 'react-native-dropdown-picker';
+import DiaryCard from '../components/DiaryCard';
+import GalleryBox from '../components/GallaryBox';
+import SearchBar from '../components/SearchBar';
 
 export default function Home({ navigation, route }) {
-  const [diaries, setDiaries] = useState([{author:'lesly',species:'bamboo',date:'2023-03-24',location:'Downtown Vancouver',likes:4},{author:'boris',species:'rose',date:'2023-03-21',location:'Surrey',likes:16}]);
+  const [diaries, setDiaries] = useState([{uid:'InsBmnicOLXLK3LAm1m2gdk5ND32',author:'lesly',species:'bamboo',date:'2023-03-24',location:'Downtown Vancouver', story:'this is my bamboo',likes:4},{uid:'InsBmnicOLXLK3LAm1m2gdk5ND32',author:'boris',species:'rose',date:'2023-03-21',location:'Surrey',story:'this is my rose',likes:16}]);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("recommand");
   const [open, setOpen] = useState(false);
@@ -19,6 +22,7 @@ export default function Home({ navigation, route }) {
     <SafeAreaView>
       {recommend && 
       <View style={{ zIndex: 100 }}>
+        <SearchBar />
         <TextInput placeholder='search a plant' value={search} onChangeText={setSearch} />
         <Button title='Search' />
         <View>
@@ -37,7 +41,12 @@ export default function Home({ navigation, route }) {
           data={diaries}
           renderItem={({item})=>{
             return (
-              <DiaryItem item={item} />
+              <View>
+                <Pressable onPress={()=>navigation.navigate('Gallery',{item:item})} >
+                <DiaryCard />
+                </Pressable>
+                {/* <DiaryItem item={item} /> */}
+              </View>
             )
           }}
         />

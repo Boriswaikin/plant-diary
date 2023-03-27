@@ -12,8 +12,8 @@ export default function FollowTab({ navigation, route }) {
     },[])
     return (
         <Tab.Navigator>
-        <Tab.Screen name="Follower" component={Follow} initialParams={{ followState: true }} />
-        <Tab.Screen name="Following" component={Follow} initialParams={{ followState: false }} />
+        <Tab.Screen name="Follower" component={Follow} initialParams={{ followState: true, id:route.params.id }} />
+        <Tab.Screen name="Following" component={Follow} initialParams={{ followState: false, id:route.params.id }} />
         </Tab.Navigator>
     );
 }
