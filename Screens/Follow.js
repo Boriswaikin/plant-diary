@@ -9,15 +9,16 @@ export default function Follow({ navigation, route }) {
   const [followState, setFollowState] = useState(route.params.followState);
 
   useEffect(()=>{
-    (async()=>{if (followState) {
-      console.log(route.params.name);
+    (async()=>{
+      if (followState) {
+      console.log("get follower",route.params.id);
       let userList = await getFollowerByUser(route.params.id);
-      setUsers(userList);
+      setUsers((prev)=>userList);
       // console.log(route.params.id, users);
     } else {
-      console.log(route.params.name);
+      console.log("get following",route.params.id);
       let userList = await getFollowingByUser(route.params.id);
-      setUsers(userList);
+      setUsers((prev)=>userList);
       // console.log(route.params.id, users);
     }
     })();
