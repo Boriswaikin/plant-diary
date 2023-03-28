@@ -25,7 +25,7 @@ export default function Home({ navigation, route }) {
     (async ()=>{
       if (recommend) {
         const currentDiary = await getLatestDiaries();
-        console.log(currentDiary);
+        // console.log(currentDiary);
         setDiaries(currentDiary);
       } else {
         const currentDiary = await getDiaryByUser(auth.currentUser.uid);

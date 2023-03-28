@@ -1,11 +1,12 @@
 import { View, Text, FlatList, Button, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { getDiaryByUser, getProfileById, getProfileByUid } from '../Firebase/helper';
-import { auth } from '../Firebase/firebase-setup';
+import { getDiaryByUser, getProfileByUid } from '../Firebase/helper';
+import { auth, firestore } from '../Firebase/firebase-setup';
 import { signOut } from 'firebase/auth';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 
 export default function Profile({ navigation, route }) {
-  const [profile, setProfile] = useState({});
+  const [profile, setProfile] = useState({id:auth.currentUser.uid,headPhoto:'',name:'User Profile',postCount:0,followerCount:0,followingCount:0,achievement:[]});
   const [id, setId] = useState("");
   const [diaries, setDiaries] = useState([]);
   const [self, setSelf] = useState(true);
@@ -18,8 +19,8 @@ export default function Profile({ navigation, route }) {
         let currentProfile = await getProfileByUid(route.params.id);
         let diaryList = await getDiaryByUser(route.params.id);
         setId(route.params.id);
-        setProfile((prev)=>currentProfile);
-        setDiaries((prev)=>diaryList);
+        setProfile(currentProfile);
+        setDiaries(diaryList);
         setSelf(false);
         navigation.setOptions({
           title: profile.name,
@@ -28,11 +29,33 @@ export default function Profile({ navigation, route }) {
         // setFollowing(relation);
       } else {
         setId(auth.currentUser.uid);
-        let currentProfile = await getProfileByUid(auth.currentUser.uid);
         let diaryList = await getDiaryByUser(auth.currentUser.uid);
+        let currentProfile = await getProfileByUid(auth.currentUser.uid);
+        setDiaries(diaryList);
+        setProfile(currentProfile);
+        
+        // const unsubscribe = onSnapshot(query(collection(firestore, "diary"),where("userId", "==", id)),(querySnapshot) => {
+        //   if (querySnapshot.empty) {
+        //     setDiaries([]);
+        //   } else {
+        //     const newDiaries = [];
+        //     querySnapshot.forEach((doc) => {
+        //         newDiaries.push({ ...doc.data(), diaryId:doc.id });
+        //     });
+        //     setDiaries(newDiaries);
+        //   }
+        // },
+        // (err) => {
+        //   console.log(err);
+        // });
+    
+        // // cleanup function
+        // return () => {
+        //   console.log("unsubscribe");
+        //   unsubscribe();
+        // };
         // console.log(currentProfile);
-        setProfile((prev)=>currentProfile);
-        setDiaries((prev)=>diaryList);
+        
         // const temp = {id:auth.currentUser.uid,headPhoto:'head-url',name:'david',postCount:10,followerCount:34,followingCount:45,achievements:['achievement-1','achievement-2'],diaries:['342','234','809']};
         // setProfile(temp);
       }

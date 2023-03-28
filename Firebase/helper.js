@@ -202,7 +202,7 @@ export async function getProfileByUid(uid) {
 		const querySnapshot = await getDocs(q);
 		const users = [];
 		querySnapshot.forEach((doc) => {
-			users.push(doc.data());
+			users.push({...doc.data(), id:doc.id});
 		});
 		// console.log(users[0]);
 		// console.log(querySnapshot[0].data());

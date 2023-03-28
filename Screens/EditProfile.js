@@ -4,10 +4,11 @@ import { editProfile } from '../Firebase/helper';
 
 export default function EditProfile({ navigation, route }) {
   const [newname, setNewname] = useState(route.params.profile.name);
-  const [favplant, setFavplant] = useState("");
+  const [favplant, setFavplant] = useState(route.params.profile.favouritePlant);
+  const [head, setHead] = useState(route.params.profile.headPhoto);
 
   async function pressEditProfile() {
-    await editProfile(route.params.profile.id, {name:newname,favplant:favplant});
+    await editProfile(route.params.profile.id, {name:newname,favouritePlant:favplant, headPhoto:head});
     console.log("profile updated");
     navigation.navigate('Profile');
   }

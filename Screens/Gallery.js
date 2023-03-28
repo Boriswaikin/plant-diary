@@ -20,7 +20,7 @@ export default function Gallery({ navigation, route }) {
         <GalleryBox />
         <Text>species: {route.params.item.species}</Text>
         <Text>location: {route.params.item.location}</Text>
-        <Text>story: {route.params.item.story}</Text>
+        <Text>story: {route.params.item.description}</Text>
         <Text>date: {route.params.item.date}</Text>
         <Text>like: {route.params.item.like}</Text>
     </View>
