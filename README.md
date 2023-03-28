@@ -105,17 +105,21 @@ Add following function:
 - followUser(id)
 - unfollowUser(id)
 - checkRelation(id)
-- like(diaryId)
+- like(diaryId) (need another table for like)
+- unlike(diaryId)
+- checkLike(diaryId)
+- getSubscribedDiary()
 
 Other comments:
 
 - all user id are uid
 - change the id to uid in getDiaryByUser(uid), editProfile(uid, ...), getProfileById(uid) ...
-- after create a diary, add diaryId in to the diaris list in user's profile.
+- after create a diary, add diaryId in to the diaris list in user's profile. (may be no need if directly query the diary by uid)
 
 **Navigation and Screens**
 
-- Add CRUD functions
+- Add CRUD functions (Done)
+- Subscribe update in real time
 - Add images and camera function
 - How to add multiple images?
 - implement the style of screens

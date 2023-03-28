@@ -1,22 +1,25 @@
 import { View, Text, Button, TextInput, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { createDiary, deleteDiary, editDiary, getDiaryById } from '../Firebase/helper';
+import { createDiary, deleteDiary, editDiary, getDiaryById, getProfileByUid } from '../Firebase/helper';
+import { auth } from '../Firebase/firebase-setup';
 
 export default function Create({ navigation, route }) {
   const [photos, setPhotos] = useState(['url1','url2']);
   const [species, setSpecies] = useState("");
   const [location, setLocation] = useState("");
   const [story, setStory] = useState("");
+  const [date, setDate] = useState([]);
   const [edit, setEdit] = useState(false);
 
   useEffect(()=>{
-    if (route.params  && route.params.diaryId) {
+    if (route.params  && route.params.diary) {
       setEdit(true);
-      const currentDiary = getDiaryById(route.params.diaryId);
+      const currentDiary = route.params.diary;
       setPhotos(currentDiary.photos);
-      setLocations(currentDiary.location);
+      setLocation(currentDiary.location);
       setStory(currentDiary.description);
       setSpecies(currentDiary.species);
+      setDate(currentDiary.date);
     }
   },[])
 
@@ -24,31 +27,44 @@ export default function Create({ navigation, route }) {
     // createDiary(photos, species, location, story);
     console.log("A diary created");
     try {
+      const userProfile = await getProfileByUid(auth.currentUser.uid);
+      const userName = userProfile.name;
       await createDiary({		
         photos: photos,
         description: story,
         species: species,
         location: location,
-        date: Date.now()});
+        userName: userName,
+        date: [Date.now()]});
     } catch (err) {
       console.log(err);
     }
+    cleanup();
     navigation.goBack();
+  }
+
+  function cleanup() {
+    setPhotos(['url1', 'url2']);
+    setSpecies("");
+    setLocation("");
+    setDate("");
+    setStory("");
   }
 
   async function pressUpdateDiary() {
     // updateDiary(route.params.diaryId, photos, species, location, story);
     console.log("A diary updated");
     try {
-      await editDiary(route.params.diaryId, {		
+      await editDiary(route.params.diary.diaryId, {		
         photos: photos,
         description: story,
         species: species,
         location: location,
-        date: Date.now()});
+        date: [Date.now(),...date]});
     } catch (err) {
       console.log(err);
     }
+    cleanup();
     navigation.goBack();
   }
 
@@ -56,10 +72,11 @@ export default function Create({ navigation, route }) {
     // deleteDiary(route.params.diaryId);
     console.log("A diary deleted");
     try {
-      await deleteDiary(route.params.diaryId);
+      await deleteDiary(route.params.diary.diaryId);
     } catch (err) {
       console.log(err);
     }
+    cleanup();
     navigation.goBack();
   }
 
@@ -85,7 +102,7 @@ export default function Create({ navigation, route }) {
       </View>
       <View>
         {edit ? 
-          <Button title='Delete' onPress={()=>pressDeleteDiary(editItem.id)} /> 
+          <Button title='Delete' onPress={()=>pressDeleteDiary()} /> 
           : <Button title='Cancel' onPress={()=>navigation.goBack()} />
         }
         {edit ? 

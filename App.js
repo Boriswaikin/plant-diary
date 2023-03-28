@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native';
 import FollowTab from './Screens/FollowTab';
 import { auth } from './Firebase/firebase-setup';
 import { onAuthStateChanged } from 'firebase/auth';
+import Create from './Screens/Create';
 
 const Stack = createNativeStackNavigator();
 
@@ -44,6 +45,7 @@ export default function App() {
     <Stack.Screen name="Follow" component={FollowTab} options={{headerShown: true}}/>
     <Stack.Screen name="Edit Profile" component={EditProfile} options={{headerShown: true}}/>
     <Stack.Screen name="Third Profile" component={Profile} options={{headerShown: true}}/>
+    <Stack.Screen name="Edit Diary" component={Create} options={{headerShown: true}}/>
     </>
   )
 
