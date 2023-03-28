@@ -8,13 +8,13 @@ import {
 	getDoc,
 	query,
 	where,
-	onSnapshot,
-	querySnapshot,
 	getDocs,
+	limit,
+	orderBy,
 } from "firebase/firestore";
 import { firestore } from "./firebase-setup";
 import { auth } from "./firebase-setup";
-// Add a new document with a generated id.
+
 export async function createDiary(diary) {
 	//console.log("call create diary function");
 	const docRef = await addDoc(collection(firestore, "diary"), {
@@ -24,9 +24,12 @@ export async function createDiary(diary) {
 		location: diary.location,
 		date: diary.date,
 		userId: auth.currentUser.uid,
+		userName: diary.userName,
+		like: 0,
 	});
 	console.log("Diary written with ID: ", docRef.id);
 }
+
 export async function deleteDiary(id) {
 	try {
 		//console.log("call delete diary function");
@@ -54,7 +57,7 @@ export async function getDiaryById(id) {
 		const docRef = doc(firestore, "diary", id);
 		const docSnap = await getDoc(docRef);
 		if (docSnap.exists()) {
-			console.log(docSnap.data());
+			// console.log(docSnap.data());
 			return docSnap.data();
 		} else {
 			console.log("diary does not exist");
@@ -64,24 +67,44 @@ export async function getDiaryById(id) {
 	}
 }
 
-export async function getDiaryByUser(userId) {
+export async function getDiaryByUser(id) {
 	try {
 		//console.log("call get diaries");
 		const q = query(
 			collection(firestore, "diary"),
-			where("userId", "==", userId)
+			where("userId", "==", id)
+		);
+		const querySnapshot = await getDocs(q);
+		const diaries = [];
+		querySnapshot.forEach((doc) => {
+			diaries.push({...doc.data(), diaryId:doc.id});
+		});
+		// console.log(diaries);
+		return diaries;
+	} catch (err) {
+		console.log(err);
+	}
+}
+
+export async function getLatestDiaries() {
+	try {
+		//console.log("call get diaries");
+		const q = query(
+			collection(firestore, "diary"),
+			orderBy('date', 'desc'), limit(10)
 		);
 		const querySnapshot = await getDocs(q);
 		const diaries = [];
 		querySnapshot.forEach((doc) => {
 			diaries.push(doc.data());
 		});
-		console.log(diaries);
+		// console.log(diaries);
 		return diaries;
 	} catch (err) {
 		console.log(err);
 	}
 }
+
 export async function getDiaryByLocation(location) {
 	try {
 		// console.log("call get diaries by location");

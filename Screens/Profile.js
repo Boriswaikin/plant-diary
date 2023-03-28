@@ -1,6 +1,6 @@
 import { View, Text, FlatList, Button, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { getProfileById, getProfileByUid } from '../Firebase/helper';
+import { getDiaryByUser, getProfileById, getProfileByUid } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
 import { signOut } from 'firebase/auth';
 
@@ -14,10 +14,12 @@ export default function Profile({ navigation, route }) {
   useEffect( ()=>{
       (async()=>{
         if (route.name === "Third Profile") {
-        console.log("third profile");
+        // console.log("third profile");
         let currentProfile = await getProfileByUid(route.params.id);
+        let diaryList = await getDiaryByUser(route.params.id);
         setId(route.params.id);
         setProfile((prev)=>currentProfile);
+        setDiaries((prev)=>diaryList);
         setSelf(false);
         navigation.setOptions({
           title: profile.name,
@@ -27,15 +29,17 @@ export default function Profile({ navigation, route }) {
       } else {
         setId(auth.currentUser.uid);
         let currentProfile = await getProfileByUid(auth.currentUser.uid);
+        let diaryList = await getDiaryByUser(auth.currentUser.uid);
         // console.log(currentProfile);
         setProfile((prev)=>currentProfile);
+        setDiaries((prev)=>diaryList);
         // const temp = {id:auth.currentUser.uid,headPhoto:'head-url',name:'david',postCount:10,followerCount:34,followingCount:45,achievements:['achievement-1','achievement-2'],diaries:['342','234','809']};
         // setProfile(temp);
       }
   
       // const diaryList = profile.diaries.map((x) => ({diaryId:x,diaryPic:getDiary(x)[0]}));
-      const diaryList = [{diaryId:123, diaryPic:'pic-url1'}, {diaryId:234, diaryPic:'pic-url2'}]
-      setDiaries(diaryList);
+      // const diaryList = [{diaryId:123, diaryPic:'pic-url1'}, {diaryId:234, diaryPic:'pic-url2'}]
+      // console.log(diaryList);
       // console.log(profile);
     })();
 
@@ -66,7 +70,7 @@ export default function Profile({ navigation, route }) {
         {!self && !following && <Button title="Follow" onPress={()=>pressFollow()} />}
         <Text>Achievement</Text>
         <FlatList 
-        data={profile.achievements}
+        data={profile.achievement}
         renderItem={({item})=>{
           return (
             <Text>{item}</Text>
@@ -75,12 +79,16 @@ export default function Profile({ navigation, route }) {
          />
       </View>
       <View>
-        <Text>Grid</Text>
+        <Text>Diary Grid</Text>
         <FlatList 
         data={diaries}
         renderItem={({item})=>{
           return (
-            <Text>{item.diaryPic}</Text>
+            <View>
+            <Text>{item.photos[0]}</Text>
+            <Text>{item.diaryId}</Text>
+            {self && <Button title='edit' onPress={()=>navigation.navigate('Edit Diary',{diary:item})}/>}
+            </View>
           )
         }}
          />

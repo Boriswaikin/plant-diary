@@ -13,7 +13,8 @@ export default function DiaryItem({ item }) {
         <Text>species: {item.species}</Text>
         <Text>date: {item.date}</Text>
         <Text>location: {item.location}</Text>
-        <Text>likes: {item.likes}</Text>
+        <Text>story: {item.story}</Text>
+        <Text>likes: {item.like}</Text>
     </Pressable>
   )
 }
