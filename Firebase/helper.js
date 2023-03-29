@@ -96,7 +96,7 @@ export function getDiaryQueueByUser(id) {
 		return q;
 }
 
-export  function getLatestDiaries() {
+export  function getLatestDiariesQueue() {
 	// try {
 		//console.log("call get diaries");
 		const q = query(
