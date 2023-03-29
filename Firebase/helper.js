@@ -12,7 +12,7 @@ import {
 	limit,
 	orderBy,
 } from "firebase/firestore";
-import { firestore } from "./firebase-setup";
+import { firestore,onSnapshot } from "./firebase-setup";
 import { auth } from "./firebase-setup";
 
 export async function createDiary(diary) {
@@ -86,20 +86,24 @@ export async function getDiaryByUser(id) {
 	}
 }
 
-export async function getLatestDiaries() {
+export function getLatestDiaries() {
 	try {
 		//console.log("call get diaries");
 		const q = query(
 			collection(firestore, "diary"),
 			orderBy('date', 'desc'), limit(10)
 		);
-		const querySnapshot = await getDocs(q);
-		const diaries = [];
-		querySnapshot.forEach((doc) => {
-			diaries.push(doc.data());
-		});
+		let diaries = [];
+		console.log(diaries);
+		const unsubscribe = onSnapshot(q,(querySnapshot)=>{		
+			querySnapshot.forEach((doc) => {
+				diaries.push(doc.data())});
+				return diaries;
+			});
+		unsubscribe();
+		// const querySnapshot = await getDocs(q);
 		// console.log(diaries);
-		return diaries;
+		
 	} catch (err) {
 		console.log(err);
 	}

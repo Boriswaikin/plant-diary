@@ -5,6 +5,21 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import DiaryCard from '../components/DiaryCard';
 import GalleryBox from '../components/GallaryBox';
 import SearchBar from '../components/SearchBar';
+import { firestore } from '../Firebase/firebase-setup';
+import {
+	collection,
+	addDoc,
+	deleteDoc,
+	doc,
+	updateDoc,
+	getDoc,
+	query,
+	where,
+	getDocs,
+	limit,
+	orderBy,
+  onSnapshot
+} from "firebase/firestore";
 import { getDiaryById, getDiaryByUser, getLatestDiaries } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
 
@@ -21,18 +36,29 @@ export default function Home({ navigation, route }) {
   ]);
   const [recommend, setRecommend] = useState(route.params.recommend);
 
-  useEffect(()=>{
-    (async ()=>{
-      if (recommend) {
-        const currentDiary = await getLatestDiaries();
-        // console.log(currentDiary);
-        setDiaries(currentDiary);
+
+  useEffect(() => {
+    if (recommend) {
+      const q = query(
+        collection(firestore, "diary"),
+        orderBy('date', 'desc'), limit(10)
+      );
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      if (querySnapshot.empty) {
+        setDiaries([]);
       } else {
-        const currentDiary = await getDiaryByUser(auth.currentUser.uid);
-        setDiaries(currentDiary);
+        let entriesFromDB = [];
+        querySnapshot.docs.forEach((doc) => {
+          entriesFromDB.push({ ...doc.data(), id: doc.id });
+        });
+        // setDiaries(entriesFromDB);
+        console.log(entriesFromDB);
       }
-    })();
-  },[])
+    });
+    return () => {
+      unsubscribe();
+    };
+  }}, []);
 
   return (
     <SafeAreaView>

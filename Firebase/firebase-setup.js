@@ -15,14 +15,23 @@ import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 // 	messagingSenderId: "9566864655",
 // 	appId: "1:9566864655:web:7d0c9eb67e154b5cc6ea7a",
 // };
-const firebaseConfig = {
-	apiKey: "AIzaSyC23djLUO7q83LS4hQSe172HH8BipsgWs4",
-	authDomain: "plant-diary-87bb2.firebaseapp.com",
-	projectId: "plant-diary-87bb2",
-	storageBucket: "plant-diary-87bb2.appspot.com",
-	messagingSenderId: "864815364267",
-	appId: "1:864815364267:web:3edb9e987511316965dfee",
-};
+import {
+	apiKey,
+	authDomain,
+	projectId,
+	storageBucket,
+	messagingSenderId,
+	appId,
+  } from "@env";
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+	apiKey: apiKey,
+	authDomain: authDomain,
+	projectId: projectId,
+	storageBucket: storageBucket,
+	messagingSenderId: messagingSenderId,
+	appId: appId,
+  };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
