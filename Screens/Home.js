@@ -5,7 +5,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import DiaryCard from '../components/DiaryCard';
 import GalleryBox from '../components/GallaryBox';
 import SearchBar from '../components/SearchBar';
-import { getDiaryById, getDiaryQueueByUser, getLatestDiaries } from '../Firebase/helper';
+import { getDiaryById, getDiaryQueueByUser, getLatestDiariesQueue } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
 import { onSnapshot } from 'firebase/firestore';
 
@@ -25,7 +25,7 @@ export default function Home({ navigation, route }) {
   useEffect(()=>{
       let q;
       if (recommend) {
-        q = getLatestDiaries();
+        q = getLatestDiariesQueue();
         // console.log(currentDiary);
         // setDiaries(currentDiary);
       } else {
