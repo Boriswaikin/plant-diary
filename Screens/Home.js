@@ -5,23 +5,9 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import DiaryCard from '../components/DiaryCard';
 import GalleryBox from '../components/GallaryBox';
 import SearchBar from '../components/SearchBar';
-import { firestore } from '../Firebase/firebase-setup';
-import {
-	collection,
-	addDoc,
-	deleteDoc,
-	doc,
-	updateDoc,
-	getDoc,
-	query,
-	where,
-	getDocs,
-	limit,
-	orderBy,
-  onSnapshot
-} from "firebase/firestore";
-import { getDiaryById, getDiaryByUser, getLatestDiaries } from '../Firebase/helper';
+import { getDiaryById, getDiaryQueueByUser, getLatestDiaries } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
+import { onSnapshot } from 'firebase/firestore';
 
 export default function Home({ navigation, route }) {
   // const [diaries, setDiaries] = useState([{uid:'InsBmnicOLXLK3LAm1m2gdk5ND32',author:'lesly',species:'bamboo',date:'2023-03-24',location:'Downtown Vancouver', story:'this is my bamboo',like:4},{uid:'InsBmnicOLXLK3LAm1m2gdk5ND32',author:'boris',species:'rose',date:'2023-03-21',location:'Surrey',story:'this is my rose',like:16}]);
@@ -36,29 +22,31 @@ export default function Home({ navigation, route }) {
   ]);
   const [recommend, setRecommend] = useState(route.params.recommend);
 
-
-  useEffect(() => {
-    if (recommend) {
-      const q = query(
-        collection(firestore, "diary"),
-        orderBy('date', 'desc'), limit(10)
-      );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      if (querySnapshot.empty) {
-        setDiaries([]);
+  useEffect(()=>{
+      let q;
+      if (recommend) {
+        q = getLatestDiaries();
+        // console.log(currentDiary);
+        // setDiaries(currentDiary);
       } else {
-        let entriesFromDB = [];
-        querySnapshot.docs.forEach((doc) => {
-          entriesFromDB.push({ ...doc.data(), id: doc.id });
-        });
-        // setDiaries(entriesFromDB);
-        console.log(entriesFromDB);
+        q = getDiaryQueueByUser(auth.currentUser.uid);
+        // setDiaries(currentDiary);
       }
-    });
-    return () => {
-      unsubscribe();
-    };
-  }}, []);
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        if (querySnapshot.empty) {
+          setEntries([]);
+        } else {
+          let diaries = [];
+          querySnapshot.docs.forEach((doc) => {
+            diaries.push({ ...doc.data(), id: doc.id });
+          });
+          setDiaries(diaries);
+        }
+      });
+      return () => {
+        unsubscribe();
+      };
+  },[])
 
   return (
     <SafeAreaView>
