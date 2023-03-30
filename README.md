@@ -151,31 +151,28 @@ Other comments:
 </p>
 
 #### CRUD Demonstration
-Create by clicking create button:
+Create an item by clicking create button in bottomTab:
 <p float="left">
 <img src="./images/CRUD_Create.png"  width="150" />
 </p>
-Read by clicking the item in HomeScreen:
+Read an item by clicking the item in HomeScreen:
 <p float="left">
-<img src="./images/start.png"  width="150" />
-<img src="./images/start.png"  width="150" />
+<img src="./images/CRUD_Read1.png"  width="150" />
+<img src="./images/CRUD_Read2.png"  width="150" />
 </p>
-Update by clicking the item in HomeScreen:
-<p float="left">
-<img src="./images/start.png"  width="150" />
-<img src="./images/start.png"  width="150" />
-</p>
-Edit the item by clicking "Profile" in bottomTab, then click "edit". After updated, click "Confirm"
+Update an item by clicking "Profile" in bottomTab, then click "edit". After updated, click "Confirm"
 Back to Home screen to view the update:
 <p float="left">
-<img src="./images/start.png"  width="150" />
-<img src="./images/start.png"  width="150" />
+<img src="./images/CRUD_Edit1.png"  width="150" />
+<img src="./images/CRUD_Edit2.png"  width="150" />
+<img src="./images/CRUD_Edit3.png"  width="150" />
 </p>
 
 Delete the item by clicking "Profile" in bottomTab, then click "edit". Click "Delete". Back to Home screen to view the item is deleted:
 <p float="left">
-<img src="./images/start.png"  width="150" />
-<img src="./images/start.png"  width="150" />
+<img src="./images/CRUD_Delete1.png"  width="150" />
+<img src="./images/CRUD_Delete2.png"  width="150" />
+<img src="./images/CRUD_Delete3.png"  width="150" />
 </p>
 
 
