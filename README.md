@@ -10,7 +10,7 @@ An app that allows plant lovers to record the growth of plants by taking photos 
 
 ### Iteration 1
 
-####Contribution by each member: 
+#### Contributed by member:
 
 - CRUD functions with firebase -- Siqi
 
@@ -150,7 +150,7 @@ Other comments:
 <img src="./images/editprofile.png"  width="150" />
 </p>
 
-####CRUD demonstration
+#### CRUD Demonstration
 **Create by clicking create button**
 <p float="left">
 <img src="./images/start.png"  width="150" />
