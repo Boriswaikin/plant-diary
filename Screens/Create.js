@@ -1,4 +1,4 @@
-import { View, Text, Button, TextInput, FlatList } from 'react-native'
+import { View, Text, Button, TextInput, FlatList,StyleSheet} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { createDiary, deleteDiary, editDiary, getDiaryById, getProfileByUid } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
@@ -94,11 +94,11 @@ export default function Create({ navigation, route }) {
         />
         <Button title='+' />
         <Text>Species</Text>
-        <TextInput placeholder='Select species' value={species} onChangeText={setSpecies} />
+        <TextInput style = {style.textInput} placeholder='Select species' value={species} onChangeText={setSpecies} />
         <Text>Location</Text>
-        <TextInput placeholder='Detecting location' value={location} onChangeText={setLocation} />
+        <TextInput style = {style.textInput} placeholder='Detecting location' value={location} onChangeText={setLocation} />
         <Text>Story</Text>
-        <TextInput placeholder='Tell us your story' value={story} onChangeText={setStory} />
+        <TextInput style = {style.textInput} placeholder='Tell us your story' value={story} onChangeText={setStory} />
       </View>
       <View>
         {edit ? 
@@ -115,3 +115,6 @@ export default function Create({ navigation, route }) {
     </View>
   )
 }
+const style = StyleSheet.create({
+  textInput:{height:40}
+})
