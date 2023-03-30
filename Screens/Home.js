@@ -34,11 +34,11 @@ export default function Home({ navigation, route }) {
       }
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         if (querySnapshot.empty) {
-          setEntries([]);
+          setDiaries([]);
         } else {
           let diaries = [];
           querySnapshot.docs.forEach((doc) => {
-            diaries.push({ ...doc.data(), id: doc.id });
+            diaries.push({ ...doc.data(), diaryId: doc.id });
           });
           setDiaries(diaries);
         }
