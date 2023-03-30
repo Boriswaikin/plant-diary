@@ -5,8 +5,9 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import DiaryCard from '../components/DiaryCard';
 import GalleryBox from '../components/GallaryBox';
 import SearchBar from '../components/SearchBar';
-import { getDiaryById, getDiaryByUser, getLatestDiaries } from '../Firebase/helper';
+import { getDiaryById, getDiaryQueueByUser, getLatestDiariesQueue } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
+import { onSnapshot } from 'firebase/firestore';
 
 export default function Home({ navigation, route }) {
   // const [diaries, setDiaries] = useState([{uid:'InsBmnicOLXLK3LAm1m2gdk5ND32',author:'lesly',species:'bamboo',date:'2023-03-24',location:'Downtown Vancouver', story:'this is my bamboo',like:4},{uid:'InsBmnicOLXLK3LAm1m2gdk5ND32',author:'boris',species:'rose',date:'2023-03-21',location:'Surrey',story:'this is my rose',like:16}]);
@@ -22,16 +23,29 @@ export default function Home({ navigation, route }) {
   const [recommend, setRecommend] = useState(route.params.recommend);
 
   useEffect(()=>{
-    (async ()=>{
+      let q;
       if (recommend) {
-        const currentDiary = await getLatestDiaries();
+        q = getLatestDiariesQueue();
         // console.log(currentDiary);
-        setDiaries(currentDiary);
+        // setDiaries(currentDiary);
       } else {
-        const currentDiary = await getDiaryByUser(auth.currentUser.uid);
-        setDiaries(currentDiary);
+        q = getDiaryQueueByUser(auth.currentUser.uid);
+        // setDiaries(currentDiary);
       }
-    })();
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        if (querySnapshot.empty) {
+          setEntries([]);
+        } else {
+          let diaries = [];
+          querySnapshot.docs.forEach((doc) => {
+            diaries.push({ ...doc.data(), id: doc.id });
+          });
+          setDiaries(diaries);
+        }
+      });
+      return () => {
+        unsubscribe();
+      };
   },[])
 
   return (
