@@ -153,7 +153,7 @@ Other comments:
 #### CRUD Demonstration
 Create by clicking create button:
 <p float="left">
-<img src="./CRUD_Create.png"  width="150" />
+<img src="./images/CRUD_Create.png"  width="150" />
 </p>
 Read by clicking the item in HomeScreen:
 <p float="left">
