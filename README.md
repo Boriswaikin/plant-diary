@@ -151,28 +151,28 @@ Other comments:
 </p>
 
 #### CRUD Demonstration
-**Create by clicking create button**
+Create by clicking create button:
 <p float="left">
 <img src="./images/start.png"  width="150" />
 </p>
-**Read by clicking the item in HomeScreen**
-<p float="left">
-<img src="./images/start.png"  width="150" />
-<img src="./images/start.png"  width="150" />
-</p>
-**Update by clicking the item in HomeScreen**
+Read by clicking the item in HomeScreen:
 <p float="left">
 <img src="./images/start.png"  width="150" />
 <img src="./images/start.png"  width="150" />
 </p>
-**Edit the item by clicking "Profile" in bottomTab, then click "edit". After updated, click "Confirm"
-Back to Home screen to view the update**
+Update by clicking the item in HomeScreen:
+<p float="left">
+<img src="./images/start.png"  width="150" />
+<img src="./images/start.png"  width="150" />
+</p>
+Edit the item by clicking "Profile" in bottomTab, then click "edit". After updated, click "Confirm"
+Back to Home screen to view the update:
 <p float="left">
 <img src="./images/start.png"  width="150" />
 <img src="./images/start.png"  width="150" />
 </p>
 
-**Delete the item by clicking "Profile" in bottomTab, then click "edit". Click "Delete". Back to Home screen to view the item is deleted**
+Delete the item by clicking "Profile" in bottomTab, then click "edit". Click "Delete". Back to Home screen to view the item is deleted:
 <p float="left">
 <img src="./images/start.png"  width="150" />
 <img src="./images/start.png"  width="150" />
