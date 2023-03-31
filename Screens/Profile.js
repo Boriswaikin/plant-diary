@@ -1,9 +1,10 @@
 import { View, Text, FlatList, Button, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { getDiaryByUser, getProfileByUid } from '../Firebase/helper';
+import { getDiaryQueueByUser, getProfileByUid } from '../Firebase/helper';
 import { auth, firestore } from '../Firebase/firebase-setup';
 import { signOut } from 'firebase/auth';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
+
 
 export default function Profile({ navigation, route }) {
   const [profile, setProfile] = useState({id:auth.currentUser.uid,headPhoto:'',name:'User Profile',postCount:0,followerCount:0,followingCount:0,achievement:[]});
@@ -14,13 +15,14 @@ export default function Profile({ navigation, route }) {
 
   useEffect( ()=>{
       (async()=>{
+        let diaryListqueue;
         if (route.name === "Third Profile") {
         // console.log("third profile");
         let currentProfile = await getProfileByUid(route.params.id);
-        let diaryList = await getDiaryByUser(route.params.id);
+        diaryListqueue =  getDiaryQueueByUser(route.params.id);
         setId(route.params.id);
         setProfile(currentProfile);
-        setDiaries(diaryList);
+        // setDiaries(diaryList);
         setSelf(false);
         navigation.setOptions({
           title: profile.name,
@@ -29,9 +31,9 @@ export default function Profile({ navigation, route }) {
         // setFollowing(relation);
       } else {
         setId(auth.currentUser.uid);
-        let diaryList = await getDiaryByUser(auth.currentUser.uid);
+        diaryListqueue =  getDiaryQueueByUser(auth.currentUser.uid);
         let currentProfile = await getProfileByUid(auth.currentUser.uid);
-        setDiaries(diaryList);
+        // setDiaries(diaryList);
         setProfile(currentProfile);
         
         // const unsubscribe = onSnapshot(query(collection(firestore, "diary"),where("userId", "==", id)),(querySnapshot) => {
@@ -59,12 +61,27 @@ export default function Profile({ navigation, route }) {
         // const temp = {id:auth.currentUser.uid,headPhoto:'head-url',name:'david',postCount:10,followerCount:34,followingCount:45,achievements:['achievement-1','achievement-2'],diaries:['342','234','809']};
         // setProfile(temp);
       }
+      const unsubscribe = onSnapshot(diaryListqueue, (querySnapshot) => {
+        if (querySnapshot.empty) {
+          setDiaries([]);
+        } else {
+          let diaries = [];
+          querySnapshot.docs.forEach((doc) => {
+            diaries.push({ ...doc.data(), diaryId: doc.id });
+          });
+          setDiaries(diaries);
+        }
+      });
+      return () => {
+        unsubscribe();
+      };
   
       // const diaryList = profile.diaries.map((x) => ({diaryId:x,diaryPic:getDiary(x)[0]}));
       // const diaryList = [{diaryId:123, diaryPic:'pic-url1'}, {diaryId:234, diaryPic:'pic-url2'}]
       // console.log(diaryList);
       // console.log(profile);
-    })();
+    }
+    )();
 
   },[])
 
@@ -108,8 +125,9 @@ export default function Profile({ navigation, route }) {
         renderItem={({item})=>{
           return (
             <View>
-            <Text>{item.photos[0]}</Text>
-            <Text>{item.diaryId}</Text>
+            <Text>Item Photo: {item.photos[0]}</Text>
+            <Text>Item ID: {item.diaryId}</Text>
+            <Text>Item Species: {item.species}</Text>
             {self && <Button title='edit' onPress={()=>navigation.navigate('Edit Diary',{diary:item})}/>}
             </View>
           )
