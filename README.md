@@ -10,20 +10,26 @@ An app that allows plant lovers to record the growth of plants by taking photos 
 
 ### Iteration 1
 
+#### Contributed by member:
+
 - CRUD functions with firebase -- Siqi
 
   - createDiary(diary)
-  - editDiary(diaryId, diary)
-  - getDiaryById(diaryId)
-  - getDiaryByUser(userId)
+  - deleteDiary(id)
+  - editDiary(id, updateField)
+  - getDiaryById(id)
+  - getDiaryByUser(id)
+  - getDiaryQueueByUser(id)
+  - getLatestDiariesQueue()
   - getDiaryByLocation(location)
   - getDiaryBySpecies(species)
+  - createProfile(usr)
+  - editProfile(id,updateField)
+  - getProfileById(uid)
+  - getProfileByUid(uid)
+  - getFollowerByUser(uid)
+  - getFollowingByUser(uid)
   - searchDiaries(keyword)
-  - createProfile(profile)
-  - editProfile(profile)
-  - getProfile(id)
-  - getFollower(id)
-  - getFollowing(id)
 
 - Navigation and screens -- Zhiyuan
 
@@ -42,18 +48,20 @@ An app that allows plant lovers to record the growth of plants by taking photos 
     - EditProfile
 
 - Components -- Wai Kin
-  - Button
-  - Card
+  
+  - CardComponent
+  - Color
+  - DiaryCard
+  - GalleryBox
   - Grid
   - Icon
+  - InputComponent
+  - PressableButton
   - SearchBar
-  - Input
-  - GalleryBox
-  - Selection
-  - ProfileItem
-  - DiaryCard
+  - UserItem
+  - UserList
 
-#### Comments
+#### Internal Comments for next iteration 
 
 **Components**
 DiaryCard:
@@ -141,5 +149,32 @@ Other comments:
 <img src="./images/follow.png"  width="150" />
 <img src="./images/editprofile.png"  width="150" />
 </p>
+
+#### CRUD Demonstration
+Create an item by clicking create button in bottomTab:
+<p float="left">
+<img src="./images/CRUD_Create.png"  width="150" />
+</p>
+Read an item by clicking the item in HomeScreen:
+<p float="left">
+<img src="./images/CRUD_Read1.png"  width="150" />
+<img src="./images/CRUD_Read2.png"  width="150" />
+</p>
+Update an item by clicking "Profile" in bottomTab, then click "edit". After updated, click "Confirm"
+Back to Home screen to view the update:
+<p float="left">
+<img src="./images/CRUD_Edit1.png"  width="150" />
+<img src="./images/CRUD_Edit2.png"  width="150" />
+<img src="./images/CRUD_Edit3.png"  width="150" />
+</p>
+
+Delete the item by clicking "Profile" in bottomTab, then click "edit". Click "Delete". Back to Home screen to view the item is deleted:
+<p float="left">
+<img src="./images/CRUD_Delete1.png"  width="150" />
+<img src="./images/CRUD_Delete2.png"  width="150" />
+<img src="./images/CRUD_Delete3.png"  width="150" />
+</p>
+
+
 
 #### Iteration 2

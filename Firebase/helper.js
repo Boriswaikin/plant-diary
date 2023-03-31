@@ -69,7 +69,7 @@ export async function getDiaryById(id) {
 
 export async function getDiaryByUser(id) {
 	try {
-		//console.log("call get diaries");
+		console.log("call get diaries");
 		const q = query(
 			collection(firestore, "diary"),
 			where("userId", "==", id)
@@ -86,23 +86,34 @@ export async function getDiaryByUser(id) {
 	}
 }
 
-export async function getLatestDiaries() {
-	try {
+export function getDiaryQueueByUser(id) {
+	// try {
+		//console.log("call get diaries");
+		const q = query(
+			collection(firestore, "diary"),
+			where("userId", "==", id)
+		);
+		return q;
+}
+
+export  function getLatestDiariesQueue() {
+	// try {
 		//console.log("call get diaries");
 		const q = query(
 			collection(firestore, "diary"),
 			orderBy('date', 'desc'), limit(10)
 		);
-		const querySnapshot = await getDocs(q);
-		const diaries = [];
-		querySnapshot.forEach((doc) => {
-			diaries.push(doc.data());
-		});
+		// const querySnapshot = await getDocs(q);
+		// const diaries = [];
+		// querySnapshot.forEach((doc) => {
+		// 	diaries.push(doc.data());
+		// });
 		// console.log(diaries);
-		return diaries;
-	} catch (err) {
-		console.log(err);
-	}
+		// return diaries;
+		return q;
+	// } catch (err) {
+	// 	console.log(err);
+	// }
 }
 
 export async function getDiaryByLocation(location) {
