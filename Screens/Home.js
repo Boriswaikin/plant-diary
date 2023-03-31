@@ -1,12 +1,13 @@
-import { View, Text, Button, FlatList, TextInput, SafeAreaView, Pressable } from 'react-native'
+import { View, Text, Button, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import DiaryItem from '../DiaryItem';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DiaryCard from '../components/DiaryCard';
-import GalleryBox from '../components/GallaryBox';
 import SearchBar from '../components/SearchBar';
 import { getDiaryById, getDiaryQueueByUser, getLatestDiariesQueue } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
+import { MaterialIcons } from '@expo/vector-icons';
+import PressableButton from '../components/PressableButton';
 import { onSnapshot } from 'firebase/firestore';
 
 export default function Home({ navigation, route }) {
@@ -49,13 +50,36 @@ export default function Home({ navigation, route }) {
   },[])
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       {recommend && 
-      <View style={{ zIndex: 100 }}>
-        <SearchBar />
-        <TextInput placeholder='search a plant' value={search} onChangeText={setSearch} />
-        <Button title='Search' />
-        <View>
+      // <View style={{ width: 300 }}>
+      //   {/* <SearchBar /> */}
+      //   <TextInput placeholder='search a plant' value={search} onChangeText={setSearch} />
+      //   <Button title='Search' />
+      //   <View>
+      //   <DropDownPicker
+      //     open={open}
+      //     value={sort}
+      //     items={items}
+      //     setOpen={setOpen}
+      //     setValue={setSort}
+      //     setItems={setItems}
+      //   />
+      //   </View>
+      // </View>
+      <View style={styles.topContainer}>
+      <View style={styles.iconInput}>
+        <TextInput 
+        style={styles.input}
+        placeholder='Search a plant' 
+        value={search} 
+        onChangeText={(newSearch)=>{setEmail(newSearch)}} 
+        />
+        <PressableButton buttonPressed={()=>{console.log("search")}}>
+          <MaterialIcons name="search" size={24} color="black" style={styles.icon} />
+        </PressableButton>
+      </View>
+      <View style={styles.drop}>
         <DropDownPicker
           open={open}
           value={sort}
@@ -64,8 +88,9 @@ export default function Home({ navigation, route }) {
           setValue={setSort}
           setItems={setItems}
         />
-        </View>
-      </View>}
+      </View>
+      </View>
+      }
       <View>
         <FlatList
           data={diaries}
@@ -84,3 +109,39 @@ export default function Home({ navigation, route }) {
     </SafeAreaView>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    textAlign: 'center',
+    alignItems: 'center',
+  },
+  input: {
+    flex: 1,
+    fontSize:18, 
+    padding:14,
+  },
+  inputContainer: {
+    width: 300,
+  },
+  iconInput: {
+    flexDirection: 'row',
+    borderWidth: 1,
+    marginVertical: 10,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 300,
+  },
+  icon: {
+    padding: 10,
+  },
+  drop: {
+    width: 300,
+    fontSize: 18,
+    borderRadius: 10,
+  },
+  topContainer: {
+    zIndex: 100,
+  }
+})
