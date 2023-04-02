@@ -8,6 +8,8 @@ Wai Kin Chu, Siqi Chen, Zhiyuan Yang
 
 An app that allows plant lovers to record the growth of plants by taking photos week by week. Users can obtain achievements by sharing diaries, extending the length of a diary, getting likes and followers, or publishing a diary of a unique plant species.
 
+<details>
+  <summary><b>Iteration 1</b></summary>
 ### Iteration 1
 
 #### Contributed by member:
@@ -174,7 +176,38 @@ Delete the item by clicking "Profile" in bottomTab, then click "edit". Click "De
 <img src="./images/CRUD_Delete2.png"  width="150" />
 <img src="./images/CRUD_Delete3.png"  width="150" />
 </p>
+</details>
 
-
+<details>
+  <summary><b>Iteration 2</b></summary>
 
 #### Iteration 2
+
+##### Tasks Distribution
+
+**More CRUD Function**
+- followUser(id)
+- unfollowUser(id)
+- checkRelation(id)
+- like(diaryId) (need another table for like)
+- unlike(diaryId)
+- checkLike(diaryId)
+- getSubscribedDiary()
+
+**Layout and Styles for Screens and Components**
+- Home
+- Gallery
+- Create
+- EditProfile
+- Profile
+- Follow
+
+**Functions to Implement**
+- Take Photos, Pick Images
+- Get Location
+- External API (Plant Identification API)
+- Notification
+
+
+
+</details>
