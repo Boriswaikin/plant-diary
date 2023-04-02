@@ -7,9 +7,9 @@ import { collection, onSnapshot, query, where } from 'firebase/firestore';
 
 
 export default function Profile({ navigation, route }) {
-  const [profile, setProfile] = useState({id:auth.currentUser.uid,headPhoto:'',name:'User Profile',postCount:0,followerCount:0,followingCount:0,achievement:[]});
+  const [profile, setProfile] = useState(null);
   const [id, setId] = useState("");
-  const [diaries, setDiaries] = useState([]);
+  const [diaries, setDiaries] = useState(null);
   const [self, setSelf] = useState(true);
   const [following, setFollowing] = useState(false);
 
@@ -35,31 +35,6 @@ export default function Profile({ navigation, route }) {
         let currentProfile = await getProfileByUid(auth.currentUser.uid);
         // setDiaries(diaryList);
         setProfile(currentProfile);
-        
-        // const unsubscribe = onSnapshot(query(collection(firestore, "diary"),where("userId", "==", id)),(querySnapshot) => {
-        //   if (querySnapshot.empty) {
-        //     setDiaries([]);
-        //   } else {
-        //     const newDiaries = [];
-        //     querySnapshot.forEach((doc) => {
-        //         newDiaries.push({ ...doc.data(), diaryId:doc.id });
-        //     });
-        //     setDiaries(newDiaries);
-        //   }
-        // },
-        // (err) => {
-        //   console.log(err);
-        // });
-    
-        // // cleanup function
-        // return () => {
-        //   console.log("unsubscribe");
-        //   unsubscribe();
-        // };
-        // console.log(currentProfile);
-        
-        // const temp = {id:auth.currentUser.uid,headPhoto:'head-url',name:'david',postCount:10,followerCount:34,followingCount:45,achievements:['achievement-1','achievement-2'],diaries:['342','234','809']};
-        // setProfile(temp);
       }
       const unsubscribe = onSnapshot(diaryListqueue, (querySnapshot) => {
         if (querySnapshot.empty) {
@@ -75,11 +50,6 @@ export default function Profile({ navigation, route }) {
       return () => {
         unsubscribe();
       };
-  
-      // const diaryList = profile.diaries.map((x) => ({diaryId:x,diaryPic:getDiary(x)[0]}));
-      // const diaryList = [{diaryId:123, diaryPic:'pic-url1'}, {diaryId:234, diaryPic:'pic-url2'}]
-      // console.log(diaryList);
-      // console.log(profile);
     }
     )();
 
@@ -99,6 +69,7 @@ export default function Profile({ navigation, route }) {
 
   return (
     <View>
+      {profile&&
       <View>
         <Text>User head photo: {profile.headPhoto}</Text>
         <Text>User name: {profile.name}</Text>
@@ -118,6 +89,8 @@ export default function Profile({ navigation, route }) {
         }}
          />
       </View>
+      }
+      {diaries&&
       <View>
         <Text>Diary Grid</Text>
         <FlatList 
@@ -134,12 +107,8 @@ export default function Profile({ navigation, route }) {
         }}
          />
       </View>
+      }
       {self && <Button title="Logout" onPress={()=>signOut(auth)} />}
-      {/* <View>
-        <Button title='Home' onPress={()=>navigation.navigate('Home')} />
-        <Button title='Create a Diary' onPress={()=>navigation.navigate('Create')} />
-        <Button title='Profile' disabled={true} />
-      </View> */}
     </View>
   )
 }
