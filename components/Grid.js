@@ -2,56 +2,21 @@ import { View, FlatList, StyleSheet, Image } from "react-native";
 import React from "react";
 
 const Grid = (props) => {
-  const itemData = [
-    {
-      icon: (
-        <Image
-          style={styles(props).imageIcon}
-          source={{
-            uri: "https://icons.iconarchive.com/icons/limav/flat-gradient-social/256/Twitter-icon.png",
-          }}
-        />
-      ),
-    },
-    {
-      icon: (
-        <Image
-          style={styles(props).imageIcon}
-          source={{
-            uri: "https://icons.iconarchive.com/icons/designbolts/free-instagram/256/Active-Instagram-1-icon.png",
-          }}
-        />
-      ),
-    },
-    {
-      icon: (
-        <Image
-          style={styles(props).imageIcon}
-          source={{
-            uri: "https://icons.iconarchive.com/icons/designbolts/free-instagram/256/Active-Instagram-1-icon.png",
-          }}
-        />
-      ),
-    },
-    {
-      icon: (
-        <Image
-          style={styles(props).imageIcon}
-          source={{
-            uri: "https://icons.iconarchive.com/icons/designbolts/free-instagram/256/Active-Instagram-1-icon.png",
-          }}
-        />
-      ),
-    },
-  ];
-
+  
+  const numberOfColumns = props.itemData.length>1?2:1;
+  // const numberOfColumns = 2;
+  // console.log(numberOfColumns);
   return (
     <View style={styles(props).container}>
       <FlatList
-        data={itemData}
-        numColumns={props.numColumns}
+        data={props.itemData}
+        numColumns={numberOfColumns}
         renderItem={({ item }) => {
-          return <View style={styles(props).item}>{item.icon}</View>;
+          return <View style=
+          {styles(props).item}>
+            <Image style={numberOfColumns===1?styles(props).imageIcon1:styles(props).imageIcon2}
+              source={{uri:item}}>
+              </Image></View>;
         }}
       />
     </View>
@@ -69,12 +34,15 @@ const styles = (props) =>
 
     item: {
       flex: 1,
-      alignItems: "flex-start",
       padding: 5,
     },
-    imageIcon: {
-      width: props.width / props.numColumns,
-      height: props.width / props.numColumns,
+    imageIcon1: {
+      width: props.width,
+      height: props.width
+    },
+    imageIcon2: {
+      width: props.width / 2,
+      height: props.width / 2,
     },
   });
 
