@@ -2,7 +2,7 @@ import { View, TextInput, StyleSheet } from "react-native";
 import React from "react";
 
 /**
- * This is the textInput component that will be used by AddEntries screens
+ * This is the textInput component that will be used by screens
  * @param props.inputHeight : the alternate height of the textInput
  * @param props.inputValue : the text value of the textInput
  * @param props.inputChangeText : the changeText of the textInput
