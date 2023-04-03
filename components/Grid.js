@@ -3,13 +3,15 @@ import React from "react";
 
 const Grid = (props) => {
   
-  const numberOfColumns = props.itemData.length>1?2:1;
+ 
   // const numberOfColumns = 2;
   // console.log(numberOfColumns);
+  const tempData = props.itemData.length>1?props.itemData.slice(1,4):null;
+  const numberOfColumns = tempData!==null && tempData.length>1?2:1;
   return (
     <View style={styles(props).container}>
-      <FlatList
-        data={props.itemData}
+      {tempData && <FlatList
+        data={tempData}
         numColumns={numberOfColumns}
         renderItem={({ item }) => {
           return <View style=
@@ -18,7 +20,7 @@ const Grid = (props) => {
               source={{uri:item}}>
               </Image></View>;
         }}
-      />
+      />}
     </View>
   );
 };
