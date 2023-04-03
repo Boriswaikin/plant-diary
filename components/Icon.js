@@ -6,9 +6,9 @@ const Icon = (props) => {
     <View style={styles(props).body}>
       <Image
         style={{
-          width: props.width,
-          height: props.height,
-          borderRadius: props.borderRadius,
+          width: props.size,
+          height: props.size,
+          borderRadius: props.size,
           marginTop: props.marginTop,
         }}
         source={{ uri: props.source }}
@@ -20,9 +20,9 @@ const Icon = (props) => {
 const styles = (props) =>
   StyleSheet.create({
     body: {
-      width: props.width,
-      height: props.height,
-      borderRadius: props.borderRadius,
+      width: props.size,
+      height: props.size,
+      borderRadius: props.size,
       justifyContent: props.justifyContent,
       alignItems: props.alignItems,
     },
