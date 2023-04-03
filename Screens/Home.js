@@ -9,6 +9,8 @@ import { auth } from '../Firebase/firebase-setup';
 import { MaterialIcons } from '@expo/vector-icons';
 import PressableButton from '../components/PressableButton';
 import { onSnapshot } from 'firebase/firestore';
+import {storage} from "../Firebase/firebase-setup";
+import { getDownloadURL ,ref} from "firebase/storage";
 
 export default function Home({ navigation, route }) {
   // const [diaries, setDiaries] = useState([{uid:'InsBmnicOLXLK3LAm1m2gdk5ND32',author:'lesly',species:'bamboo',date:'2023-03-24',location:'Downtown Vancouver', story:'this is my bamboo',like:4},{uid:'InsBmnicOLXLK3LAm1m2gdk5ND32',author:'boris',species:'rose',date:'2023-03-21',location:'Surrey',story:'this is my rose',like:16}]);
@@ -22,27 +24,58 @@ export default function Home({ navigation, route }) {
     {label: 'By Species', value: 'species'}
   ]);
   const [recommend, setRecommend] = useState(route.params.recommend);
-
+  // const [url, setImageUrl]= useState([]);
   useEffect(()=>{
+      async function getImageUrl(uri) {
+      try{
+      const reference = ref(storage,uri);
+      const url = await getDownloadURL(reference);
+      return url;
+      // console.log(url);
+      // setImageUrl(url);
+      } catch (err){
+        console.log("get image url", err);
+      }
+      }
+
+      async function getAllImageUrl(source) {
+        let imageUri=[];
+        let imageUrlAll=[];
+        try{
+          imageUri=source.map(
+            (item)=>{
+              return getImageUrl(item);
+            }
+          )
+          imageUrlAll= await Promise.all(imageUri);
+          return imageUrlAll;
+        }
+        catch (err){
+          console.log("image Download error",err);
+      }}
+
       let q;
       if (recommend) {
         q = getLatestDiariesQueue();
-        // console.log(currentDiary);
-        // setDiaries(currentDiary);
       } else {
         q = getDiaryQueueByUser(auth.currentUser.uid);
-        // setDiaries(currentDiary);
       }
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         if (querySnapshot.empty) {
           setDiaries([]);
         } else {
           let diaries = [];
-          querySnapshot.docs.forEach((doc) => {
-            diaries.push({ ...doc.data(), diaryId: doc.id });
-          });
-          setDiaries(diaries);
-        }
+          
+          querySnapshot.docs.forEach(async (doc) => {
+            const urlItem= await getAllImageUrl(doc.data().photosUri);
+            if(urlItem){
+            // setImageUrl(urlItem);
+            diaries.push({ ...doc.data(), diaryId: doc.id ,imageUri:urlItem});
+            // console.log(diaries);
+            setDiaries(diaries);
+        }});
+          
+        } 
       });
       return () => {
         unsubscribe();
@@ -95,11 +128,12 @@ export default function Home({ navigation, route }) {
         <FlatList
           data={diaries}
           renderItem={({item})=>{
+              // console.log(item.imageUri);
             return (
               <View>
                 <Pressable onPress={()=>navigation.navigate('Gallery',{item:item})} >
-                <DiaryItem item={item} />
-                <DiaryCard />
+                {/* <DiaryItem item={item} /> */}
+                 <DiaryCard itemData={item.imageUri}/>
                 </Pressable>
               </View>
             )
