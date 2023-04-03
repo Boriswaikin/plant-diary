@@ -42,11 +42,9 @@ export default function Create({ navigation, route }) {
     }
   }
 
-
-
   async function pressCreateDiary(uri) {
 
-    let imageUri = "";
+    let imageUri = [];
     let imageAll = [];
     // console.log(uri);
     if(uri)
