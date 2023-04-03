@@ -2,9 +2,13 @@ import { View, Text, Button, TextInput, FlatList,StyleSheet} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { createDiary, deleteDiary, editDiary, getDiaryById, getProfileByUid } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
+import { ref, uploadBytesResumable } from "firebase/storage";
+import ImageManager from '../components/ImageManager';
+import { storage } from '../Firebase/firebase-setup';
 
 export default function Create({ navigation, route }) {
-  const [photos, setPhotos] = useState(['url1','url2']);
+  // const [photos, setPhotos] = useState(['url1','url2']);
+  const [photosUri,setPhotosUri]= useState([]);
   const [species, setSpecies] = useState("");
   const [location, setLocation] = useState("");
   const [story, setStory] = useState("");
@@ -15,7 +19,7 @@ export default function Create({ navigation, route }) {
     if (route.params  && route.params.diary) {
       setEdit(true);
       const currentDiary = route.params.diary;
-      setPhotos(currentDiary.photos);
+      setPhotosUri(currentDiary.photos);
       setLocation(currentDiary.location);
       setStory(currentDiary.description);
       setSpecies(currentDiary.species);
@@ -23,14 +27,47 @@ export default function Create({ navigation, route }) {
     }
   },[])
 
-  async function pressCreateDiary() {
+  async function fetchImage(uri){
+    
+    try{
+      const response = await fetch(uri);
+      const imageBlob = await response.blob(); //image data
+      const imageName = uri.substring(uri.lastIndexOf("/") + 1);
+      const imageRef = await ref(storage, `images/${imageName}`);
+      const uploadResult = await uploadBytesResumable(imageRef, imageBlob);
+      return uploadResult.metadata.fullPath; //path to the image on the storage
+    }
+    catch (err){
+      console.log("image fetch error",err);
+    }
+  }
+
+
+
+  async function pressCreateDiary(uri) {
+
+    let imageUri = "";
+    let imageAll = [];
+    // console.log(uri);
+    if(uri)
+      try {
+        imageUri = uri.map((item)=>{
+          return  fetchImage(item);
+      })
+      imageAll= await Promise.all(imageUri);
+      }
+      catch (err){
+        console.log("image fetch error",err);
+      }
+    // console.log(imageAll);
     // createDiary(photos, species, location, story);
     console.log("A diary created");
     try {
       const userProfile = await getProfileByUid(auth.currentUser.uid);
       const userName = userProfile.name;
       await createDiary({		
-        photos: photos,
+        // photos: photos,
+        photosUri:imageAll,
         description: story,
         species: species,
         location: location,
@@ -40,11 +77,24 @@ export default function Create({ navigation, route }) {
       console.log(err);
     }
     cleanup();
-    navigation.goBack();
+    naviagate(imageAll);
+  }
+
+  function naviagate(uri){
+    navigation.navigate('Plant Diary', {
+      screen: 'Home',
+      params: {
+        screen: 'Recommend',
+        params: {
+          imageUri: uri,
+        },
+        },
+      },)
   }
 
   function cleanup() {
-    setPhotos(['url1', 'url2']);
+    // setPhotos(['url1', 'url2']);
+    setPhotosUri([]);
     setSpecies("");
     setLocation("");
     setDate("");
@@ -54,9 +104,11 @@ export default function Create({ navigation, route }) {
   async function pressUpdateDiary() {
     // updateDiary(route.params.diaryId, photos, species, location, story);
     console.log("A diary updated");
+
     try {
       await editDiary(route.params.diary.diaryId, {		
-        photos: photos,
+        // photos: photos,
+        photosUri:photosUri,
         description: story,
         species: species,
         location: location,
@@ -80,18 +132,26 @@ export default function Create({ navigation, route }) {
     navigation.goBack();
   }
 
+
+  const imageUriHandler=(uri)=>{
+    setPhotosUri(uri);
+    console.log(uri);
+    }
+    
   return (
     <View>
       <View>
         <Text>Add Photos</Text>
-        <FlatList 
+        <ImageManager imageUriHandler={(uri)=>
+          imageUriHandler(uri)}/>
+        {/* <FlatList 
         data={photos}
         renderItem={({item})=>{
           return (
             <Text>{item}</Text>
           )
         }}
-        />
+        /> */}
         <Button title='+' />
         <Text>Species</Text>
         <TextInput style = {style.textInput} placeholder='Select species' value={species} onChangeText={setSpecies} />
@@ -107,10 +167,11 @@ export default function Create({ navigation, route }) {
         }
         {edit ? 
           <Button title='Confirm' onPress={()=>pressUpdateDiary()} /> 
-          : <Button title='Create' onPress={()=>pressCreateDiary()} />
+          : <Button title='Create' onPress={()=>{
+            pressCreateDiary(photosUri);
+     
+           }} />
         }
-        
-        
       </View>
     </View>
   )
