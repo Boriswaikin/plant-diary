@@ -36,23 +36,25 @@ export default function Profile({ navigation, route }) {
         // setDiaries(diaryList);
         setProfile(currentProfile);
       }
-      const unsubscribe = onSnapshot(diaryListqueue, (querySnapshot) => {
-        if (querySnapshot.empty) {
-          setDiaries([]);
-        } else {
-          let diaries = [];
-          querySnapshot.docs.forEach((doc) => {
-            diaries.push({ ...doc.data(), diaryId: doc.id });
-          });
-          setDiaries(diaries);
-        }
-      });
-      return () => {
-        unsubscribe();
-      };
     }
     )();
+  },[])
 
+  useEffect(()=>{
+    const unsubscribe = onSnapshot(diaryListqueue, (querySnapshot) => {
+      if (querySnapshot.empty) {
+        setDiaries([]);
+      } else {
+        let diaries = [];
+        querySnapshot.docs.forEach((doc) => {
+          diaries.push({ ...doc.data(), diaryId: doc.id });
+        });
+        setDiaries(diaries);
+      }
+    });
+    return () => {
+      unsubscribe();
+    };
   },[])
 
   function pressFollow() {
