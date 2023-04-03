@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text,Image} from "react-native";
 import React, { useState } from "react";
 import CardComponent from "./CardComponent";
 import Grid from "./Grid";
@@ -21,11 +21,8 @@ export default function DiaryCard({itemData}) {
       marginBottom={15}
     >
       <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-        <Icon
-          size={120}
-          marginTop={20}
-          source="https://raw.githubusercontent.com/AboutReact/sampleresource/master/old_logo.png"
-        />
+        <Image style={{width:130,height:130,marginTop:20}}
+          source={{uri:itemData[0]}}></Image>
         <Grid
           itemData={itemData}
           width={100}
@@ -41,11 +38,7 @@ export default function DiaryCard({itemData}) {
           justifyContent: "space-around",
         }}
       >
-        <View style={{ flexDirection: "column" }}>
-          <Icon
-            size={40}
-            source="https://raw.githubusercontent.com/AboutReact/sampleresource/master/old_logo.png"
-          />
+        <View style={{ flexDirection: "column" }}> 
           <Text>Name</Text>
         </View>
         <Text style={{ alignSelf: "center" }}>Random Text Story </Text>
