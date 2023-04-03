@@ -1,11 +1,16 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import CardComponent from "./CardComponent";
 import Grid from "./Grid";
 import Color from "./Color";
 import Icon from "./Icon";
+import PressableButton from "./PressableButton";
+import { AntDesign } from "@expo/vector-icons";
 
-export default function DiaryCard() {
+
+
+export default function DiaryCard({itemData}) {
+  const [liked,setLiked]=useState(false);
   return (
     <CardComponent
       flexDirection="column"
@@ -17,15 +22,14 @@ export default function DiaryCard() {
     >
       <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
         <Icon
-          width={120}
-          height={100}
+          size={120}
           marginTop={20}
           source="https://raw.githubusercontent.com/AboutReact/sampleresource/master/old_logo.png"
         />
         <Grid
-          numColumns={2}
+          itemData={itemData}
           width={100}
-          alignSelf="flex-end"
+          alignSelf="flex-start"
           marginTop={10}
           marginRight={40}
         ></Grid>
@@ -39,16 +43,26 @@ export default function DiaryCard() {
       >
         <View style={{ flexDirection: "column" }}>
           <Icon
-            width={40}
-            height={40}
-            borderRadius={20}
+            size={40}
             source="https://raw.githubusercontent.com/AboutReact/sampleresource/master/old_logo.png"
           />
           <Text>Name</Text>
         </View>
         <Text style={{ alignSelf: "center" }}>Random Text Story </Text>
       </View>
+      <View style={{ flexDirection: "row" ,justifyContent:"space-around"}}>
       <Text style={{ marginTop: 10, marginLeft: 40 }}>Species: Orchild</Text>
+      <PressableButton
+          customizedStyle={{
+            flexDirection: "row",
+            // justifyContent:,
+            width: "10%",
+          }}
+          buttonPressed={()=>{setLiked(!liked)}}
+        >
+      <AntDesign  name={!liked?"hearto":"heart"} color={liked?"red":"black"} size={22}></AntDesign>
+      </PressableButton>
+      </View>
     </CardComponent>
   );
 }
