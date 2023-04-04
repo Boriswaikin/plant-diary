@@ -294,12 +294,42 @@ export async function addLike(diaryId) {
 			like.push({ ...docItem.data(), id: docItem.id });
 		});
 		const likeItem = await like[0];
-		console.log(likeItem);
+		//console.log(likeItem);
 		const docRef = doc(firestore, "like", likeItem.id);
 		updateDoc(docRef, {
 			likeUsers: [...likeItem.likeUsers, auth.currentUser.uid],
 		});
 		console.log("Like update with ID: ", docRef.id);
+	} catch (err) {
+		console.log(err);
+	}
+}
+export async function removeLike(diaryId) {
+	try {
+		//console.log("call add like function");
+
+		const q = query(
+			collection(firestore, "like"),
+			where("diaryId", "==", diaryId)
+		);
+		const querySnapshot = await getDocs(q);
+		// console.log("qs", querySnapshot);
+		const like = [];
+		querySnapshot.forEach((docItem) => {
+			like.push({ ...docItem.data(), id: docItem.id });
+		});
+		const userList = await like[0].likeUsers;
+		//console.log(userList);
+		const updatedUsers = userList.filter(
+			(user) => user !== auth.currentUser.uid
+		);
+		//console.log(updatedUsers);
+
+		const docRef = doc(firestore, "like", like[0].id);
+		updateDoc(docRef, {
+			likeUsers: updatedUsers,
+		});
+		console.log("Like remove with ID: ", docRef.id);
 	} catch (err) {
 		console.log(err);
 	}
