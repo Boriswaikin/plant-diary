@@ -279,3 +279,28 @@ export async function createLike(diaryId) {
 	});
 	console.log("Like written with ID: ", docRef.id);
 }
+export async function addLike(diaryId) {
+	try {
+		//console.log("call add like function");
+
+		const q = query(
+			collection(firestore, "like"),
+			where("diaryId", "==", diaryId)
+		);
+		const querySnapshot = await getDocs(q);
+		// console.log("qs", querySnapshot);
+		const like = [];
+		querySnapshot.forEach((docItem) => {
+			like.push({ ...docItem.data(), id: docItem.id });
+		});
+		const likeItem = await like[0];
+		console.log(likeItem);
+		const docRef = doc(firestore, "like", likeItem.id);
+		updateDoc(docRef, {
+			likeUsers: [...likeItem.likeUsers, auth.currentUser.uid],
+		});
+		console.log("Like update with ID: ", docRef.id);
+	} catch (err) {
+		console.log(err);
+	}
+}
