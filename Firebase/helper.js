@@ -334,3 +334,24 @@ export async function removeLike(diaryId) {
 		console.log(err);
 	}
 }
+export async function checkLike(diaryId) {
+	try {
+		//console.log("call add like function");
+
+		const q = query(
+			collection(firestore, "like"),
+			where("diaryId", "==", diaryId)
+		);
+		const querySnapshot = await getDocs(q);
+		// console.log("qs", querySnapshot);
+		const like = [];
+		querySnapshot.forEach((docItem) => {
+			like.push({ ...docItem.data(), id: docItem.id });
+		});
+		const userList = await like[0].likeUsers;
+		//console.log(userList);
+		return userList.includes(auth.currentUser.uid);
+	} catch (err) {
+		console.log(err);
+	}
+}
