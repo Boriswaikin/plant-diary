@@ -70,14 +70,11 @@ export async function getDiaryById(id) {
 export async function getDiaryByUser(id) {
 	try {
 		console.log("call get diaries");
-		const q = query(
-			collection(firestore, "diary"),
-			where("userId", "==", id)
-		);
+		const q = query(collection(firestore, "diary"), where("userId", "==", id));
 		const querySnapshot = await getDocs(q);
 		const diaries = [];
 		querySnapshot.forEach((doc) => {
-			diaries.push({...doc.data(), diaryId:doc.id});
+			diaries.push({ ...doc.data(), diaryId: doc.id });
 		});
 		// console.log(diaries);
 		return diaries;
@@ -88,29 +85,27 @@ export async function getDiaryByUser(id) {
 
 export function getDiaryQueueByUser(id) {
 	// try {
-		//console.log("call get diaries");
-		const q = query(
-			collection(firestore, "diary"),
-			where("userId", "==", id)
-		);
-		return q;
+	//console.log("call get diaries");
+	const q = query(collection(firestore, "diary"), where("userId", "==", id));
+	return q;
 }
 
-export  function getLatestDiariesQueue() {
+export function getLatestDiariesQueue() {
 	// try {
-		//console.log("call get diaries");
-		const q = query(
-			collection(firestore, "diary"),
-			orderBy('date', 'desc'), limit(10)
-		);
-		// const querySnapshot = await getDocs(q);
-		// const diaries = [];
-		// querySnapshot.forEach((doc) => {
-		// 	diaries.push(doc.data());
-		// });
-		// console.log(diaries);
-		// return diaries;
-		return q;
+	//console.log("call get diaries");
+	const q = query(
+		collection(firestore, "diary"),
+		orderBy("date", "desc"),
+		limit(10)
+	);
+	// const querySnapshot = await getDocs(q);
+	// const diaries = [];
+	// querySnapshot.forEach((doc) => {
+	// 	diaries.push(doc.data());
+	// });
+	// console.log(diaries);
+	// return diaries;
+	return q;
 	// } catch (err) {
 	// 	console.log(err);
 	// }
@@ -159,13 +154,13 @@ export async function createProfile(user) {
 		// uid: user.id,
 		name: user.name,
 		email: user.email,
-		achievement: ['very', 'good'],
+		achievement: ["very", "good"],
 		followerCount: 32,
 		followingCount: 48,
-		headPhoto: 'default',
+		headPhoto: "default",
 		postCount: 10,
-		favouritePlant: 'default',
-		diaries: ['123','434','809'],
+		favouritePlant: "default",
+		diaries: ["123", "434", "809"],
 	});
 	const docRef2 = await addDoc(collection(firestore, "follower"), {
 		userUid: auth.currentUser.uid,
@@ -213,12 +208,11 @@ export async function getProfileByUid(uid) {
 		const querySnapshot = await getDocs(q);
 		const users = [];
 		querySnapshot.forEach((doc) => {
-			users.push({...doc.data(), id:doc.id});
+			users.push({ ...doc.data(), id: doc.id });
 		});
 		// console.log(users[0]);
 		// console.log(querySnapshot[0].data());
 		return users[0];
-
 	} catch (err) {
 		console.log(err);
 	}
@@ -277,4 +271,11 @@ export async function searchDiary(species) {
 	} catch (err) {
 		console.log(err);
 	}
+}
+export async function createLike(diaryId) {
+	const docRef = await addDoc(collection(firestore, "like"), {
+		diaryId: diaryId,
+		likeUsers: [],
+	});
+	console.log("Like written with ID: ", docRef.id);
 }
