@@ -299,6 +299,9 @@ export async function addLike(diaryId) {
 		updateDoc(docRef, {
 			likeUsers: [...likeItem.likeUsers, auth.currentUser.uid],
 		});
+
+		const diaryRef = doc(firestore, "diary", diaryId);
+		updateDoc(diaryRef, { like: likeItem.likeUsers.length + 1 });
 		console.log("Like update with ID: ", docRef.id);
 	} catch (err) {
 		console.log(err);
@@ -329,6 +332,8 @@ export async function removeLike(diaryId) {
 		updateDoc(docRef, {
 			likeUsers: updatedUsers,
 		});
+		const diaryRef = doc(firestore, "diary", diaryId);
+		updateDoc(diaryRef, { like: updatedUsers.length });
 		console.log("Like remove with ID: ", docRef.id);
 	} catch (err) {
 		console.log(err);
