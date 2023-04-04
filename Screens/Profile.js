@@ -1,10 +1,13 @@
-import { View, Text, FlatList, Button, Pressable } from 'react-native'
+import { View, Text, FlatList, Button, Pressable, StyleSheet, SafeAreaView, Image, Dimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { getDiaryQueueByUser, getProfileByUid } from '../Firebase/helper';
-import { auth, firestore } from '../Firebase/firebase-setup';
+import { auth } from '../Firebase/firebase-setup';
 import { signOut } from 'firebase/auth';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { onSnapshot } from 'firebase/firestore';
+import PressableButton from '../components/PressableButton';
+import Icon from '../components/Icon';
 
+const w = Dimensions.get('window').width;
 
 export default function Profile({ navigation, route }) {
   const [profile, setProfile] = useState(null);
@@ -12,28 +15,21 @@ export default function Profile({ navigation, route }) {
   const [diaries, setDiaries] = useState(null);
   const [self, setSelf] = useState(true);
   const [following, setFollowing] = useState(false);
+  const [edit, setEdit] = useState(false);
 
   useEffect( ()=>{
       (async()=>{
-        let diaryListqueue;
         if (route.name === "Third Profile") {
-        // console.log("third profile");
-        let currentProfile = await getProfileByUid(route.params.id);
-        diaryListqueue =  getDiaryQueueByUser(route.params.id);
         setId(route.params.id);
+        let currentProfile = await getProfileByUid(route.params.id);
         setProfile(currentProfile);
-        // setDiaries(diaryList);
         setSelf(false);
         navigation.setOptions({
-          title: profile.name,
+          title: profile && profile.name || "User Profile",
         })
-        // let relation = checkRelation(id);
-        // setFollowing(relation);
       } else {
         setId(auth.currentUser.uid);
-        diaryListqueue =  getDiaryQueueByUser(auth.currentUser.uid);
         let currentProfile = await getProfileByUid(auth.currentUser.uid);
-        // setDiaries(diaryList);
         setProfile(currentProfile);
       }
     }
@@ -41,6 +37,7 @@ export default function Profile({ navigation, route }) {
   },[])
 
   useEffect(()=>{
+    const diaryListqueue = getDiaryQueueByUser(route.params && route.params.id || auth.currentUser.uid)
     const unsubscribe = onSnapshot(diaryListqueue, (querySnapshot) => {
       if (querySnapshot.empty) {
         setDiaries([]);
@@ -69,48 +66,182 @@ export default function Profile({ navigation, route }) {
     console.log('Unfollow user');
   }
 
+  function toggleEdit() {
+    setEdit((prev)=>!prev);
+  }
+
   return (
-    <View>
+    <SafeAreaView style={styles.container}>
       {profile&&
       <View>
-        <Text>User head photo: {profile.headPhoto}</Text>
-        <Text>User name: {profile.name}</Text>
-        {self && <Button title='Edit Profile' onPress={()=>navigation.navigate('Edit Profile',{profile: profile})}/>}
-        <Text>Post number: {profile.postCount}</Text>
-        <Pressable onPress={()=>navigation.navigate('Follow', {screen: 'Follower', id: id, name: profile.name})}><Text>Follower: {profile.followerCount}</Text></Pressable>
-        <Pressable onPress={()=>navigation.navigate('Follow', {screen: 'Following', id: id, name: profile.name})}><Text>Following: {profile.followingCount}</Text></Pressable>
-        {!self && following && <Button title="Following" onPress={()=>pressUnfollow()} />}
-        {!self && !following && <Button title="Follow" onPress={()=>pressFollow()} />}
-        <Text>Achievement</Text>
-        <FlatList 
-        data={profile.achievement}
-        renderItem={({item})=>{
-          return (
-            <Text>{item}</Text>
-          )
-        }}
-         />
+        <View style={styles.profileContainer}>
+          {/* <Text>User head photo: {profile.headPhoto}</Text> */}
+          <Icon width={100} height={100} borderRadius={100} source={"https://ui-avatars.com/api/?name=" + profile.name} />
+          <View style={styles.profileInfo}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>{profile.name}</Text>
+            <PressableButton customizedStyle={styles.editButton} buttonPressed={()=>navigation.navigate('Edit Profile',{profile: profile})}>
+              <Text style={styles.editText}>Edit Profile</Text>
+            </PressableButton>
+          </View>
+          <Text style={styles.lightFont}>Diaries: <Text style={styles.mediumFont}>{profile.postCount}</Text></Text>
+          <Pressable onPress={()=>navigation.navigate('Follow', {screen: 'Follower', id: id, name: profile.name})}><Text style={styles.lightFont}>Follower: <Text style={styles.mediumFont}>{profile.followerCount}</Text></Text></Pressable>
+          <Pressable onPress={()=>navigation.navigate('Follow', {screen: 'Following', id: id, name: profile.name})}><Text style={styles.lightFont}>Following: <Text style={styles.mediumFont}>{profile.followingCount}</Text></Text></Pressable>
+          </View>
+        </View>
+        {profile.achievement&&
+        <View style={styles.achievementContainer}>
+          {/* <Text style={styles.achievementText}>Achievement</Text> */}
+          <View>
+          <FlatList 
+          horizontal={true}
+          data={profile.achievement}
+          renderItem={({item})=>{
+            return (
+              <View style={styles.icon}>
+              <Icon width={80} height={80} borderRadius={80} source={"https://ui-avatars.com/api/?name=" + item}/>
+              </View>
+            )
+          }}
+          />
+          </View>
+        </View>
+        }
+      </View>
+      }
+      {self&&diaries&&
+      <View style={styles.editDiariesLine}>
+        <PressableButton customizedStyle={edit?styles.editToggleButton:styles.editButton} buttonPressed={()=>toggleEdit()}>
+          {edit ? <Text style={styles.editToggleText}>Finish Edit</Text> : <Text style={styles.editText}>Edit Diaries</Text>}
+        </PressableButton>
       </View>
       }
       {diaries&&
-      <View>
-        <Text>Diary Grid</Text>
+      <View style={styles.gridContainer}>
+        {/* <Text>Diary Grid</Text> */}
         <FlatList 
         data={diaries}
+        numColumns={3}
+        ItemSeparatorComponent={() => <View style={{height: 3}} />}
+        columnWrapperStyle={styles.columnWrapper}
         renderItem={({item})=>{
           return (
-            <View>
-            <Text>Item Photo: {item.photos[0]}</Text>
-            <Text>Item ID: {item.diaryId}</Text>
-            <Text>Item Species: {item.species}</Text>
-            {self && <Button title='edit' onPress={()=>navigation.navigate('Edit Diary',{diary:item})}/>}
-            </View>
+            <PressableButton buttonPressed={()=>{edit?navigation.navigate('Edit Diary',{diary:item}):navigation.navigate('Gallery',{item:item})}}>
+              <Image source={{uri: "https://ui-avatars.com/api/?name=" + item.species}} style={styles.gridImage} resizeMode='cover' />
+            </PressableButton>
           )
         }}
          />
       </View>
       }
-      {self && <Button title="Logout" onPress={()=>signOut(auth)} />}
-    </View>
+      {self && 
+      <View style={styles.buttonContainer}>
+        <PressableButton customizedStyle={styles.button} buttonPressed={()=>signOut(auth)}>
+          <Text style={styles.buttonText}>Logout</Text>
+        </PressableButton>
+      </View>
+      }
+      {!self && following && <Button title="Following" onPress={()=>pressUnfollow()} />}
+      {!self && !following && <Button title="Follow" onPress={()=>pressFollow()} />}
+    </SafeAreaView>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    margin: 30,
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 800,
+  },
+  button: {
+    borderWidth: 1,
+    borderRadius: 20,
+    padding: 10,
+    width: 300,
+  },
+  buttonText: {
+    fontSize: 20,
+    color: 'black',
+  },
+  buttonContainer: {
+    marginTop: 100,
+    alignSelf: 'center',
+    alignItems: 'space-between',
+  },
+  gridContainer: {
+    flex: 1,
+    marginTop: 10,
+  },
+  profileContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
+  },
+  profileInfo: {
+    // alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 30,
+    rowGap: 2,
+  },
+  achievementContainer: {
+    marginVertical: 10,
+  },
+  icon: {
+    padding: 3,
+  },
+  achievementText: {
+    fontWeight: 600,
+    color: 'gray',
+  },
+  gridImage: {
+    width: (w - 60) / 3,
+    height:(w - 60) / 3,
+  },
+  columnWrapper: {
+    gap: 3,
+  },
+  editButton: {
+    borderRadius: 5,
+    padding: 2,
+    width: 80,
+    height: 22,
+    backgroundColor: 'rgb(220,220,220)',
+  },
+  editText: {
+    fontSize: 11,
+    color: 'black',
+    fontWeight: 600,
+  },
+  editToggleButton: {
+    borderRadius: 5,
+    padding: 2,
+    width: 80,
+    height: 22,
+    backgroundColor: 'rgb(100,100,100)',
+  },
+  editToggleText: {
+    fontSize: 11,
+    color: 'white',
+    fontWeight: 600,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    gap: 10,
+    // alignContent: 'center',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  editDiariesLine: {
+    alignItems: 'flex-end',
+  },
+  lightFont: {
+    color: 'rgb(50,50,50)',
+  },
+  mediumFont: {
+    fontWeight: 600,
+    color: 'rgb(50,50,50)',
+  },
+})
