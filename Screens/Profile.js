@@ -80,9 +80,9 @@ export default function Profile({ navigation, route }) {
           <View style={styles.profileInfo}>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>{profile.name}</Text>
-            <PressableButton customizedStyle={styles.editButton} buttonPressed={()=>navigation.navigate('Edit Profile',{profile: profile})}>
+            {self&&<PressableButton customizedStyle={styles.editButton} buttonPressed={()=>navigation.navigate('Edit Profile',{profile: profile})}>
               <Text style={styles.editText}>Edit Profile</Text>
-            </PressableButton>
+            </PressableButton>}
           </View>
           <Text style={styles.lightFont}>Diaries: <Text style={styles.mediumFont}>{profile.postCount}</Text></Text>
           <Pressable onPress={()=>navigation.navigate('Follow', {screen: 'Follower', id: id, name: profile.name})}><Text style={styles.lightFont}>Follower: <Text style={styles.mediumFont}>{profile.followerCount}</Text></Text></Pressable>
@@ -134,15 +134,21 @@ export default function Profile({ navigation, route }) {
          />
       </View>
       }
-      {self && 
       <View style={styles.buttonContainer}>
-        <PressableButton customizedStyle={styles.button} buttonPressed={()=>signOut(auth)}>
-          <Text style={styles.buttonText}>Logout</Text>
-        </PressableButton>
-      </View>
+      {self && 
+      <PressableButton customizedStyle={styles.button} buttonPressed={()=>signOut(auth)}>
+        <Text style={styles.buttonText}>Logout</Text>
+      </PressableButton>
       }
-      {!self && following && <Button title="Following" onPress={()=>pressUnfollow()} />}
-      {!self && !following && <Button title="Follow" onPress={()=>pressFollow()} />}
+      {!self && following && 
+      <PressableButton customizedStyle={styles.button} buttonPressed={()=>pressUnfollow()}>
+        <Text style={styles.buttonText}>Following</Text>
+      </PressableButton>}
+      {!self && !following && 
+      <PressableButton customizedStyle={styles.button} buttonPressed={()=>pressFollow()}>
+        <Text style={styles.buttonText}>Follow</Text>
+      </PressableButton>}
+      </View>
     </SafeAreaView>
   )
 }

@@ -1,28 +1,33 @@
-import { View, Text, Button, FlatList } from 'react-native'
+import { View, Text, Button, FlatList, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import UserList from '../components/UserList';
 import { getFollowerByUser, getFollowingByUser } from '../Firebase/helper';
+import Icon from '../components/Icon';
+import PressableButton from '../components/PressableButton';
 
 export default function Follow({ navigation, route }) {
 
-  const [users, setUsers] = useState([{id:1314, name:'hana', head:'head-url-1', following:true},{id:1315, name:'john', head:'head-url-2',following:false}]);
+  // const [users, setUsers] = useState([{uid:1314, name:'hana', headPhoto:'head-url-1'},{uid:1315, name:'john', headPhoto:'head-url-2'},{uid:1316, name:'peter', headPhoto:'head-url-3'}]);
+  const [following, setFollowing] = useState([{uid:1314, name:'hana', headPhoto:'head-url-1'},{uid:1315, name:'john', headPhoto:'head-url-2'},{uid:1316, name:'peter', headPhoto:'head-url-3'}]);
+  const [follower, setFollower] = useState([{uid:1317, name:'zoo', headPhoto:'head-url-1'},{uid:1318, name:'ham', headPhoto:'head-url-2'},{uid:1316, name:'peter', headPhoto:'head-url-3'}]);
+  const [localFollowing, setLocalFollowing] = useState([{uid:1314, name:'hana', headPhoto:'head-url-1'},{uid:1315, name:'john', headPhoto:'head-url-2'},{uid:1316, name:'peter', headPhoto:'head-url-3'}]);
   const [followState, setFollowState] = useState(route.params.followState);
 
-  useEffect(()=>{
-    (async()=>{
-      if (followState) {
-      console.log("get follower",route.params.id);
-      let userList = await getFollowerByUser(route.params.id);
-      setUsers((prev)=>userList);
-      // console.log(route.params.id, users);
-    } else {
-      console.log("get following",route.params.id);
-      let userList = await getFollowingByUser(route.params.id);
-      setUsers((prev)=>userList);
-      // console.log(route.params.id, users);
-    }
-    })();
-  },[]);
+  // useEffect(()=>{
+  //   (async()=>{
+  //     if (followState) {
+  //     console.log("get follower",route.params.id);
+  //     let userList = await getFollowerByUser(route.params.id);
+  //     setUsers((prev)=>userList);
+  //     // console.log(route.params.id, users);
+  //   } else {
+  //     console.log("get following",route.params.id);
+  //     let userList = await getFollowingByUser(route.params.id);
+  //     setUsers((prev)=>userList);
+  //     // console.log(route.params.id, users);
+  //   }
+  //   })();
+  // },[]);
 
   function changeToFollower() {
     // let userList = getFollower(route.params.id);
@@ -52,27 +57,88 @@ export default function Follow({ navigation, route }) {
   }
 
   return (
-    <View>
-      {/* <View>
-        <Button title='Followers' disabled={followState} onPress={()=>changeToFollower()} />
-        <Button title='Followings' disabled={!followState} onPress={()=>changeToFollowing()} />
-      </View> */}
-      <View>
-        <FlatList
-        data={users}
-        renderItem={({item})=>{
-          return (
-            <View>
-              <Text>{item.head}</Text>
-              <Text>{item.name}</Text>
-              {item.following ? <Button title="Following" onPress={()=>pressUnfollow(item.id)} />
-              : <Button title="Follow" onPress={()=>pressFollow(item.id)} />}
+    <View style={styles.container}>
+      <FlatList
+      data={followState?follower:following}
+      renderItem={({item})=>{
+        return (
+          <View style={styles.userContainer}>
+            <View style={styles.headName}>
+              <View style={styles.icon}>
+                <Icon width={65} height={65} borderRadius={65} source={"https://ui-avatars.com/api/?name=" + item.headPhoto}/>
+              </View>
+              <View style={styles.nameInfo}>
+                <Text style={styles.name}>{item.name}</Text>
+                <Text style={styles.mediumFont}>@{item.uid}</Text>
+              </View>
             </View>
-          )
-        }}
-        />
-      </View>
-      <UserList />
+            {!localFollowing.some(person => person.uid === item.uid) 
+            ?<PressableButton customizedStyle={styles.editToggleButton} buttonPressed={()=>pressFollow(item.uid)}>
+              <Text style={styles.editToggleText}>Follow</Text>
+            </PressableButton>
+            :<PressableButton customizedStyle={styles.editButton} buttonPressed={()=>pressUnfollow(item.uid)}>
+              <Text style={styles.editText}>Following</Text>
+            </PressableButton>
+            }
+          </View>
+        )
+      }}
+      />
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    margin: 20,
+  },
+  name: {
+    fontSize: 16,
+    fontWeight: 600,
+  },
+  nameInfo: {
+    margin: 10,
+  },
+  headName: {
+    flexDirection: 'row',
+  },
+  editButton: {
+    borderRadius: 5,
+    padding: 2,
+    width: 100,
+    height: 26,
+    backgroundColor: 'rgb(220,220,220)',
+    alignSelf: 'center',
+  },
+  editText: {
+    fontSize: 11,
+    color: 'black',
+    fontWeight: 600,
+  },
+  editToggleButton: {
+    borderRadius: 5,
+    padding: 2,
+    width: 80,
+    height: 26,
+    backgroundColor: 'rgb(100,100,100)',
+    alignSelf: 'center',
+  },
+  editToggleText: {
+    fontSize: 11,
+    color: 'white',
+    fontWeight: 600,
+  },
+  userContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 6,
+  },
+  lightFont: {
+    color: 'rgb(50,50,50)',
+  },
+  mediumFont: {
+    fontWeight: 400,
+    color: 'rgb(50,50,50)',
+  },
+})
