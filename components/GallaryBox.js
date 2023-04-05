@@ -1,28 +1,6 @@
 import { View, FlatList, Image, useWindowDimensions } from "react-native";
 import React, { useRef, useState } from "react";
 
-const itemData = [
-  {
-    id: "1",
-    postImage:
-      "https://icons.iconarchive.com/icons/limav/flat-gradient-social/256/Twitter-icon.png",
-  },
-  {
-    id: "2",
-    postImage:
-      "https://icons.iconarchive.com/icons/designbolts/free-instagram/256/Active-Instagram-1-icon.png",
-  },
-  {
-    id: "3",
-    postImage:
-      "https://icons.iconarchive.com/icons/designbolts/free-instagram/256/Active-Instagram-1-icon.png",
-  },
-  {
-    id: "4",
-    postImage:
-      "https://icons.iconarchive.com/icons/designbolts/free-instagram/256/Active-Instagram-1-icon.png",
-  },
-];
 
 function Gallary({ postImage }) {
   const { width } = useWindowDimensions();
@@ -31,28 +9,30 @@ function Gallary({ postImage }) {
     <View>
       <Image
         source={{ uri: postImage }}
-        style={{ width: postWidth, height: postWidth }}
+        style={{ width: postWidth, height: postWidth, marginTop:20, }}
       />
     </View>
   );
 }
 
-export default function GallaryBox() {
+export default function GallaryBox({galleryItem}) {
   const [currentImage, setCurrentImage] = useState(0);
   const itemChanged = useRef((item) => {
     const numberOfPost = item.viewableItems[0].index;
     setCurrentImage(numberOfPost);
   });
+  
+  const tempData = galleryItem.map((item, index) => ({ uri: item, id: `${index + 1}` }))
   return (
     <View>
       <FlatList
-        data={itemData}
+        data={tempData}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
-          return <Gallary postImage={item.postImage}></Gallary>;
+          return <Gallary postImage={item.uri}></Gallary>;
         }}
         onViewableItemsChanged={itemChanged.current}
       />
@@ -64,7 +44,7 @@ export default function GallaryBox() {
           marginTop: 10,
         }}
       >
-        {itemData.map((item, index) => {
+        {tempData.map((item, index) => {
           return (
             <View
               key={item.id}
