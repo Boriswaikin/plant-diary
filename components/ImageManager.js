@@ -1,20 +1,23 @@
-import { View, Text, Button, Image } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, Button, Image, Alert } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import * as ImagePicker from "expo-image-picker"
+import PressableButton from './PressableButton';
+import GallaryBox from './GallaryBox';
 
-export default function ImageManager({ imageUriHandler }) {
+export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUri}) {
     const [permissionInfo, requestPermission] = ImagePicker.useCameraPermissions();
     const [imageURI, setImageURI] = useState([]);
+    const [usedCamera,setUsedCamera]=useState(false);
+  
+    useEffect(()=>{setImageURI([])},[removedUri])
 
     async function verifyPermission() {
-        // console.log(permissionInfo);
         if (permissionInfo.granted) {
             return true;
         }
     
         try {
             const result = await requestPermission();
-            console.log(result)
             return result.granted;
         } catch (err) {
             console.log(err);
@@ -29,12 +32,12 @@ export default function ImageManager({ imageUriHandler }) {
         }
         try {
         const result = await ImagePicker.launchCameraAsync({allowsEditing: true})
-        // console.log(result.assets);
         if (!result.canceled) {
-            // console.log(result.assets[0].uri);
-            setImageURI(result.assets[0].uri);
-            imageUriHandler(result.assets[0].uri);
-            // console.log(imageURI);
+            var uriArray = [];
+            uriArray.push(result.assets[0].uri);
+            setImageURI(uriArray);
+            imageUriHandler(uriArray);
+            setUsedCamera(true);
         }
          } catch (err) {
             console.log(err);
@@ -52,17 +55,13 @@ export default function ImageManager({ imageUriHandler }) {
             {
                 // allowsEditing: true,
                 allowsMultipleSelection:true})
-                // console.log(result.assets);
                 const arr = result.assets.map(
-                    item=>{
-                        return item.uri;
-                    }
+                    item=>item.uri
                 )
-                // console.log(arr[0]);
         if (!result.canceled) {
-            // console.log(result.assets[0].uri);
             setImageURI(arr);
             imageUriHandler(arr);
+            setUsedCamera(false);
         }
          } catch (err) {
             console.log(err);
@@ -71,13 +70,46 @@ export default function ImageManager({ imageUriHandler }) {
 
   return (
     <View>
-      <Button title="Take a Picture" onPress={imageHandler}></Button>
-      <Button title="Get From Library" onPress={imageFromLibraryHandler}></Button>
-      { imageURI && <Image 
+       <PressableButton 
+            buttonPressed={() => {
+            Alert.alert(
+            "Select Image",
+            "",
+            [
+            { text: "Take Photo..." ,
+            onPress: () => {
+                resetRemovedUri();
+                imageHandler();
+              },
+            },
+            {
+              text: "Choose from Library",
+              onPress: () => {
+                resetRemovedUri();
+                imageFromLibraryHandler();
+              },
+            },
+            {
+                text: "Cancel",
+                onPress: () => {
+                },
+              },
+          ],
+          { cancelable: false }
+        );
+      }}>
+        <Text>More options</Text>
+        </PressableButton>
+      {/* <Button title="Take a Picture" onPress={imageHandler}></Button>
+      <Button title="Get From Library" onPress={imageFromLibraryHandler}></Button> */}
+
+      {usedCamera && imageURI[0] && <Image 
         source={{
             uri: imageURI[0]
             }} 
         style={{ width:100, height:100 }} />}
+      {!usedCamera && imageURI[0] && <GallaryBox galleryItem={imageURI}/>}
     </View>
+
   )
-}
+};
