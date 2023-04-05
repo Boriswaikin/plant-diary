@@ -1,9 +1,9 @@
 import { View, Text, FlatList, Button, Pressable, StyleSheet, SafeAreaView, Image, Dimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { followUser, getDiaryQueueByUser, getProfileById, unfollowUser } from '../Firebase/helper';
-import { auth } from '../Firebase/firebase-setup';
+import { auth, firestore } from '../Firebase/firebase-setup';
 import { signOut } from 'firebase/auth';
-import { onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot, query } from 'firebase/firestore';
 import PressableButton from '../components/PressableButton';
 import Icon from '../components/Icon';
 import { checkFollowingRelation } from '../Firebase/helper';
@@ -22,8 +22,6 @@ export default function Profile({ navigation, route }) {
       (async()=>{
         if (route.name === "Third Profile") {
         setId(route.params.id);
-        let currentProfile = await getProfileById(route.params.id);
-        setProfile(currentProfile);
         setSelf(false);
         navigation.setOptions({
           title: profile && profile.name || "User Profile",
@@ -32,16 +30,23 @@ export default function Profile({ navigation, route }) {
         setFollowing(ifFollowing);
       } else {
         setId(auth.currentUser.uid);
-        let currentProfile = await getProfileById(auth.currentUser.uid);
-        setProfile(currentProfile);
       }
     }
     )();
   },[])
 
+  useEffect (()=>{
+    const unsubscribe1 = onSnapshot(doc(firestore, "profile", route.params && route.params.id || auth.currentUser.uid), (doc) => {
+      setProfile(doc.data());
+    });
+    return () => {
+      unsubscribe1();
+    };
+  },[])
+
   useEffect(()=>{
     const diaryListqueue = getDiaryQueueByUser(route.params && route.params.id || auth.currentUser.uid)
-    const unsubscribe = onSnapshot(diaryListqueue, (querySnapshot) => {
+    const unsubscribe2 = onSnapshot(diaryListqueue, (querySnapshot) => {
       if (!querySnapshot.empty) {
         let diaries = [];
         querySnapshot.docs.forEach((doc) => {
@@ -51,7 +56,7 @@ export default function Profile({ navigation, route }) {
       }
     });
     return () => {
-      unsubscribe();
+      unsubscribe2();
     };
   },[])
 
