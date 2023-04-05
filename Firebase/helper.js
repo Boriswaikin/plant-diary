@@ -565,3 +565,40 @@ export async function checkFollowingRelation(userUid) {
 		console.log(err);
 	}
 }
+
+export async function getSubscribedDiaries() {
+	try {
+		//console.log("call add like function");
+		const followingQuery = query(
+			collection(firestore, "following"),
+			where("userUid", "==", auth.currentUser.uid)
+		);
+		const followingQuerySnapshot = await getDocs(followingQuery);
+		// console.log("qs", querySnapshot);
+		const followings = [];
+		followingQuerySnapshot.forEach((docItem) => {
+			followings.push({ ...docItem.data(), id: docItem.id });
+		});
+		const followingList = await followings[0].following;
+		//console.log(likeItem);
+		const diaries = [];
+		// followingList.forEach(async (following) => {
+		// 	const diariesByUser = await getDiaryByUser(following);
+		// 	diaries = [...diaries, ...diariesByUser];
+		// 	console.log(diaries);
+		// });
+		for (const following of followingList) {
+			const diariesByUser = await getDiaryByUser(following);
+			// diaries = [...diaries, ...diariesByUser];
+			diariesByUser.forEach((diary) => diaries.push(diary));
+			//console.log(diaries);
+		}
+
+		return diaries.sort((diary1, diary2) => {
+			return diary2.date - diary1.date;
+		});
+		//console.log("call add like function");
+	} catch (err) {
+		console.log(err);
+	}
+}
