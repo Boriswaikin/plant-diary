@@ -425,6 +425,23 @@ export async function addFollowing(user, followingUser) {
 		});
 		console.log("Add following with ID: ", followingDocRef.id);
 		//console.log("call add like function");
+
+		const profileQuery = query(
+			collection(firestore, "profile"),
+			where("uid", "==", user)
+		);
+		const profileQuerySnapshot = await getDocs(profileQuery);
+		const profiles = [];
+		profileQuerySnapshot.forEach((docItem) => {
+			profiles.push({ ...docItem.data(), id: docItem.id });
+		});
+		const profile = await profiles[0];
+		const profileDocRef = doc(firestore, "profile", profile.id);
+		//console.log(profile.id);
+		updateDoc(profileDocRef, {
+			followingCount: following.following.length + 1,
+		});
+		console.log("Add followingCount for profile with ID: ", profileDocRef.id);
 	} catch (err) {
 		console.log(err);
 	}
@@ -450,6 +467,22 @@ export async function addFollower(user, userFollower) {
 			follower: [...follower.follower, userFollower],
 		});
 		console.log("Add follower with ID: ", followerDocRef.id);
+		const profileQuery = query(
+			collection(firestore, "profile"),
+			where("uid", "==", user)
+		);
+		const profileQuerySnapshot = await getDocs(profileQuery);
+		const profiles = [];
+		profileQuerySnapshot.forEach((docItem) => {
+			profiles.push({ ...docItem.data(), id: docItem.id });
+		});
+		const profile = await profiles[0];
+		//console.log(profile.id);
+		const profileDocRef = doc(firestore, "profile", profile.id);
+		updateDoc(profileDocRef, {
+			followerCount: follower.follower.length + 1,
+		});
+		console.log("Add followerCount for profile with ID: ", profileDocRef.id);
 	} catch (err) {
 		console.log(err);
 	}
