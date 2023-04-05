@@ -1,25 +1,34 @@
-import { View, Text, Button, TextInput, FlatList,StyleSheet} from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, Text, Button, TextInput, FlatList,StyleSheet,Alert} from 'react-native'
+import React, { useEffect, useState,useRef} from 'react'
 import { createDiary, deleteDiary, editDiary, getDiaryById, getProfileByUid } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
 import { ref, uploadBytesResumable } from "firebase/storage";
 import ImageManager from '../components/ImageManager';
 import { storage } from '../Firebase/firebase-setup';
+import GallaryBox from '../components/GallaryBox';
+import PressableButton from '../components/PressableButton';
+import Color from '../components/Color';
+
 
 export default function Create({ navigation, route }) {
-  // const [photos, setPhotos] = useState(['url1','url2']);
-  const [photosUri,setPhotosUri]= useState([]);
+  const [photos,setPhotos]= useState([]);
   const [species, setSpecies] = useState("");
   const [location, setLocation] = useState("");
   const [story, setStory] = useState("");
   const [date, setDate] = useState([]);
   const [edit, setEdit] = useState(false);
+  const [removedUri, setRemovedUri] = useState(false);
+  const imageUriHandler=(uri)=>setPhotos(uri);
+
+  function resetRemovedUri(){
+    setRemovedUri(false); 
+  }
 
   useEffect(()=>{
     if (route.params  && route.params.diary) {
       setEdit(true);
       const currentDiary = route.params.diary;
-      setPhotosUri(currentDiary.photos);
+      setPhotos(currentDiary.photos);
       setLocation(currentDiary.location);
       setStory(currentDiary.description);
       setSpecies(currentDiary.species);
@@ -46,26 +55,23 @@ export default function Create({ navigation, route }) {
 
     let imageUri = [];
     let imageAll = [];
-    // console.log(uri);
     if(uri)
       try {
         imageUri = uri.map((item)=>{
-          return  fetchImage(item);
+          return fetchImage(item);
       })
       imageAll= await Promise.all(imageUri);
       }
       catch (err){
         console.log("image fetch error",err);
       }
-    // console.log(imageAll);
     // createDiary(photos, species, location, story);
     console.log("A diary created");
     try {
       const userProfile = await getProfileByUid(auth.currentUser.uid);
       const userName = userProfile.name;
       await createDiary({		
-        // photos: photos,
-        photosUri:imageAll,
+        photos:imageAll,
         description: story,
         species: species,
         location: location,
@@ -92,7 +98,7 @@ export default function Create({ navigation, route }) {
 
   function cleanup() {
     // setPhotos(['url1', 'url2']);
-    setPhotosUri([]);
+    setPhotos([]);
     setSpecies("");
     setLocation("");
     setDate("");
@@ -105,8 +111,7 @@ export default function Create({ navigation, route }) {
 
     try {
       await editDiary(route.params.diary.diaryId, {		
-        // photos: photos,
-        photosUri:photosUri,
+        photos:photos,
         description: story,
         species: species,
         location: location,
@@ -131,17 +136,14 @@ export default function Create({ navigation, route }) {
   }
 
 
-  const imageUriHandler=(uri)=>{
-    setPhotosUri(uri);
-    console.log(uri);
-    }
     
   return (
     <View>
       <View>
         <Text>Add Photos</Text>
+        {edit ? (<GallaryBox galleryItem={route.params.uri}/>):<></>}
         <ImageManager imageUriHandler={(uri)=>
-          imageUriHandler(uri)}/>
+          imageUriHandler(uri)} removedUri={removedUri} resetRemovedUri={resetRemovedUri}/>
         {/* <FlatList 
         data={photos}
         renderItem={({item})=>{
@@ -150,30 +152,63 @@ export default function Create({ navigation, route }) {
           )
         }}
         /> */}
-        <Button title='+' />
-        <Text>Species</Text>
-        <TextInput style = {style.textInput} placeholder='Select species' value={species} onChangeText={setSpecies} />
-        <Text>Location</Text>
-        <TextInput style = {style.textInput} placeholder='Detecting location' value={location} onChangeText={setLocation} />
-        <Text>Story</Text>
-        <TextInput style = {style.textInput} placeholder='Tell us your story' value={story} onChangeText={setStory} />
-      </View>
-      <View>
-        {edit ? 
-          <Button title='Delete' onPress={()=>pressDeleteDiary()} /> 
-          : <Button title='Cancel' onPress={()=>navigation.goBack()} />
-        }
-        {edit ? 
-          <Button title='Confirm' onPress={()=>pressUpdateDiary()} /> 
-          : <Button title='Create' onPress={()=>{
-            pressCreateDiary(photosUri);
+        {/* <Button title='+' onPress={showActionSheet}/> */}
+      
      
-           }} />
-        }
+        <Text>Species</Text>
+        <TextInput style = {styles.textInput} placeholder='Select species' value={species} onChangeText={setSpecies} />
+        <Text>Location</Text>
+        <TextInput style = {styles.textInput} placeholder='Detecting location' value={location} onChangeText={setLocation} />
+        <Text>Story</Text>
+        <TextInput style = {styles.textInput} placeholder='Tell us your story' value={story} onChangeText={setStory} />
       </View>
-    </View>
+      <View style={styles.fixToText}>
+        {edit ? 
+          <PressableButton
+          buttonPressed={() => {
+            pressDeleteDiary();
+          }}>
+          <Text style={{ color: Color.headerTintColor }}>Delete</Text>
+          </PressableButton>
+          : 
+          <View style={{width:80,height:30,padding:5,borderRadius:6,backgroundColor:"gray"}}>
+          <PressableButton
+          buttonPressed={() => {
+            navigation.navigate('Plant Diary', {
+              screen: 'Home'})
+              setRemovedUri(true);
+          }}>
+          <Text style={{ color: Color.headerTintColor,fontSize:16 }}>Cancel</Text>
+          </PressableButton>
+          </View>} 
+        {edit ? 
+            <View style={{padding:10,borderRadius:5,backgroundColor:"red"}}>
+             <PressableButton
+             buttonPressed={() => {
+               pressUpdateDiary();
+             }}>
+             <Text style={{ color: Color.headerTintColor }}>Confirm</Text>
+             </PressableButton>  
+             </View>
+          : 
+          <View style={{width:80,height:30,padding:5,borderRadius:6,backgroundColor:"gray"}}>
+          <PressableButton
+          buttonPressed={() => {
+            pressCreateDiary(photos);
+          }}>
+          <Text style={{ color: Color.headerTintColor ,fontSize:16}}>Create</Text>
+          </PressableButton>
+          </View>} 
+        </View>
+      </View>
   )
 }
-const style = StyleSheet.create({
-  textInput:{height:40}
+const styles = StyleSheet.create({
+  textInput:{height:40},
+  fixToText: {
+    marginLeft: 100,
+    marginRight: 100,
+    justifyContent: "space-between",
+    flexDirection: "row",
+  },
 })
