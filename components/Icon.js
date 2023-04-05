@@ -9,7 +9,9 @@ const Icon = (props) => {
           width: props.size,
           height: props.size,
           borderRadius: props.size,
-          marginTop: props.marginTop,
+          marginTop: 10,
+          marginLeft: 10,
+          marginBottom:10,
         }}
         source={{ uri: props.source }}
       ></Image>
