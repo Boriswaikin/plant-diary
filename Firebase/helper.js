@@ -544,3 +544,24 @@ export async function removeFollower(user, userFollower) {
 		console.log(err);
 	}
 }
+export async function checkFollowingRelation(userUid) {
+	try {
+		//console.log("call add like function");
+		const q = query(
+			collection(firestore, "following"),
+			where("userUid", "==", auth.currentUser.uid)
+		);
+		const querySnapshot = await getDocs(q);
+		// console.log("qs", querySnapshot);
+		const followings = [];
+		querySnapshot.forEach((docItem) => {
+			followings.push({ ...docItem.data(), id: docItem.id });
+		});
+		const followingList = await followings[0].following;
+		//console.log(userList);
+		// console.log(followingList);
+		return followingList.includes(userUid);
+	} catch (err) {
+		console.log(err);
+	}
+}
