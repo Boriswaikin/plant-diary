@@ -4,12 +4,27 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Profile from './Profile';
 import Create from './Create';
 import TopTab from './TopTab';
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const Tab = createBottomTabNavigator();
 
 export default function BottomTab() {
   return (
-    <Tab.Navigator screenOptions={{headerShown: false}}>
+    <Tab.Navigator screenOptions={({ route })=> ({headerShown: false,
+      tabBarShowLabel: false,
+      tabBarIcon: ({ color, focused }) => {
+        var iconName;
+        if (route.name === "Home") {
+          iconName = focused ? "home-sharp" : "home-outline";
+        }
+        if (route.name === "Create") {
+          iconName = focused ? "add-circle-sharp" : "add-circle-outline";
+        }
+        if (route.name === "Profile") {
+          iconName = focused ? "person-sharp" : "person-outline";
+        }
+        return <Ionicons name={iconName} size={22} color={color} />;
+      },})}>
       <Tab.Screen name="Home" component={TopTab} />
       <Tab.Screen name="Create" component={Create} />
       <Tab.Screen name="Profile" component={Profile} />
