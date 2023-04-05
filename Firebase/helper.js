@@ -148,10 +148,10 @@ export async function createProfile(user) {
 			name: user.name,
 			email: user.email,
 			achievement: ["very", "good"],
-			followerCount: 32,
-			followingCount: 48,
+			followerCount: 0,
+			followingCount: 0,
 			headPhoto: "https://ui-avatars.com/api/?name=XX",
-			postCount: 10,
+			postCount: 0,
 			favouritePlant: "default",
 		});
 		await setDoc(doc(firestore, "follower", auth.currentUser.uid), {
