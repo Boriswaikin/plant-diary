@@ -98,8 +98,8 @@ export default function Profile({ navigation, route }) {
         renderItem={({item})=>{
           return (
             <View>
-            <Text>Item Photo: {item.photos[0]}</Text>
-            <Text>Item ID: {item.diaryId}</Text>
+            {/* <Text>Item Photo: {item.photos[0]}</Text> */}
+            {/* <Text>Item ID: {item.diaryId}</Text> */}
             <Text>Item Species: {item.species}</Text>
             {self && <Button title='edit' onPress={()=>navigation.navigate('Edit Diary',{diary:item})}/>}
             </View>
