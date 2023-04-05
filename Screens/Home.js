@@ -131,9 +131,9 @@ export default function Home({ navigation, route }) {
               // console.log(item.imageUri);
             return (
               <View>
-                <Pressable onPress={()=>navigation.navigate('Gallery',{item:item})} >
+                <Pressable onPress={()=>navigation.navigate('Gallery',{item:item,imageUri:item.imageUri})} >
                 {/* <DiaryItem item={item} /> */}
-                 <DiaryCard itemData={item.imageUri}/>
+                {item.imageUri && <DiaryCard itemData={item.imageUri}/>}
                 </Pressable>
               </View>
             )
