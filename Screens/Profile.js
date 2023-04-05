@@ -1,11 +1,12 @@
 import { View, Text, FlatList, Button, Pressable, StyleSheet, SafeAreaView, Image, Dimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { getDiaryQueueByUser, getProfileByUid } from '../Firebase/helper';
+import { followUser, getDiaryQueueByUser, getProfileById, unfollowUser } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
 import { signOut } from 'firebase/auth';
 import { onSnapshot } from 'firebase/firestore';
 import PressableButton from '../components/PressableButton';
 import Icon from '../components/Icon';
+import { checkFollowingRelation } from '../Firebase/helper';
 
 const w = Dimensions.get('window').width;
 
@@ -21,15 +22,17 @@ export default function Profile({ navigation, route }) {
       (async()=>{
         if (route.name === "Third Profile") {
         setId(route.params.id);
-        let currentProfile = await getProfileByUid(route.params.id);
+        let currentProfile = await getProfileById(route.params.id);
         setProfile(currentProfile);
         setSelf(false);
         navigation.setOptions({
           title: profile && profile.name || "User Profile",
         })
+        const ifFollowing = await checkFollowingRelation(route.params.id);
+        setFollowing(ifFollowing);
       } else {
         setId(auth.currentUser.uid);
-        let currentProfile = await getProfileByUid(auth.currentUser.uid);
+        let currentProfile = await getProfileById(auth.currentUser.uid);
         setProfile(currentProfile);
       }
     }
@@ -39,9 +42,7 @@ export default function Profile({ navigation, route }) {
   useEffect(()=>{
     const diaryListqueue = getDiaryQueueByUser(route.params && route.params.id || auth.currentUser.uid)
     const unsubscribe = onSnapshot(diaryListqueue, (querySnapshot) => {
-      if (querySnapshot.empty) {
-        setDiaries([]);
-      } else {
+      if (!querySnapshot.empty) {
         let diaries = [];
         querySnapshot.docs.forEach((doc) => {
           diaries.push({ ...doc.data(), diaryId: doc.id });
@@ -54,14 +55,16 @@ export default function Profile({ navigation, route }) {
     };
   },[])
 
-  function pressFollow() {
+  async function pressFollow() {
     // followUser(selfId,thirdId);
+    await followUser(id);
     setFollowing(true);
     console.log('Follow user');
   }
 
-  function pressUnfollow() {
+  async function pressUnfollow() {
     // unfollowUser(selfId,thirdId);
+    await unfollowUser(id);
     setFollowing(false);
     console.log('Unfollow user');
   }
@@ -76,7 +79,7 @@ export default function Profile({ navigation, route }) {
       <View>
         <View style={styles.profileContainer}>
           {/* <Text>User head photo: {profile.headPhoto}</Text> */}
-          <Icon width={100} height={100} borderRadius={100} source={"https://ui-avatars.com/api/?name=" + profile.name} />
+          <Icon width={100} height={100} borderRadius={100} source={profile.headPhoto} />
           <View style={styles.profileInfo}>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>{profile.name}</Text>
@@ -116,10 +119,10 @@ export default function Profile({ navigation, route }) {
         </PressableButton>
       </View>
       }
-      {diaries&&
+      
       <View style={styles.gridContainer}>
         {/* <Text>Diary Grid</Text> */}
-        <FlatList 
+        {diaries&&  <FlatList 
         data={diaries}
         numColumns={3}
         ItemSeparatorComponent={() => <View style={{height: 3}} />}
@@ -132,8 +135,8 @@ export default function Profile({ navigation, route }) {
           )
         }}
          />
-      </View>
       }
+      </View>
       <View style={styles.buttonContainer}>
       {self && 
       <PressableButton customizedStyle={styles.button} buttonPressed={()=>signOut(auth)}>

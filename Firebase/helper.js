@@ -1,6 +1,7 @@
 import {
 	collection,
 	addDoc,
+	setDoc,
 	deleteDoc,
 	doc,
 	updateDoc,
@@ -12,6 +13,7 @@ import {
 	orderBy,
 	arrayUnion,
 	arrayRemove,
+	increment,
 } from "firebase/firestore";
 import { firestore } from "./firebase-setup";
 import { auth } from "./firebase-setup";
@@ -141,7 +143,7 @@ export async function getDiaryBySpecies(species) {
 }
 export async function createProfile(user) {
 	try {
-		const docRef1 = await addDoc(doc(firestore, "profile", auth.currentUser.uid), {
+		const docRef1 = await setDoc(doc(firestore, "profile", auth.currentUser.uid), {
 			uid: auth.currentUser.uid,
 			name: user.name,
 			email: user.email,
@@ -152,19 +154,19 @@ export async function createProfile(user) {
 			postCount: 10,
 			favouritePlant: "default",
 		});
-		await addDoc(doc(firestore, "follower", auth.currentUser.uid), {
+		await setDoc(doc(firestore, "follower", auth.currentUser.uid), {
 			uid: auth.currentUser.uid,
 			follower: [],
 		});
-		await addDoc(doc(firestore, "following", auth.currentUser.uid), {
+		await setDoc(doc(firestore, "following", auth.currentUser.uid), {
 			uid: auth.currentUser.uid,
 			following: [],
 		});
-		await addDoc(doc(firestore, "like", auth.currentUser.uid), {
+		await setDoc(doc(firestore, "like", auth.currentUser.uid), {
 			uid: auth.currentUser.uid,
 			likeDiaries: [],
 		});
-		console.log("Profile written with ID: ", docRef1.id);
+		// console.log("Profile written with ID: ", docRef1.id);
 	} catch (err) {
 		console.log(err);
 	}
@@ -174,7 +176,6 @@ export async function editProfile(id, updateField) {
 	try {
 		const docRef = doc(firestore, "profile", id);
 		await updateDoc(docRef, updateField);
-		console.log("Document updated with ID: ", id);
 	} catch (err) {
 		console.log(err);
 	}
@@ -198,9 +199,20 @@ export async function getFollowerByUser(uid) {
 	const docRef = doc(firestore, "follower", uid);
 	const docSnap = await getDoc(docRef);
 	if (docSnap.exists()) {
-		return docSnap.data();
+		const followerList = docSnap.data().follower;
+		if (followerList.length !== 0) {
+			const q = query(collection(firestore, "profile"), where('uid', 'in', followerList));
+			const snapshot = await getDocs(q);
+			let follower = [];
+			snapshot.forEach((item)=>{
+				follower.push(item.data());
+			})
+			return follower;
+		}
+		return [];
 	} else {
 		console.log("user does not exist");
+		return [];
 	}
 }
 
@@ -208,9 +220,20 @@ export async function getFollowingByUser(uid) {
 	const docRef = doc(firestore, "following", uid);
 	const docSnap = await getDoc(docRef);
 	if (docSnap.exists()) {
-		return docSnap.data();
+		const followingList = docSnap.data().following;
+		if (followingList.length !== 0 ) {
+			const q = query(collection(firestore, "profile"), where('uid', 'in', followingList));
+			const snapshot = await getDocs(q);
+			let following = [];
+			snapshot.forEach((item)=>{
+				following.push(item.data());
+			})
+			return following;
+		}
+		return [];
 	} else {
 		console.log("user does not exist");
+		return [];
 	}
 }
 

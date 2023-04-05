@@ -12,14 +12,18 @@ export default function EditProfile({ navigation, route }) {
   const [head, setHead] = useState(route.params.profile.headPhoto);
 
   async function pressEditProfile() {
-    await editProfile(route.params.profile.id, {name:newname,favouritePlant:favplant, headPhoto:head});
+    try {
+    await editProfile(route.params.profile.uid, {name:newname,favouritePlant:favplant, headPhoto:head});
     console.log("profile updated");
     navigation.navigate('Profile');
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <Icon width={100} height={100} borderRadius={100} source={"https://ui-avatars.com/api/?name=" + route.params.profile.name} />
+      <Icon width={100} height={100} borderRadius={100} source={route.params.profile.headPhoto} />
       <PressableButton customizedStyle={styles.editButton}>
         <Text style={styles.editText}>Edit Head Photo</Text>
       </PressableButton>

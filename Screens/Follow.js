@@ -1,68 +1,63 @@
 import { View, Text, Button, FlatList, StyleSheet, SafeAreaView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import UserList from '../components/UserList';
-import { getFollowerByUser, getFollowingByUser } from '../Firebase/helper';
+import { followUser, getFollowerByUser, getFollowingByUser, unfollowUser } from '../Firebase/helper';
 import Icon from '../components/Icon';
 import PressableButton from '../components/PressableButton';
 import { auth } from '../Firebase/firebase-setup';
 
 export default function Follow({ navigation, route }) {
 
-  // const [users, setUsers] = useState([{uid:1314, name:'hana', headPhoto:'head-url-1'},{uid:1315, name:'john', headPhoto:'head-url-2'},{uid:1316, name:'peter', headPhoto:'head-url-3'}]);
-  const [following, setFollowing] = useState([{uid:1314, name:'hana', headPhoto:'head-url-1'},{uid:1315, name:'john', headPhoto:'head-url-2'},{uid:1316, name:'peter', headPhoto:'head-url-3'}]);
-  const [follower, setFollower] = useState([{uid:1317, name:'zoo', headPhoto:'head-url-1'},{uid:1318, name:'ham', headPhoto:'head-url-2'},{uid:1316, name:'peter', headPhoto:'head-url-3'}]);
-  const [localFollowing, setLocalFollowing] = useState([{uid:1314, name:'hana', headPhoto:'head-url-1'},{uid:1315, name:'john', headPhoto:'head-url-2'},{uid:1316, name:'peter', headPhoto:'head-url-3'}]);
+  const [following, setFollowing] = useState(null);
+  const [follower, setFollower] = useState(null);
+  const [localFollowing, setLocalFollowing] = useState(null);
   const [followState, setFollowState] = useState(route.params.followState);
 
-  // useEffect(()=>{
-  //   (async()=>{
+  useEffect(()=>{
+    (async()=>{
+      if (followState) {
+      const followerList = await getFollowerByUser(route.params.id);
+      setFollower((prev)=>followerList);
+      } else {
+      const followingList = await getFollowingByUser(route.params.id);
+      setFollowing((prev)=>followingList);
+      }
+      const localFollowingList = await getFollowingByUser(auth.currentUser.uid);
+      setLocalFollowing((prev)=>localFollowingList);
 
-  //     console.log("get follower",route.params.id);
-  //     const followerList = await getFollowerByUser(route.params.id);
-  //     setUsers((prev)=>followerList);
+    })();
+  },[]);
 
-  //     console.log("get following",route.params.id);
-  //     const followingList = await getFollowingByUser(route.params.id);
-  //     setUsers((prev)=>followingList);
-
-  //     console.log("get local following",auth.currentUser.uid);
-  //     const localFollowingList = await getFollowingByUser(auth.currentUser.uid);
-  //     setUsers((prev)=>localFollowingList);
-
-  //   })();
-  // },[]);
-
-  function pressFollow(id) {
-    // followUser(id);
-    console.log('Follow user', id);
-    // update id user relationship 
+  async function pressFollow(item) {
+    console.log('Follow user', item.uid);
+    await followUser(item.uid);
+    setLocalFollowing((prev)=>[...prev, item]);
   }
 
-  function pressUnfollow(id) {
-    // unfollowUser(id);
-    // setFollowing(false);
+  async function pressUnfollow(id) {
     console.log('Unfollow user', id);
-    // update id user relationship 
+    await unfollowUser(id);
+    setLocalFollowing((prev)=>prev.filter(item => item.uid !== id));
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
+      {((followState&&follower)||(!followState&&following))&&<FlatList
       data={followState?follower:following}
       renderItem={({item})=>{
         return (
           <View style={styles.userContainer}>
             <View style={styles.headName}>
               <View style={styles.icon}>
-                <Icon width={65} height={65} borderRadius={65} source={"https://ui-avatars.com/api/?name=" + item.headPhoto}/>
+                <Icon width={65} height={65} borderRadius={65} source={item.headPhoto}/>
               </View>
               <View style={styles.nameInfo}>
                 <Text style={styles.name}>{item.name}</Text>
-                <Text style={styles.mediumFont}>@{item.uid}</Text>
+                <Text style={styles.mediumFont}>@{item.email}</Text>
               </View>
             </View>
-            {!localFollowing.some(person => person.uid === item.uid) 
-            ?<PressableButton customizedStyle={styles.editToggleButton} buttonPressed={()=>pressFollow(item.uid)}>
+            {localFollowing&&!localFollowing.some(person => person.uid === item.uid) 
+            ?<PressableButton customizedStyle={styles.editToggleButton} buttonPressed={()=>pressFollow(item)}>
               <Text style={styles.editToggleText}>Follow</Text>
             </PressableButton>
             :<PressableButton customizedStyle={styles.editButton} buttonPressed={()=>pressUnfollow(item.uid)}>
@@ -72,7 +67,7 @@ export default function Follow({ navigation, route }) {
           </View>
         )
       }}
-      />
+      />}
     </SafeAreaView>
   )
 }
