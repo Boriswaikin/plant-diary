@@ -361,48 +361,13 @@ export async function checkLike(diaryId) {
 	}
 }
 export async function followUser(userUid) {
-	// try {
-	// 	//console.log("call add like function");
-	// 	const followingQuery = query(
-	// 		collection(firestore, "following"),
-	// 		where("userUid", "==", auth.currentUser.uid)
-	// 	);
-	// 	const followingQuerySnapshot = await getDocs(followingQuery);
-	// 	// console.log("qs", querySnapshot);
-	// 	const followings = [];
-	// 	followingQuerySnapshot.forEach((docItem) => {
-	// 		followings.push({ ...docItem.data(), id: docItem.id });
-	// 	});
-	// 	const following = await followings[0];
-	// 	//console.log(likeItem);
-	// 	const followingDocRef = doc(firestore, "following", following.id);
-	// 	updateDoc(followingDocRef, {
-	// 		following: [...following.following, userUid],
-	// 	});
-	// 	console.log("Add following with ID: ", followingDocRef.id);
-	// 	//console.log("call add like function");
-	// 	const followerQuery = query(
-	// 		collection(firestore, "follower"),
-	// 		where("userUid", "==", userUid)
-	// 	);
-	// 	const followerQuerySnapshot = await getDocs(followerQuery);
-	// 	// console.log("qs", querySnapshot);
-	// 	const followers = [];
-	// 	followerQuerySnapshot.forEach((docItem) => {
-	// 		followers.push({ ...docItem.data(), id: docItem.id });
-	// 	});
-	// 	const follower = await followers[0];
-	// 	//console.log(likeItem);
-	// 	const followerDocRef = doc(firestore, "follower", follower.id);
-	// 	updateDoc(followerDocRef, {
-	// 		follower: [...follower.follower, auth.currentUser.uid],
-	// 	});
-	// 	console.log("Add follower with ID: ", followerDocRef.id);
-	// } catch (err) {
-	// 	console.log(err);
-	// }
 	await addFollowing(auth.currentUser.uid, userUid);
 	await addFollower(userUid, auth.currentUser.uid);
+}
+
+export async function unfollowUser(userUid) {
+	await removeFollowing(auth.currentUser.uid, userUid);
+	await removeFollower(userUid, auth.currentUser.uid);
 }
 export async function addFollowing(user, followingUser) {
 	try {
@@ -447,6 +412,53 @@ export async function addFollowing(user, followingUser) {
 	}
 }
 
+export async function removeFollowing(user, followingUser) {
+	try {
+		//console.log("call add like function");
+		const followingQuery = query(
+			collection(firestore, "following"),
+			where("userUid", "==", user)
+		);
+		const followingQuerySnapshot = await getDocs(followingQuery);
+		// console.log("qs", querySnapshot);
+		const followings = [];
+		followingQuerySnapshot.forEach((docItem) => {
+			followings.push({ ...docItem.data(), id: docItem.id });
+		});
+		const followingList = await followings[0].following;
+		//console.log(likeItem);
+		const updatedfollowing = followingList.filter(
+			(following) => following !== followingUser
+		);
+		const followingDocRef = doc(firestore, "following", followings[0].id);
+
+		updateDoc(followingDocRef, {
+			following: updatedfollowing,
+		});
+		console.log("Remove following with ID: ", followingDocRef.id);
+		//console.log("call add like function");
+
+		const profileQuery = query(
+			collection(firestore, "profile"),
+			where("uid", "==", user)
+		);
+		const profileQuerySnapshot = await getDocs(profileQuery);
+		const profiles = [];
+		profileQuerySnapshot.forEach((docItem) => {
+			profiles.push({ ...docItem.data(), id: docItem.id });
+		});
+		const profile = await profiles[0];
+		const profileDocRef = doc(firestore, "profile", profile.id);
+		//console.log(profile.id);
+		updateDoc(profileDocRef, {
+			followingCount: followingList.length - 1,
+		});
+		console.log("Less followingCount for profile with ID: ", profileDocRef.id);
+	} catch (err) {
+		console.log(err);
+	}
+}
+
 export async function addFollower(user, userFollower) {
 	try {
 		//console.log("call add like function");
@@ -483,6 +495,51 @@ export async function addFollower(user, userFollower) {
 			followerCount: follower.follower.length + 1,
 		});
 		console.log("Add followerCount for profile with ID: ", profileDocRef.id);
+	} catch (err) {
+		console.log(err);
+	}
+}
+
+export async function removeFollower(user, userFollower) {
+	try {
+		//console.log("call add like function");
+		const followerQuery = query(
+			collection(firestore, "follower"),
+			where("userUid", "==", user)
+		);
+		const followerQuerySnapshot = await getDocs(followerQuery);
+		// console.log("qs", querySnapshot);
+		const followers = [];
+		followerQuerySnapshot.forEach((docItem) => {
+			followers.push({ ...docItem.data(), id: docItem.id });
+		});
+		const followerList = await followers[0].follower;
+		//console.log(likeItem);
+		const updatedfollower = followerList.filter(
+			(follower) => follower !== userFollower
+		);
+		//console.log(likeItem);
+		const followerDocRef = doc(firestore, "follower", followers[0].id);
+		updateDoc(followerDocRef, {
+			follower: updatedfollower,
+		});
+		console.log("Remove follower with ID: ", followerDocRef.id);
+		const profileQuery = query(
+			collection(firestore, "profile"),
+			where("uid", "==", user)
+		);
+		const profileQuerySnapshot = await getDocs(profileQuery);
+		const profiles = [];
+		profileQuerySnapshot.forEach((docItem) => {
+			profiles.push({ ...docItem.data(), id: docItem.id });
+		});
+		const profile = await profiles[0];
+		//console.log(profile.id);
+		const profileDocRef = doc(firestore, "profile", profile.id);
+		updateDoc(profileDocRef, {
+			followerCount: followerList.length - 1,
+		});
+		console.log("Less followerCount for profile with ID: ", profileDocRef.id);
 	} catch (err) {
 		console.log(err);
 	}
