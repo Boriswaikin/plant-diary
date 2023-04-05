@@ -1,9 +1,10 @@
-import { View, Text, Button, FlatList, StyleSheet } from 'react-native'
+import { View, Text, Button, FlatList, StyleSheet, SafeAreaView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import UserList from '../components/UserList';
 import { getFollowerByUser, getFollowingByUser } from '../Firebase/helper';
 import Icon from '../components/Icon';
 import PressableButton from '../components/PressableButton';
+import { auth } from '../Firebase/firebase-setup';
 
 export default function Follow({ navigation, route }) {
 
@@ -15,33 +16,21 @@ export default function Follow({ navigation, route }) {
 
   // useEffect(()=>{
   //   (async()=>{
-  //     if (followState) {
+
   //     console.log("get follower",route.params.id);
-  //     let userList = await getFollowerByUser(route.params.id);
-  //     setUsers((prev)=>userList);
-  //     // console.log(route.params.id, users);
-  //   } else {
+  //     const followerList = await getFollowerByUser(route.params.id);
+  //     setUsers((prev)=>followerList);
+
   //     console.log("get following",route.params.id);
-  //     let userList = await getFollowingByUser(route.params.id);
-  //     setUsers((prev)=>userList);
-  //     // console.log(route.params.id, users);
-  //   }
+  //     const followingList = await getFollowingByUser(route.params.id);
+  //     setUsers((prev)=>followingList);
+
+  //     console.log("get local following",auth.currentUser.uid);
+  //     const localFollowingList = await getFollowingByUser(auth.currentUser.uid);
+  //     setUsers((prev)=>localFollowingList);
+
   //   })();
   // },[]);
-
-  function changeToFollower() {
-    // let userList = getFollower(route.params.id);
-    // setUsers(userList);
-    console.log("change to follower list");
-    setFollowState(true);
-  }
-
-  function changeToFollowing() {
-    // let userList = getFollowing(route.params.id);
-    // setUsers(userList);
-    console.log("change to following list");
-    setFollowState(false);
-  }
 
   function pressFollow(id) {
     // followUser(id);
@@ -57,7 +46,7 @@ export default function Follow({ navigation, route }) {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <FlatList
       data={followState?follower:following}
       renderItem={({item})=>{
@@ -84,7 +73,7 @@ export default function Follow({ navigation, route }) {
         )
       }}
       />
-    </View>
+    </SafeAreaView>
   )
 }
 
