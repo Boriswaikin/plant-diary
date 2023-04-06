@@ -3,6 +3,7 @@ import React, { useRef, useState } from "react";
 
 
 function Gallary({ postImage }) {
+  
   const { width } = useWindowDimensions();
   const postWidth = width;
   return (
@@ -21,7 +22,7 @@ export default function GallaryBox({galleryItem}) {
     const numberOfPost = item.viewableItems[0].index;
     setCurrentImage(numberOfPost);
   });
-  
+  console.log(galleryItem);
   const tempData = galleryItem.map((item, index) => ({ uri: item, id: `${index + 1}` }))
   return (
     <View>
