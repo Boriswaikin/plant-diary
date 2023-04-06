@@ -1,17 +1,34 @@
 import { View, FlatList, Image, useWindowDimensions } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { getDownloadURL, ref } from "firebase/storage";
+import { storage } from "../Firebase/firebase-setup";
 
 
-function Gallary({ postImage }) {
+function GallaryImage({ postImage }) {
   
   const { width } = useWindowDimensions();
   const postWidth = width;
+  const [url, setUrl] = useState(null);
+
+  useEffect(()=>{
+    async function getImageUrl() {
+      try {
+      const reference = ref(storage, postImage);
+      const uri = await getDownloadURL(reference);
+      setUrl(uri)
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    getImageUrl();
+  },[])
+
   return (
     <View>
-      <Image
-        source={{ uri: postImage }}
+      {url&&<Image
+        source={{ uri: url }}
         style={{ width: postWidth, height: postWidth, marginTop:20, }}
-      />
+      />}
     </View>
   );
 }
@@ -19,7 +36,7 @@ function Gallary({ postImage }) {
 export default function GallaryBox({galleryItem}) {
   const [currentImage, setCurrentImage] = useState(0);
   const itemChanged = useRef((item) => {
-    const numberOfPost = item.viewableItems[0].index;
+    const numberOfPost = item.viewableItems?item.viewableItems[0].index:0;
     setCurrentImage(numberOfPost);
   });
   const tempData = galleryItem.map((item, index) => ({ uri: item, id: `${index + 1}` }))
@@ -32,7 +49,7 @@ export default function GallaryBox({galleryItem}) {
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
-          return <Gallary postImage={item.uri}></Gallary>;
+          return <GallaryImage postImage={item.uri}></GallaryImage>;
         }}
         onViewableItemsChanged={itemChanged.current}
       />

@@ -23,7 +23,7 @@ export default function EditProfile({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Icon width={100} height={100} borderRadius={100} source={route.params.profile.headPhoto} />
+      <Icon size={100} source={route.params.profile.headPhoto} />
       <PressableButton customizedStyle={styles.editButton}>
         <Text style={styles.editText}>Edit Head Photo</Text>
       </PressableButton>

@@ -89,19 +89,7 @@ export default function Create({ navigation, route }) {
       console.log(err);
     }
     cleanup();
-    naviagate(imageAll);
-  }
-
-  function naviagate(uri){
-    navigation.navigate('Plant Diary', {
-      screen: 'Home',
-      params: {
-        screen: 'Recommend',
-        params: {
-          imageUri: uri,
-        },
-        },
-      },)
+    navigation.navigate("Home");
   }
 
   function cleanup() {
@@ -109,7 +97,7 @@ export default function Create({ navigation, route }) {
     setPhotos([]);
     setSpecies("");
     setLocation("");
-    setDate("");
+    setDate([]);
     setStory("");
   }
 

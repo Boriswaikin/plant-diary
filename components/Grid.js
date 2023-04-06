@@ -1,26 +1,27 @@
 import { View, FlatList, StyleSheet, Image } from "react-native";
 import React from "react";
+import StorageImage from "./StorageImage";
 
-const Grid =({itemData}) => {
+const Grid =({items}) => {
   
  
   // const numberOfColumns = 2;
   // console.log(numberOfColumns);
   
-  const tempData = itemData.length>1?itemData.slice(1,4):null;
+  const tempData = items.length>1?items.slice(1,4):null;
   const numberOfColumns = tempData?.length>1?2:1;
+  // console.log(tempData);
   return (
     <View style={styles.container}>
-      {<FlatList
+      {tempData&&<FlatList
         data={tempData}
         key={tempData?.length}
         numColumns={tempData?.length>1?2:1}
         renderItem={({ item }) => {
-          return <View style=
-          {styles.item}>
-            <Image style={numberOfColumns===1?styles.imageIcon1:styles.imageIcon2}
-              source={{uri:item}}>
-              </Image></View>;
+          return (
+          <View style={styles.item}>
+            <StorageImage size={numberOfColumns===1?130:65} source={ item } />
+          </View>)
         }}
       />}
     </View>

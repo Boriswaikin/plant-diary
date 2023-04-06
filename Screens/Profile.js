@@ -7,6 +7,7 @@ import { doc, onSnapshot, query } from 'firebase/firestore';
 import PressableButton from '../components/PressableButton';
 import Icon from '../components/Icon';
 import { checkFollowingRelation } from '../Firebase/helper';
+import StorageImage from '../components/StorageImage';
 
 const w = Dimensions.get('window').width;
 
@@ -84,7 +85,7 @@ export default function Profile({ navigation, route }) {
       <View>
         <View style={styles.profileContainer}>
           {/* <Text>User head photo: {profile.headPhoto}</Text> */}
-          <Icon width={100} height={100} borderRadius={100} source={profile.headPhoto} />
+          <Icon size={100} source={profile.headPhoto} />
           <View style={styles.profileInfo}>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>{profile.name}</Text>
@@ -107,7 +108,7 @@ export default function Profile({ navigation, route }) {
           renderItem={({item})=>{
             return (
               <View style={styles.icon}>
-              <Icon width={80} height={80} borderRadius={80} source={"https://ui-avatars.com/api/?name=" + item}/>
+              <Icon size={80} source={"https://ui-avatars.com/api/?name=" + item}/>
               </View>
             )
           }}
@@ -135,7 +136,8 @@ export default function Profile({ navigation, route }) {
         renderItem={({item})=>{
           return (
             <PressableButton buttonPressed={()=>{edit?navigation.navigate('Edit Diary',{diary:item}):navigation.navigate('Gallery',{item:item})}}>
-              <Image source={{uri: "https://ui-avatars.com/api/?name=" + item.species}} style={styles.gridImage} resizeMode='cover' />
+              {/* <Image source={{uri: "https://ui-avatars.com/api/?name=" + item.species}} style={styles.gridImage} resizeMode='cover' /> */}
+              <StorageImage source={item.photos[0]} size={(w - 60) / 3} />
             </PressableButton>
           )
         }}
