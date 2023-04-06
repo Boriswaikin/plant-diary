@@ -4,11 +4,11 @@ import * as ImagePicker from "expo-image-picker"
 import PressableButton from './PressableButton';
 
 
-export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUri}) {
+export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUri,setPhotoNew}) {
     const [permissionInfo, requestPermission] = ImagePicker.useCameraPermissions();
     const [imageURI, setImageURI] = useState([]);
     const [usedCamera,setUsedCamera]=useState(false);
-  
+
     useEffect(()=>{setImageURI([])},[removedUri])
 
     async function verifyPermission() {
@@ -37,6 +37,7 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
             uriArray.push(result.assets[0].uri);
             setImageURI(uriArray);
             imageUriHandler(uriArray);
+            setPhotoNew(uriArray);
             setUsedCamera(true);
         }
          } catch (err) {
@@ -61,6 +62,7 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
         if (!result.canceled) {
             setImageURI(arr);
             imageUriHandler(arr);
+            setPhotoNew(arr);
             setUsedCamera(false);
         }
          } catch (err) {
