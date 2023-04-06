@@ -9,7 +9,6 @@ import { AntDesign } from "@expo/vector-icons";
 
 
 export default function DiaryCard({itemData}) {
-  console.log(itemData);
   const [liked,setLiked]=useState(false);
   return (
     <CardComponent
