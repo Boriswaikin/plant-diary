@@ -10,15 +10,12 @@ import { addLike, removeLike } from "../Firebase/helper";
 
 
 export default function DiaryCard({item, like}) {
-  const [liked,setLiked]=useState(like);
 
   async function pressLike() {
-    if (liked) {
+    if (like) {
       await removeLike(item.diaryId);
-      setLiked(false);
     } else {
       await addLike(item.diaryId);
-      setLiked(true);
     }
   }
 
@@ -31,7 +28,7 @@ export default function DiaryCard({item, like}) {
     >
       <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
         <View style={{marginTop:20, marginLeft:20}}>
-        <StorageImage size={135} source={item.photos[0]} />
+        <StorageImage source={item.photos[0]} size={135} />
         </View>
         <Grid
           items={item.photos}
@@ -59,7 +56,7 @@ export default function DiaryCard({item, like}) {
           }}
           buttonPressed={()=>{pressLike()}}
         >
-      <AntDesign  name={!liked?"hearto":"heart"} color={liked?"red":"black"} size={22}></AntDesign>
+      <AntDesign  name={!like?"hearto":"heart"} color={like?"red":"black"} size={22}></AntDesign>
       </PressableButton>
       </View>
     </CardComponent>

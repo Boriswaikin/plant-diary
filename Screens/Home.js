@@ -31,13 +31,15 @@ export default function Home({ navigation, route }) {
       }
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         if (!querySnapshot.empty) {
-          let diaries = [];
+          let newdiaries = [];
           querySnapshot.docs.forEach((doc) => {
-            diaries.push({ ...doc.data(), diaryId: doc.id});
-            setDiaries(diaries);
-        });
-          
-        } 
+            newdiaries.push({ ...doc.data(), diaryId: doc.id});
+            setDiaries((prev)=>newdiaries);
+        }
+        );
+        } else {
+          setDiaries([]);
+        }
       });
       return () => {
         unsubscribe();
@@ -89,13 +91,10 @@ export default function Home({ navigation, route }) {
         <FlatList
           data={diaries}
           renderItem={({item})=>{
-              // console.log(item.imageUri);
             return (
-              <View>
-                <Pressable onPress={()=>navigation.navigate('Gallery',{item:item})} >
-                  <DiaryCard item={item} like={likeList&&likeList.includes(item.diaryId)}/>
-                </Pressable>
-              </View>
+              <Pressable onPress={()=>navigation.navigate('Gallery',{item:item})} >
+                <DiaryCard item={item} like={likeList&&likeList.includes(item.diaryId)}/>
+              </Pressable>
             )
           }}
         />
