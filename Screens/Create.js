@@ -1,6 +1,6 @@
-import { View, Text, Button, TextInput, FlatList,StyleSheet,Alert} from 'react-native'
-import React, { useEffect, useState,useRef} from 'react'
-import { createDiary, deleteDiary, editDiary, getDiaryById, getProfileByUid } from '../Firebase/helper';
+import { View, Text, Button, TextInput, FlatList,StyleSheet} from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { createDiary, deleteDiary, editDiary, getDiaryById, getProfileById } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
 import { ref, uploadBytesResumable } from "firebase/storage";
 import ImageManager from '../components/ImageManager';
@@ -69,7 +69,7 @@ export default function Create({ navigation, route }) {
     // createDiary(photos, species, location, story);
     console.log("A diary created");
     try {
-      const userProfile = await getProfileByUid(auth.currentUser.uid);
+      const userProfile = await getProfileById(auth.currentUser.uid);
       const userName = userProfile.name;
       await createDiary({		
         photos:imageAll,
