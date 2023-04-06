@@ -151,6 +151,7 @@ export default function Create({ navigation, route }) {
           return fetchImage(item);
       })
       newImage= await Promise.all(imageUri);
+      c
       }
       catch (err){
         console.log("image fetch error",err);
