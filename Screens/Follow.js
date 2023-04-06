@@ -49,7 +49,7 @@ export default function Follow({ navigation, route }) {
           <View style={styles.userContainer}>
             <View style={styles.headName}>
               <View style={styles.icon}>
-                <Icon width={65} height={65} borderRadius={65} source={item.headPhoto}/>
+                <Icon size={65} source={item.headPhoto}/>
               </View>
               <View style={styles.nameInfo}>
                 <Text style={styles.name}>{item.name}</Text>

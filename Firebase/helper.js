@@ -255,6 +255,27 @@ export async function searchDiary(species) {
 	}
 }
 
+export async function getLikeList() {
+	try {
+		const likeRef = doc(firestore, "like", auth.currentUser.uid);
+		const docSnap = await getDoc(likeRef);
+		if (docSnap.exists()) {
+			return await docSnap.data().likeDiaries;
+		} else {
+			return [];
+		}
+
+	} catch (err) {
+		console.log(err);
+	}
+}
+
+export function getLikeListQueue() {
+	const likeRef = doc(firestore, "like", auth.currentUser.uid);
+	const q = query(likeRef);
+	return q;
+}
+
 export async function addLike(diaryId) {
 	try {
 		const likeRef = doc(firestore, "like", auth.currentUser.uid);
@@ -270,6 +291,7 @@ export async function addLike(diaryId) {
 		console.log(err);
 	}
 }
+
 export async function removeLike(diaryId) {
 	try {
 		const likeRef = doc(firestore, "like", auth.currentUser.uid);
@@ -390,6 +412,18 @@ export async function getSubscribedDiaries() {
 			diaries.push({...item.data(), diaryId:item.id});
 		})
 		return diaries;
+	} catch (err) {
+		console.log(err);
+	}
+}
+
+export async function getSubscribedDiariesQueue() {
+	try {
+		const docRef = doc(firestore, "following", auth.currentUser.uid);
+		const docSnap = await getDoc(docRef);
+		const following = docSnap.data().following;
+		const q = query(collection(firestore, "diary"), where('userId', 'in', following), orderBy("date", "desc"));
+		return q;
 	} catch (err) {
 		console.log(err);
 	}
