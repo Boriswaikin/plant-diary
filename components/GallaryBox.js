@@ -22,7 +22,6 @@ export default function GallaryBox({galleryItem}) {
     const numberOfPost = item.viewableItems[0].index;
     setCurrentImage(numberOfPost);
   });
-  console.log(galleryItem);
   const tempData = galleryItem.map((item, index) => ({ uri: item, id: `${index + 1}` }))
   return (
     <View>
