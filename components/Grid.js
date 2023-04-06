@@ -1,80 +1,53 @@
 import { View, FlatList, StyleSheet, Image } from "react-native";
 import React from "react";
 
-const Grid = (props) => {
-  const itemData = [
-    {
-      icon: (
-        <Image
-          style={styles(props).imageIcon}
-          source={{
-            uri: "https://icons.iconarchive.com/icons/limav/flat-gradient-social/256/Twitter-icon.png",
-          }}
-        />
-      ),
-    },
-    {
-      icon: (
-        <Image
-          style={styles(props).imageIcon}
-          source={{
-            uri: "https://icons.iconarchive.com/icons/designbolts/free-instagram/256/Active-Instagram-1-icon.png",
-          }}
-        />
-      ),
-    },
-    {
-      icon: (
-        <Image
-          style={styles(props).imageIcon}
-          source={{
-            uri: "https://icons.iconarchive.com/icons/designbolts/free-instagram/256/Active-Instagram-1-icon.png",
-          }}
-        />
-      ),
-    },
-    {
-      icon: (
-        <Image
-          style={styles(props).imageIcon}
-          source={{
-            uri: "https://icons.iconarchive.com/icons/designbolts/free-instagram/256/Active-Instagram-1-icon.png",
-          }}
-        />
-      ),
-    },
-  ];
-
+const Grid =({itemData}) => {
+  
+ 
+  // const numberOfColumns = 2;
+  // console.log(numberOfColumns);
+  
+  const tempData = itemData.length>1?itemData.slice(1,4):null;
+  const numberOfColumns = tempData?.length>1?2:1;
   return (
-    <View style={styles(props).container}>
-      <FlatList
-        data={itemData}
-        numColumns={props.numColumns}
+    <View style={styles.container}>
+      {<FlatList
+        data={tempData}
+        key={tempData?.length}
+        numColumns={tempData?.length>1?2:1}
         renderItem={({ item }) => {
-          return <View style={styles(props).item}>{item.icon}</View>;
+          return <View style=
+          {styles.item}>
+            <Image style={numberOfColumns===1?styles.imageIcon1:styles.imageIcon2}
+              source={{uri:item}}>
+              </Image></View>;
         }}
-      />
+      />}
     </View>
   );
 };
 
-const styles = (props) =>
+const styles =
   StyleSheet.create({
     container: {
-      width: props.width,
-      alignSelf: props.alignSelf,
-      marginTop: props.marginTop,
-      marginRight: props.marginRight,
+      alignItems:"flex-start",
+      width: 130,
+      marginTop: 15,
+      marginRight: 30,
     },
 
     item: {
-      flex: 1,
-      alignItems: "flex-start",
-      padding: 5,
+      paddingTop:5,
+      paddingLeft:2,
+      paddingRight:2,
     },
-    imageIcon: {
-      width: props.width / props.numColumns,
-      height: props.width / props.numColumns,
+    imageIcon1: {
+      width: 130,
+      height: 130
+    },
+    imageIcon2: {
+      width: 65,
+      height: 65,
     },
   });
 
