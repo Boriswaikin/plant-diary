@@ -1,9 +1,7 @@
 import { View, Text, Button, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import DiaryItem from '../DiaryItem';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DiaryCard from '../components/DiaryCard';
-import SearchBar from '../components/SearchBar';
 import { getDiaryById, getDiaryQueueByUser, getLatestDiariesQueue } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -67,7 +65,7 @@ export default function Home({ navigation, route }) {
           let diaries = [];
           
           querySnapshot.docs.forEach(async (doc) => {
-            const urlItem= await getAllImageUrl(doc.data().photosUri);
+            const urlItem= await getAllImageUrl(doc.data().photos);
             if(urlItem){
             // setImageUrl(urlItem);
             diaries.push({ ...doc.data(), diaryId: doc.id ,imageUri:urlItem});
