@@ -105,6 +105,34 @@ export default function Create({ navigation, route }) {
     setStory("");
   }
 
+  function createValidate(){
+    if (
+      photos.length===0
+    ) {
+      Alert.alert("Kindly upload at least one picture to record the journey");
+      return false;
+    }
+    else if(
+      !species.trim()
+    )
+    { Alert.alert("Kindly provide the species of the plant");
+    return false;
+    }
+    else if(
+      !location.trim()
+    )
+    { Alert.alert("Kindly provide the location of the plant");
+    return false;
+    }
+    else if(
+      !story.trim()
+    )
+    { Alert.alert("Kindly provide the stories of the plant");
+    return false;
+    }
+    return true;
+  }
+
   async function pressUpdateDiary() {
     // updateDiary(route.params.diaryId, photos, species, location, story);
     console.log("A diary updated");
@@ -194,7 +222,10 @@ export default function Create({ navigation, route }) {
           <View style={{width:80,height:30,padding:5,borderRadius:6,backgroundColor:"gray"}}>
           <PressableButton
           buttonPressed={() => {
+            const status =createValidate();
+            if (status){
             pressCreateDiary(photos);
+            }
           }}>
           <Text style={{ color: Color.headerTintColor ,fontSize:16}}>Create</Text>
           </PressableButton>

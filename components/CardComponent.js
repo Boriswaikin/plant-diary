@@ -20,13 +20,12 @@ const styles = (props) =>
   StyleSheet.create({
     body: {
       flexDirection: props.flexDirection,
-      justifyContent: props.justifyContent,
       width: props.width,
       height: props.height,
-      alignItems: props.alignItems,
       backgroundColor: Color.contentColor,
       borderRadius: 20,
       marginBottom: 15,
+      marginTop:10,
     },
   });
 
