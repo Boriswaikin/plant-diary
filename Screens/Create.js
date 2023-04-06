@@ -21,6 +21,7 @@ export default function Create({ navigation, route }) {
   const imageUriHandler=(uri)=>setPhotos(uri);
 
   function resetRemovedUri(){
+
     setRemovedUri(false); 
   }
 
@@ -169,7 +170,7 @@ export default function Create({ navigation, route }) {
     <View>
       <View>
         <Text>Add Photos</Text>
-        {edit ? (<GallaryBox galleryItem={route.params.uri}/>):<></>}
+        {edit ? (route.params.uri&& <GallaryBox galleryItem={route.params.uri}/>):<></>}
         <ImageManager imageUriHandler={(uri)=>
           imageUriHandler(uri)} removedUri={removedUri} resetRemovedUri={resetRemovedUri}/>
         {/* <FlatList 
@@ -191,45 +192,49 @@ export default function Create({ navigation, route }) {
         <TextInput style = {styles.textInput} placeholder='Tell us your story' value={story} onChangeText={setStory} />
       </View>
       <View style={styles.fixToText}>
+      <View style={styles.viewButton}>
         {edit ? 
-          <PressableButton
-          buttonPressed={() => {
-            pressDeleteDiary();
-          }}>
-          <Text style={{ color: Color.headerTintColor }}>Delete</Text>
-          </PressableButton>
+            <PressableButton
+            customizedStyle={styles.button}
+            buttonPressed={() => {
+              pressDeleteDiary();
+            }}>
+            <Text style={{ color: Color.headerTintColor }}>Delete</Text>
+            </PressableButton>
           : 
-          <View style={{width:80,height:30,padding:5,borderRadius:6,backgroundColor:"gray"}}>
-          <PressableButton
-          buttonPressed={() => {
-            navigation.navigate('Plant Diary', {
-              screen: 'Home'})
-              setRemovedUri(true);
-          }}>
-          <Text style={{ color: Color.headerTintColor,fontSize:16 }}>Cancel</Text>
-          </PressableButton>
-          </View>} 
-        {edit ? 
-            <View style={{padding:10,borderRadius:5,backgroundColor:"red"}}>
+            <PressableButton
+            customizedStyle={styles.button}
+            buttonPressed={() => {
+              navigation.navigate('Plant Diary', {
+                screen: 'Home'})
+                cleanup();
+                setRemovedUri(true);
+            }}>
+            <Text style={{ color: Color.headerTintColor,fontSize:16 }}>Cancel</Text>
+            </PressableButton>} 
+          </View>
+          <View style={styles.viewButton}>
+         {edit ? 
              <PressableButton
+             customizedStyle={styles.button}
              buttonPressed={() => {
                pressUpdateDiary();
              }}>
              <Text style={{ color: Color.headerTintColor }}>Confirm</Text>
              </PressableButton>  
-             </View>
           : 
-          <View style={{width:80,height:30,padding:5,borderRadius:6,backgroundColor:"gray"}}>
+          
           <PressableButton
+          customizedStyle={styles.button}
           buttonPressed={() => {
             const status =createValidate();
             if (status){
             pressCreateDiary(photos);
             }
           }}>
-          <Text style={{ color: Color.headerTintColor ,fontSize:16}}>Create</Text>
-          </PressableButton>
-          </View>} 
+          <Text style={{ color: Color.headerTintColor ,fontSize:16,textAlign:"center"}}>Create</Text>
+          </PressableButton>}
+          </View> 
         </View>
       </View>
   )
@@ -242,4 +247,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "row",
   },
+  button:{
+    width:"100%",height:"100%",justifyContent:'center'
+  },
+  viewButton:{
+    width:80,height:40,padding:5,borderRadius:6,backgroundColor:"gray"
+
+  }
+
 })
