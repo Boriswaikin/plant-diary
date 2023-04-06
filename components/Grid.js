@@ -6,11 +6,12 @@ const Grid = (props) => {
  
   // const numberOfColumns = 2;
   // console.log(numberOfColumns);
+  
   const tempData = props.itemData.length>1?props.itemData.slice(1,4):null;
-  const numberOfColumns = tempData!==null && tempData.length>1?2:1;
+  const numberOfColumns = tempData?.length>1?2:1;
   return (
     <View style={styles(props).container}>
-      {tempData && <FlatList
+      {<FlatList
         data={tempData}
         numColumns={numberOfColumns}
         renderItem={({ item }) => {
@@ -25,26 +26,27 @@ const Grid = (props) => {
   );
 };
 
-const styles = (props) =>
+const styles =
   StyleSheet.create({
     container: {
-      width: props.width,
-      alignSelf: props.alignSelf,
-      marginTop: props.marginTop,
-      marginRight: props.marginRight,
+      alignItems:"flex-start",
+      width: 130,
+      marginTop: 15,
+      marginRight: 30,
     },
 
     item: {
-      flex: 1,
-      padding: 5,
+      paddingTop:5,
+      paddingLeft:2,
+      paddingRight:2,
     },
     imageIcon1: {
-      width: props.width,
-      height: props.width
+      width: 130,
+      height: 130
     },
     imageIcon2: {
-      width: props.width / 2,
-      height: props.width / 2,
+      width: 65,
+      height: 65,
     },
   });
 
