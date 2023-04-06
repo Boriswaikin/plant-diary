@@ -8,6 +8,7 @@ import { storage } from '../Firebase/firebase-setup';
 import GallaryBox from '../components/GallaryBox';
 import PressableButton from '../components/PressableButton';
 import Color from '../components/Color';
+import { async } from '@firebase/util';
 
 
 export default function Create({ navigation, route }) {
@@ -19,10 +20,15 @@ export default function Create({ navigation, route }) {
   const [edit, setEdit] = useState(false);
   const [removedUri, setRemovedUri] = useState(false);
   const imageUriHandler=(uri)=>setPhotos(uri);
+  const [previousPhoto,setPreviousPhoto]=useState([]);
+  const [newPhoto, setNewPhoto]=useState([]);
 
   function resetRemovedUri(){
-
     setRemovedUri(false); 
+  }
+
+  function setPhotoNew(text){
+    setNewPhoto(text);
   }
 
   useEffect(()=>{
@@ -30,6 +36,7 @@ export default function Create({ navigation, route }) {
       setEdit(true);
       const currentDiary = route.params.diary;
       setPhotos(currentDiary.photos);
+      setPreviousPhoto(currentDiary.photos);
       setLocation(currentDiary.location);
       setStory(currentDiary.description);
       setSpecies(currentDiary.species);
@@ -134,13 +141,25 @@ export default function Create({ navigation, route }) {
     return true;
   }
 
-  async function pressUpdateDiary() {
+  async function pressUpdateDiary(uri) {
     // updateDiary(route.params.diaryId, photos, species, location, story);
+    let imageUri = [];
+    let newImage = [];
+    if(uri)
+      try {
+        imageUri = uri.map((item)=>{
+          return fetchImage(item);
+      })
+      newImage= await Promise.all(imageUri);
+      }
+      catch (err){
+        console.log("image fetch error",err);
+      }
     console.log("A diary updated");
-
+    const combineImage= [...previousPhoto,...newImage];
     try {
       await editDiary(route.params.diary.diaryId, {		
-        photos:photos,
+        photos:combineImage,
         description: story,
         species: species,
         location: location,
@@ -149,7 +168,6 @@ export default function Create({ navigation, route }) {
       console.log(err);
     }
     cleanup();
-    navigation.goBack();
   }
 
   async function pressDeleteDiary() {
@@ -172,7 +190,7 @@ export default function Create({ navigation, route }) {
         <Text>Add Photos</Text>
         {edit ? (route.params.uri&& <GallaryBox galleryItem={route.params.uri}/>):<></>}
         <ImageManager imageUriHandler={(uri)=>
-          imageUriHandler(uri)} removedUri={removedUri} resetRemovedUri={resetRemovedUri}/>
+          imageUriHandler(uri)} removedUri={removedUri} resetRemovedUri={resetRemovedUri} setPhotoNew={setPhotoNew}/>
         {/* <FlatList 
         data={photos}
         renderItem={({item})=>{
@@ -218,7 +236,12 @@ export default function Create({ navigation, route }) {
              <PressableButton
              customizedStyle={styles.button}
              buttonPressed={() => {
-               pressUpdateDiary();
+              navigation.navigate('Plant Diary', {
+                screen: 'Home'})
+              const status =createValidate();
+              if (status){
+               pressUpdateDiary(newPhoto);
+              }
              }}>
              <Text style={{ color: Color.headerTintColor }}>Confirm</Text>
              </PressableButton>  
