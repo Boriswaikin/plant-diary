@@ -1,8 +1,8 @@
-import { View, Text, Button, Image, Alert } from 'react-native'
+import { View, Text, Button, Image, Alert,FlatList} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import * as ImagePicker from "expo-image-picker"
 import PressableButton from './PressableButton';
-import GallaryBox from './GallaryBox';
+
 
 export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUri}) {
     const [permissionInfo, requestPermission] = ImagePicker.useCameraPermissions();
@@ -69,8 +69,20 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
     };
 
   return (
-    <View>
-       <PressableButton 
+    <View style={{flexDirection:'row',flexWrap:"wrap"}}>
+      {usedCamera && imageURI[0] && <Image 
+        source={{
+            uri: imageURI[0]
+            }} 
+        style={{ width:100, height:100 }} />}
+      {!usedCamera && imageURI[0] &&      
+         imageURI.map((item) => {
+            return <View key={item} style={{flexDirection:'row',flexWrap:"wrap",paddingTop:5, paddingLeft:5,paddingRight:5}}>
+              <Image style={{width:90,height:90}}
+                source={{uri:item}}/>
+                </View>;
+          })}
+        <PressableButton 
             buttonPressed={() => {
             Alert.alert(
             "Select Image",
@@ -98,17 +110,10 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
           { cancelable: false }
         );
       }}>
-        <Text>More options</Text>
+        <Image 
+          style={{width:80,height:80}}
+          source={require('../images/add.png')}/>
         </PressableButton>
-      {/* <Button title="Take a Picture" onPress={imageHandler}></Button>
-      <Button title="Get From Library" onPress={imageFromLibraryHandler}></Button> */}
-
-      {usedCamera && imageURI[0] && <Image 
-        source={{
-            uri: imageURI[0]
-            }} 
-        style={{ width:100, height:100 }} />}
-      {!usedCamera && imageURI[0] && <GallaryBox galleryItem={imageURI}/>}
     </View>
 
   )
