@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { getDownloadURL, ref } from 'firebase/storage';
 import { storage } from '../Firebase/firebase-setup';
 
-export default function StorageImage({size, source}) {
+export default function StorageImage({size, source, radius}) {
     const [url, setUrl] = useState('');
     useEffect(()=>{
         async function getImageUrl() {
@@ -22,7 +22,7 @@ export default function StorageImage({size, source}) {
         <View>
         {url&&url!==''&&<Image
             source={{ uri: url }}
-            style={{ width: size, height: size }}
+            style={{ width: size, height: size, borderRadius: radius?radius:0}}
         />}
         </View>
     );

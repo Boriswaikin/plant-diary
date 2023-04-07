@@ -1,21 +1,115 @@
-import { View, Text, Button, TextInput, SafeAreaView, StyleSheet } from 'react-native'
+import { View, Text, Button, TextInput, SafeAreaView, StyleSheet, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { editProfile } from '../Firebase/helper';
 import Icon from '../components/Icon';
 import PressableButton from '../components/PressableButton';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
+import * as ImagePicker from "expo-image-picker";
+import { ref } from 'firebase/storage';
 
 export default function EditProfile({ navigation, route }) {
   const [newname, setNewname] = useState(route.params.profile.name);
   const [favplant, setFavplant] = useState(route.params.profile.favouritePlant);
   const [head, setHead] = useState(route.params.profile.headPhoto);
+  const [newhead, setNewhead] = useState(null);
+  const [permissionInfo, requestPermission] = ImagePicker.useCameraPermissions();
+
+  async function verifyPermission() {
+    if (permissionInfo.granted) {
+        return true;
+    }
+    try {
+        const result = await requestPermission();
+        return result.granted;
+    } catch (err) {
+        console.log(err);
+    }
+  }
+
+  async function fetchImage(uri) {
+    try {
+    const response = await fetch(uri);
+    const imageBlob = await response.blob();
+    const imageName = uri.substring(uri.lastIndexOf('/') + 1);
+    const imageRef = await ref(storage, `images/${imageName}`)
+    const uploadResult = await uploadBytesResumable(imageRef, imageBlob);
+    return uploadResult.metadata.fullPath;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  function pressEditHead() {
+    Alert.alert(
+      "Select Image",
+      "",
+      [
+      { text: "Take Photo..." ,
+      onPress: () => {
+          imageHandler();
+        },
+      },
+      {
+        text: "Choose from Library",
+        onPress: () => {
+          imageFromLibraryHandler();
+        },
+      },
+      {
+          text: "Cancel",
+          onPress: () => {
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+    }
+
+  async function imageHandler() {
+      const hasPermission = await verifyPermission();
+      if (!hasPermission) {
+          Alert.alert("You need to give access to camera.");
+          return;
+      }
+      try {
+      const result = await ImagePicker.launchCameraAsync({allowsEditing: true})
+      if (!result.canceled) {
+        setNewhead(result.assets[0].uri);
+        setHead(result.assets[0].uri);
+      }
+      } catch (err) {
+          console.log(err);
+      }
+  };
+
+  async function imageFromLibraryHandler() {
+    const hasPermission = await verifyPermission();
+    if (!hasPermission) {
+        Alert.alert("You need to give access to camera.");
+        return;
+    }
+    try {
+    const result = await ImagePicker.launchImageLibraryAsync()
+    if (!result.canceled) {
+      setNewhead(result.assets[0].uri);
+      setHead(result.assets[0].uri);
+    }
+     } catch (err) {
+        console.log(err);
+     }
+  };
 
   async function pressEditProfile() {
     try {
-    await editProfile(route.params.profile.uid, {name:newname,favouritePlant:favplant, headPhoto:head});
-    console.log("profile updated");
-    navigation.navigate('Profile');
+      if (newhead) {
+        const storageUri = await fetchImage(newhead);
+        setHead((prev)=>storageUri);
+      }
+      await editProfile(route.params.profile.uid, {name:newname,favouritePlant:favplant, headPhoto:head});
+      console.log("profile updated");
+      setNewhead(null);
+      navigation.navigate('Profile');
     } catch (err) {
       console.log(err);
     }
@@ -23,8 +117,8 @@ export default function EditProfile({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Icon size={100} source={route.params.profile.headPhoto} />
-      <PressableButton customizedStyle={styles.editButton}>
+      <Icon size={100} source={head} />
+      <PressableButton customizedStyle={styles.editButton} buttonPressed={()=>pressEditHead()}>
         <Text style={styles.editText}>Edit Head Photo</Text>
       </PressableButton>
       <View style={styles.inputContainer}>
