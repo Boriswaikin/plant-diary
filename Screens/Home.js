@@ -50,7 +50,7 @@ export default function Home({ navigation, route }) {
   useEffect(()=>{
     const q = getLikeListQueue();
     const unsubscribe2 = onSnapshot(q, (snapshot) => {
-      if (!snapshot.empty) {
+      if (!snapshot.empty&&typeof snapshot.data() !== 'undefined') {
         setLikeList(snapshot.data().likeDiaries);
       }
     });
