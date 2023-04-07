@@ -50,11 +50,11 @@ export default function Profile({ navigation, route }) {
     const diaryListqueue = getDiaryQueueByUser(route.params && route.params.id || auth.currentUser.uid)
     const unsubscribe2 = onSnapshot(diaryListqueue, (querySnapshot) => {
       if (!querySnapshot.empty) {
-        let diaries = [];
+        const newdiaries = [];
         querySnapshot.docs.forEach((doc) => {
-          diaries.push({ ...doc.data(), diaryId: doc.id });
+          newdiaries.push({ ...doc.data(), diaryId: doc.id });
         });
-        setDiaries(diaries);
+        setDiaries(newdiaries);
       }
     });
     return () => {
@@ -131,6 +131,7 @@ export default function Profile({ navigation, route }) {
         {/* <Text>Diary Grid</Text> */}
         {diaries&&  <FlatList 
         data={diaries}
+        keyExtractor={item=>item.diaryId}
         numColumns={3}
         ItemSeparatorComponent={() => <View style={{height: 3}} />}
         columnWrapperStyle={styles.columnWrapper}
