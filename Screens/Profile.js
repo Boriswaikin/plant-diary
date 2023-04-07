@@ -8,6 +8,7 @@ import PressableButton from '../components/PressableButton';
 import Icon from '../components/Icon';
 import { checkFollowingRelation } from '../Firebase/helper';
 import StorageImage from '../components/StorageImage';
+import { Feather } from '@expo/vector-icons';
 
 const w = Dimensions.get('window').width;
 
@@ -138,6 +139,8 @@ export default function Profile({ navigation, route }) {
             <PressableButton buttonPressed={()=>{edit?navigation.navigate('Edit Diary',{diary:item}):navigation.navigate('Gallery',{item:item})}}>
               {/* <Image source={{uri: "https://ui-avatars.com/api/?name=" + item.species}} style={styles.gridImage} resizeMode='cover' /> */}
               <StorageImage source={item.photos[0]} size={(w - 60) / 3} />
+              {edit&&<Feather name="edit" size={24} color="white" style={styles.topRight} />}
+
             </PressableButton>
           )
         }}
@@ -184,9 +187,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   buttonContainer: {
-    marginTop: 100,
     alignSelf: 'center',
-    alignItems: 'space-between',
   },
   gridContainer: {
     flex: 1,
@@ -246,7 +247,6 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     gap: 10,
-    // alignContent: 'center',
     alignItems: 'center',
     marginBottom: 5,
   },
@@ -259,5 +259,10 @@ const styles = StyleSheet.create({
   mediumFont: {
     fontWeight: 600,
     color: 'rgb(50,50,50)',
+  },
+  topRight: {
+    position: 'absolute',
+    top: 8,
+    right: 16,
   },
 })
