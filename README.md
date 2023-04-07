@@ -208,6 +208,15 @@ Delete the item by clicking "Profile" in bottomTab, then click "edit". Click "De
 - External API (Plant Identification API)
 - Notification
 
+##### Comments
+- update layout and style to align the prototype design: Home, Gallery, Create
+- implement search function
+- implement sort function
+- create customized seletion drop-down menu (current module's style is not customizable)
+- DiaryCard can only show 3 photos in grid
+- show multiple images in create screen instead of replacing current image when adding
+- show previous uploaded images in edit screen
+- create notification for each diary when create/edit
 
 
 </details>
