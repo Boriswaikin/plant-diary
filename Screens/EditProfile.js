@@ -6,7 +6,8 @@ import PressableButton from '../components/PressableButton';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import * as ImagePicker from "expo-image-picker";
-import { ref } from 'firebase/storage';
+import { ref, uploadBytesResumable } from 'firebase/storage';
+import { storage } from '../Firebase/firebase-setup';
 
 export default function EditProfile({ navigation, route }) {
   const [newname, setNewname] = useState(route.params.profile.name);
@@ -102,14 +103,14 @@ export default function EditProfile({ navigation, route }) {
 
   async function pressEditProfile() {
     try {
-      if (newhead) {
-        const storageUri = await fetchImage(newhead);
-        setHead((prev)=>storageUri);
-      }
-      await editProfile(route.params.profile.uid, {name:newname,favouritePlant:favplant, headPhoto:head});
+      // if (newhead) {
+      //   setHead(await fetchImage(newhead));
+      // }
+      await editProfile(route.params.profile.uid, {name:newname,favouritePlant:favplant, headPhoto:newhead?await fetchImage(newhead):head});
       console.log("profile updated");
+      console.log(head);
       setNewhead(null);
-      navigation.navigate('Profile');
+      navigation.goBack();
     } catch (err) {
       console.log(err);
     }

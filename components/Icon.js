@@ -14,7 +14,7 @@ export default function Icon ({size, source}) {
         {source.slice(0,4)==='http'&&
         <Image source={{ uri:source }} style={{width:size,height:size,borderRadius:size}} />}
         {source.slice(0,4)==='imag'&&
-        <StorageImage size={size} source={source} />}
+        <StorageImage size={size} source={source} radius={size}/>}
         {source.slice(0,4)==='file'&&
         <Image source={{ uri:source }} style={{width:size,height:size,borderRadius:size}} />}
       </View>}
