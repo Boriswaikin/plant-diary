@@ -36,7 +36,8 @@ function GallaryImage({ postImage }) {
 export default function GallaryBox({galleryItem}) {
   const [currentImage, setCurrentImage] = useState(0);
   const itemChanged = useRef((item) => {
-    const numberOfPost = item.viewableItems?item.viewableItems[0].index:0;
+    console.log(item);
+    const numberOfPost = typeof item.viewableItems[0]!=='undefined'?item.viewableItems[0].index:0;
     setCurrentImage(numberOfPost);
   });
   const tempData = galleryItem.map((item, index) => ({ uri: item, id: `${index + 1}` }))
@@ -69,7 +70,7 @@ export default function GallaryBox({galleryItem}) {
                 width: 7,
                 height: 7,
                 borderRadius: 8,
-                marginRight: 2,
+                margin:3,
                 backgroundColor: index === currentImage ? "blue" : "gray",
               }}
             />
