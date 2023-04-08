@@ -70,7 +70,7 @@ export default function GallaryBox({galleryItem}) {
                 width: 7,
                 height: 7,
                 borderRadius: 8,
-                marginRight: 2,
+                margin:3,
                 backgroundColor: index === currentImage ? "blue" : "gray",
               }}
             />

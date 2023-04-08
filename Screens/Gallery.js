@@ -32,12 +32,14 @@ export default function Gallery({ navigation, route }) {
         }
         </View>
       </View>
+      <View style={styles.galleryContainer}>
         <GalleryBox galleryItem={route.params.item.photos}/>
-        <Text>species: {route.params.item.species}</Text>
-        <Text>location: {route.params.item.location[1]}</Text>
-        <Text>story: {route.params.item.description}</Text>
-        <Text>date: {route.params.item.date[0]}</Text>
-        <Text>like: {route.params.item.like}</Text>
+      </View>
+      <Text>species: {route.params.item.species}</Text>
+      <Text>location: {route.params.item.location[1]}</Text>
+      <Text>story: {route.params.item.description}</Text>
+      <Text>date: {route.params.item.date[0]}</Text>
+      <Text>like: {route.params.item.like}</Text>
     </SafeAreaView>
   )
 }
@@ -66,5 +68,9 @@ const styles = StyleSheet.create({
     marginLeft:20,
     marginTop:10,
     textAlign:'left'
+  },
+  galleryContainer: {
+    // flex: 1,
+    // justifyContent: 'center',
   }
 })
