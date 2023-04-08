@@ -69,16 +69,27 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
          }
     };
 
+  function toggleRemove(filteredItem){
+    setImageURI((prev)=>prev.filter(item=>item!==filteredItem));
+    imageUriHandler((prev)=>prev.filter(item=>item!==filteredItem));
+  }
+
+
   return (
     <View style={{flexDirection:'row',flexWrap:"wrap"}}>
       {imageURI &&      
          imageURI.map((item) => {
-            return <View key={item} style={{flexDirection:'row',flexWrap:"wrap",paddingTop:5, paddingLeft:5,paddingRight:5}}>
-              <PressableButton>
-                <View></View>
-              <Image style={{width:90,height:90}}
+            return <View key={item} style={{paddingTop:2,paddingRight:8}}>
+              <Image 
+                // resizeMode='cover'
+                style={{width:80,height:80}}
                 source={{uri:item}}/>
-                <Feather name="minus-circle" size={24} color="white" style={styles.topLeft} />
+                <PressableButton
+                buttonPressed={
+                  ()=>{
+                    toggleRemove(item);}
+                }>
+                <Feather name="minus-circle" size={20} color="lightgray" style={styles.topLeft} />
                 </PressableButton>
                 </View>;
           })}
@@ -111,7 +122,7 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
         );
       }}>
         <Image 
-          style={{width:80,height:80}}
+          style={{width:60,height:60}}
           source={require('../images/add.png')}/>
         </PressableButton>
     </View>
@@ -120,10 +131,10 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
 };
 
 const styles=StyleSheet.create({
-  topRight: {
-    // position: 'relative',
-    // top: 8,
-    // // right: 12,
+  topLeft: {
+    position: 'relative',
+    bottom: 80,
+    left: 31,
   },
 }
 )
