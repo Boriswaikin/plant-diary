@@ -30,6 +30,9 @@ export default function Home({ navigation, route }) {
         q = getDiaryQueueByUser(auth.currentUser.uid);
       }
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        if (querySnapshot.empty){
+          setDiaries([]);
+        }
         if (!querySnapshot.empty) {
           const newdiaries = [];
           querySnapshot.docs.forEach((doc) => {
