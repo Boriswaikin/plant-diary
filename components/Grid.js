@@ -8,7 +8,7 @@ const Grid =({items}) => {
   // const numberOfColumns = 2;
   // console.log(numberOfColumns);
   
-  const tempData = items.length>1?items.slice(1,4):null;
+  const tempData = items.length>1?items.slice(1,5):null;
   const numberOfColumns = tempData?.length>1?2:1;
   // console.log(tempData);
   return (
