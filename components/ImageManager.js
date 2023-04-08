@@ -1,13 +1,14 @@
-import { View, Text, Button, Image, Alert,FlatList} from 'react-native'
+import { View, Image, Alert,StyleSheet} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import * as ImagePicker from "expo-image-picker"
 import PressableButton from './PressableButton';
-import { PreventRemoveContext } from '@react-navigation/native';
+import { Feather } from '@expo/vector-icons';
 
 
 export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUri,setPhotoNew}) {
     const [permissionInfo, requestPermission] = ImagePicker.useCameraPermissions();
     const [imageURI, setImageURI] = useState([]);
+    const [edit, setEdit]=useState(false);
 
     useEffect(()=>{setImageURI([])},[removedUri])
 
@@ -73,8 +74,12 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
       {imageURI &&      
          imageURI.map((item) => {
             return <View key={item} style={{flexDirection:'row',flexWrap:"wrap",paddingTop:5, paddingLeft:5,paddingRight:5}}>
+              <PressableButton>
+                <View></View>
               <Image style={{width:90,height:90}}
                 source={{uri:item}}/>
+                <Feather name="minus-circle" size={24} color="white" style={styles.topLeft} />
+                </PressableButton>
                 </View>;
           })}
         <PressableButton 
@@ -113,3 +118,12 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
 
   )
 };
+
+const styles=StyleSheet.create({
+  topRight: {
+    // position: 'relative',
+    // top: 8,
+    // // right: 12,
+  },
+}
+)
