@@ -31,15 +31,16 @@ export default function Home({ navigation, route }) {
       }
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         if (!querySnapshot.empty) {
-          let newdiaries = [];
+          const newdiaries = [];
           querySnapshot.docs.forEach((doc) => {
-            newdiaries.push({ ...doc.data(), diaryId: doc.id});
-            setDiaries((prev)=>newdiaries);
+            newdiaries.push({ ...doc.data(), diaryId:doc.id});
+            // console.log(doc.data().photos[0]);
+          });
+          setDiaries(newdiaries);
         }
-        );
-        } else {
-          setDiaries([]);
-        }
+      },
+      (err) => {
+        console.log(err);
       });
       return () => {
         unsubscribe();
@@ -49,7 +50,7 @@ export default function Home({ navigation, route }) {
   useEffect(()=>{
     const q = getLikeListQueue();
     const unsubscribe2 = onSnapshot(q, (snapshot) => {
-      if (!snapshot.empty) {
+      if (!snapshot.empty&&typeof snapshot.data() !== 'undefined') {
         setLikeList(snapshot.data().likeDiaries);
       }
     });
@@ -90,6 +91,7 @@ export default function Home({ navigation, route }) {
       {diaries&&<View>
         <FlatList
           data={diaries}
+          keyExtractor={item=>item.diaryId}
           renderItem={({item})=>{
             return (
               <Pressable onPress={()=>navigation.navigate('Gallery',{item:item})} >

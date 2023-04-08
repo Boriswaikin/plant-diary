@@ -1,4 +1,4 @@
-import { View, Text, Button, TextInput, FlatList,StyleSheet} from 'react-native'
+import { View, Text, Button, TextInput, FlatList, StyleSheet, Alert, SafeAreaView} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { createDiary, deleteDiary, editDiary, getDiaryById, getProfileById } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
@@ -9,12 +9,13 @@ import GallaryBox from '../components/GallaryBox';
 import PressableButton from '../components/PressableButton';
 import Color from '../components/Color';
 import { async } from '@firebase/util';
+import LocationManager from '../components/LocationManager';
 
 
 export default function Create({ navigation, route }) {
   const [photos,setPhotos]= useState([]);
   const [species, setSpecies] = useState("");
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState(null);
   const [story, setStory] = useState("");
   const [date, setDate] = useState([]);
   const [edit, setEdit] = useState(false);
@@ -96,7 +97,7 @@ export default function Create({ navigation, route }) {
     // setPhotos(['url1', 'url2']);
     setPhotos([]);
     setSpecies("");
-    setLocation("");
+    setLocation(null);
     setDate([]);
     setStory("");
   }
@@ -115,7 +116,7 @@ export default function Create({ navigation, route }) {
     return false;
     }
     else if(
-      !location.trim()
+      !location
     )
     { Alert.alert("Kindly provide the location of the plant");
     return false;
@@ -174,7 +175,7 @@ export default function Create({ navigation, route }) {
 
     
   return (
-    <View>
+    <SafeAreaView>
       <View>
         <Text>Add Photos</Text>
         {edit ? (route.params.uri&& <GallaryBox galleryItem={route.params.uri}/>):<></>}
@@ -192,9 +193,11 @@ export default function Create({ navigation, route }) {
       
      
         <Text>Species</Text>
-        <TextInput style = {styles.textInput} placeholder='Select species' value={species} onChangeText={setSpecies} />
+        {edit?<Text>{species}</Text>
+        :<TextInput style = {styles.textInput} placeholder='Select species' value={species} onChangeText={setSpecies} />}
         <Text>Location</Text>
-        <TextInput style = {styles.textInput} placeholder='Detecting location' value={location} onChangeText={setLocation} />
+        {edit?<Text>{location[1]}</Text>
+        :<LocationManager locationHandler={setLocation}/>}
         <Text>Story</Text>
         <TextInput style = {styles.textInput} placeholder='Tell us your story' value={story} onChangeText={setStory} />
       </View>
@@ -248,7 +251,7 @@ export default function Create({ navigation, route }) {
           </PressableButton>}
           </View> 
         </View>
-      </View>
+      </SafeAreaView>
   )
 }
 const styles = StyleSheet.create({

@@ -3,14 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { getDownloadURL, ref } from 'firebase/storage';
 import { storage } from '../Firebase/firebase-setup';
 
-export default function StorageImage({size, source}) {
-    const [url, setUrl] = useState('');
+export default function StorageImage({size, source, radius}) {
+    const [url, setUrl] = useState(null);
     useEffect(()=>{
         async function getImageUrl() {
         try {
         const reference = ref(storage, source);
-        const uri = await getDownloadURL(reference);
-        setUrl((prev)=>uri);
+        setUrl(await getDownloadURL(reference));
         } catch (err) {
             console.log(err);
         }
@@ -22,7 +21,7 @@ export default function StorageImage({size, source}) {
         <View>
         {url&&url!==''&&<Image
             source={{ uri: url }}
-            style={{ width: size, height: size }}
+            style={{ width: size, height: size, borderRadius: radius?radius:0}}
         />}
         </View>
     );
