@@ -142,6 +142,7 @@ export default function Create({ navigation, route }) {
     let newImage = [];
     if(uri)
       try {
+        setIsLoading(true);
         imageUri = uri.map((item)=>{
           return fetchImage(item);
       })
@@ -163,6 +164,9 @@ export default function Create({ navigation, route }) {
       console.log(err);
     }
     cleanup();
+    setIsLoading(false);
+    navigation.navigate('Plant Diary', {
+      screen: 'Home'})
   }
 
   async function deletePhoto(uri){
@@ -260,8 +264,6 @@ export default function Create({ navigation, route }) {
              <PressableButton
              customizedStyle={styles.button}
              buttonPressed={() => {
-              navigation.navigate('Plant Diary', {
-                screen: 'Home'})
               const status =createValidate();
               if (status){
                pressUpdateDiary(newPhoto);
