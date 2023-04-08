@@ -49,6 +49,9 @@ export default function Profile({ navigation, route }) {
   useEffect(()=>{
     const diaryListqueue = getDiaryQueueByUser(route.params && route.params.id || auth.currentUser.uid)
     const unsubscribe2 = onSnapshot(diaryListqueue, (querySnapshot) => {
+      if (querySnapshot.empty){
+        setDiaries([]);
+      }
       if (!querySnapshot.empty) {
         const newdiaries = [];
         querySnapshot.docs.forEach((doc) => {
