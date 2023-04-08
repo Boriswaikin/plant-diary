@@ -2,12 +2,12 @@ import { View, Text, Button, Image, Alert,FlatList} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import * as ImagePicker from "expo-image-picker"
 import PressableButton from './PressableButton';
+import { PreventRemoveContext } from '@react-navigation/native';
 
 
 export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUri,setPhotoNew}) {
     const [permissionInfo, requestPermission] = ImagePicker.useCameraPermissions();
     const [imageURI, setImageURI] = useState([]);
-    const [usedCamera,setUsedCamera]=useState(false);
 
     useEffect(()=>{setImageURI([])},[removedUri])
 
@@ -33,12 +33,11 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
         try {
         const result = await ImagePicker.launchCameraAsync({allowsEditing: true})
         if (!result.canceled) {
-            var uriArray = [];
-            uriArray.push(result.assets[0].uri);
-            setImageURI(uriArray);
-            imageUriHandler(uriArray);
-            setPhotoNew(uriArray);
-            setUsedCamera(true);
+            var arr = [];
+            arr.push(result.assets[0].uri);
+            setImageURI((prev)=>[...prev,...arr]);
+            imageUriHandler((prev)=>[...prev,...arr]);
+            setPhotoNew(arr);
         }
          } catch (err) {
             console.log(err);
@@ -60,10 +59,9 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
                     item=>item.uri
                 )
         if (!result.canceled) {
-            setImageURI(arr);
-            imageUriHandler(arr);
+            setImageURI((prev)=>[...prev,...arr]);
+            imageUriHandler((prev)=>[...prev,...arr]);
             setPhotoNew(arr);
-            setUsedCamera(false);
         }
          } catch (err) {
             console.log(err);
@@ -72,12 +70,7 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
 
   return (
     <View style={{flexDirection:'row',flexWrap:"wrap"}}>
-      {usedCamera && imageURI[0] && <Image 
-        source={{
-            uri: imageURI[0]
-            }} 
-        style={{ width:100, height:100 }} />}
-      {!usedCamera && imageURI[0] &&      
+      {imageURI &&      
          imageURI.map((item) => {
             return <View key={item} style={{flexDirection:'row',flexWrap:"wrap",paddingTop:5, paddingLeft:5,paddingRight:5}}>
               <Image style={{width:90,height:90}}
