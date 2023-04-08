@@ -10,12 +10,13 @@ import PressableButton from '../components/PressableButton';
 import Color from '../components/Color';
 import { async } from '@firebase/util';
 import LocationManager from '../components/LocationManager';
+import StorageImage from '../components/StorageImage';
 
 
 export default function Create({ navigation, route }) {
   const [photos,setPhotos]= useState([]);
   const [species, setSpecies] = useState("");
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState([]);
   const [story, setStory] = useState("");
   const [date, setDate] = useState([]);
   const [edit, setEdit] = useState(false);
@@ -97,7 +98,7 @@ export default function Create({ navigation, route }) {
     // setPhotos(['url1', 'url2']);
     setPhotos([]);
     setSpecies("");
-    setLocation(null);
+    setLocation([]);
     setDate([]);
     setStory("");
   }
@@ -175,41 +176,45 @@ export default function Create({ navigation, route }) {
 
     
   return (
-    <SafeAreaView>
-      <View>
-        <Text>Add Photos</Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.inputContainer}>
+        {edit&&photos&&  
+        <View>
+        <Text style={styles.subtitle}>Previous Photos</Text>
+        <FlatList 
+          data={photos}
+          numColumns={4}
+          ItemSeparatorComponent={() => <View style={{height: 5}} />}
+          columnWrapperStyle={styles.columnWrapper}
+          renderItem={({item})=>{
+            return (
+              <StorageImage source={item} size={90} />
+            )
+          }}
+        />
+        </View>
+        }
+        <Text style={styles.subtitle}>Add Photos</Text>
         {edit ? (route.params.uri&& <GallaryBox galleryItem={route.params.uri}/>):<></>}
         <ImageManager imageUriHandler={(uri)=>
           imageUriHandler(uri)} removedUri={removedUri} resetRemovedUri={resetRemovedUri} setPhotoNew={setPhotoNew}/>
-        {/* <FlatList 
-        data={photos}
-        renderItem={({item})=>{
-          return (
-            <Text>{item}</Text>
-          )
-        }}
-        /> */}
-        {/* <Button title='+' onPress={showActionSheet}/> */}
-      
-     
-        <Text>Species</Text>
-        {edit?<Text>{species}</Text>
-        :<TextInput style = {styles.textInput} placeholder='Select species' value={species} onChangeText={setSpecies} />}
-        <Text>Location</Text>
-        {edit?<Text>{location[1]}</Text>
-        :<LocationManager locationHandler={setLocation}/>}
-        <Text>Story</Text>
+        <Text style={styles.subtitle}>Story</Text>
         <TextInput style = {styles.textInput} placeholder='Tell us your story' value={story} onChangeText={setStory} />
+        <Text style={styles.subtitle}>Species</Text>
+        {edit?<Text style={styles.heavyFont}>{species}</Text>
+        :<TextInput style = {styles.textInput} placeholder='Select species' value={species} onChangeText={setSpecies} />}
+        <Text style={styles.subtitle}>Location</Text>
+        {edit?<Text style={styles.lightFont}>Locate @ <Text style={styles.heavyFont}>{location[1]}</Text></Text>
+        :<LocationManager locationHandler={setLocation}/>}
       </View>
-      <View style={styles.fixToText}>
-      <View style={styles.viewButton}>
+      <View style={styles.buttonContainer}>
         {edit ? 
             <PressableButton
             customizedStyle={styles.button}
             buttonPressed={() => {
               pressDeleteDiary();
             }}>
-            <Text style={{ color: Color.headerTintColor }}>Delete</Text>
+            <Text style={styles.buttonText}>Delete</Text>
             </PressableButton>
           : 
             <PressableButton
@@ -220,10 +225,8 @@ export default function Create({ navigation, route }) {
                 cleanup();
                 setRemovedUri(true);
             }}>
-            <Text style={{ color: Color.headerTintColor,fontSize:16 }}>Cancel</Text>
+            <Text style={styles.buttonText}>Cancel</Text>
             </PressableButton>} 
-          </View>
-          <View style={styles.viewButton}>
          {edit ? 
              <PressableButton
              customizedStyle={styles.button}
@@ -235,10 +238,9 @@ export default function Create({ navigation, route }) {
                pressUpdateDiary(newPhoto);
               }
              }}>
-             <Text style={{ color: Color.headerTintColor }}>Confirm</Text>
+             <Text style={styles.buttonText}>Confirm</Text>
              </PressableButton>  
           : 
-          
           <PressableButton
           customizedStyle={styles.button}
           buttonPressed={() => {
@@ -247,27 +249,80 @@ export default function Create({ navigation, route }) {
             pressCreateDiary(photos);
             }
           }}>
-          <Text style={{ color: Color.headerTintColor ,fontSize:16,textAlign:"center"}}>Create</Text>
+          <Text style={styles.buttonText}>Create</Text>
           </PressableButton>}
-          </View> 
         </View>
       </SafeAreaView>
   )
 }
 const styles = StyleSheet.create({
-  textInput:{height:40},
-  fixToText: {
-    marginLeft: 100,
-    marginRight: 100,
-    justifyContent: "space-between",
+  container: {
+    flex: 1,
+    margin: 30,
+    marginTop: 10,
+    justifyContent: 'center',
+  },
+  subtitle: {
+    fontSize: 16,
+    fontWeight: 600,
+    marginTop: 20,
+    marginBottom: 5,
+  },
+  inputContainer: {
+    flex: 1,
+  },
+  button: {
+    borderWidth: 1,
+    borderRadius: 20,
+    padding: 10,
+    margin: 10,
+    marginTop: 30,
+    width: 120,
+  },
+  buttonText: {
+    fontSize: 20,
+    color: 'black',
+  },
+  buttonContainer: {
+    // alignSelf: 'center',
+    justifyContent: "center",
     flexDirection: "row",
   },
-  button:{
-    width:"100%",height:"100%",justifyContent:'center'
+  editButton: {
+    borderRadius: 5,
+    padding: 2,
+    width: 80,
+    height: 22,
+    backgroundColor: 'rgb(220,220,220)',
   },
-  viewButton:{
-    width:80,height:40,padding:5,borderRadius:6,backgroundColor:"gray"
-
+  editText: {
+    fontSize: 11,
+    color: 'black',
+    fontWeight: 600,
+  },
+  lightFont: {
+    fontSize: 15,
+    alignSelf: 'center',
+    fontWeight: 400,
+    color: 'rgb(100,100,100)',
+    margin: 5,
+  },
+  heavyFont: {
+    fontSize: 15,
+    alignSelf: 'center',
+    fontWeight: 600,
+    color: 'rgb(50,50,50)',
+    margin: 5,
+  },
+  textInput: {
+    marginTop: 5,
+    height: 40,
+    fontSize: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: 'gray',
+    padding: 4,
+  },
+  columnWrapper: {
+    gap: 5,
   }
-
 })
