@@ -1,8 +1,8 @@
-import { View, Text, Button, TextInput, FlatList, StyleSheet, Alert, SafeAreaView} from 'react-native'
+import { View, Text, Button, TextInput, FlatList, StyleSheet, Alert, SafeAreaView,ActivityIndicator} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { createDiary, deleteDiary, editDiary, getDiaryById, getProfileById } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
-import { ref, uploadBytesResumable } from "firebase/storage";
+import { ref, uploadBytesResumable,deleteObject } from "firebase/storage";
 import ImageManager from '../components/ImageManager';
 import { storage } from '../Firebase/firebase-setup';
 import GallaryBox from '../components/GallaryBox';
@@ -11,6 +11,7 @@ import Color from '../components/Color';
 import { async } from '@firebase/util';
 import LocationManager from '../components/LocationManager';
 import StorageImage from '../components/StorageImage';
+
 
 
 export default function Create({ navigation, route }) {
@@ -24,6 +25,7 @@ export default function Create({ navigation, route }) {
   const imageUriHandler=(uri)=>setPhotos(uri);
   const [previousPhoto,setPreviousPhoto]=useState([]);
   const [newPhoto, setNewPhoto]=useState([]);
+  const [isLoading,setIsLoading]=useState(false);
 
   function resetRemovedUri(){
     setRemovedUri(false); 
@@ -67,6 +69,7 @@ export default function Create({ navigation, route }) {
     let imageAll = [];
     if(uri)
       try {
+        setIsLoading(true);
         imageUri = uri.map((item)=>{
           return fetchImage(item);
       })
@@ -91,6 +94,8 @@ export default function Create({ navigation, route }) {
       console.log(err);
     }
     cleanup();
+    setRemovedUri(true);
+    setIsLoading(false);
     navigation.navigate("Home");
   }
 
@@ -137,11 +142,11 @@ export default function Create({ navigation, route }) {
     let newImage = [];
     if(uri)
       try {
+        setIsLoading(true);
         imageUri = uri.map((item)=>{
           return fetchImage(item);
       })
       newImage= await Promise.all(imageUri);
-      c
       }
       catch (err){
         console.log("image fetch error",err);
@@ -159,9 +164,32 @@ export default function Create({ navigation, route }) {
       console.log(err);
     }
     cleanup();
+    setIsLoading(false);
+    navigation.navigate('Plant Diary', {
+      screen: 'Home'})
   }
 
+  async function deletePhoto(uri){
+    try{
+      const photoRef = ref(storage,uri);
+      await deleteObject(photoRef);
+    }
+    catch (err){
+      console.log("delete image error");
+    }
+  }
+  
+
   async function pressDeleteDiary() {
+
+    const photoAll = route.params.diary.photos;
+    console.log(photoAll);
+    try{
+      setIsLoading(true);
+    await photoAll.forEach((item)=>{
+      deletePhoto(item)});}
+    catch (err)
+      {console.log("delete all image error")}
     // deleteDiary(route.params.diaryId);
     console.log("A diary deleted");
     try {
@@ -170,8 +198,10 @@ export default function Create({ navigation, route }) {
       console.log(err);
     }
     cleanup();
+    setIsLoading(false);
     navigation.goBack();
   }
+
 
 
     
@@ -206,6 +236,9 @@ export default function Create({ navigation, route }) {
         <Text style={styles.subtitle}>Location</Text>
         {edit?<Text style={styles.lightFont}>Locate @ <Text style={styles.heavyFont}>{location[1]}</Text></Text>
         :<LocationManager locationHandler={setLocation}/>}
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        {isLoading && <ActivityIndicator size="small" color="red" />}
+        </View>
       </View>
       <View style={styles.buttonContainer}>
         {edit ? 
@@ -231,8 +264,6 @@ export default function Create({ navigation, route }) {
              <PressableButton
              customizedStyle={styles.button}
              buttonPressed={() => {
-              navigation.navigate('Plant Diary', {
-                screen: 'Home'})
               const status =createValidate();
               if (status){
                pressUpdateDiary(newPhoto);
@@ -247,6 +278,7 @@ export default function Create({ navigation, route }) {
             const status =createValidate();
             if (status){
             pressCreateDiary(photos);
+           
             }
           }}>
           <Text style={styles.buttonText}>Create</Text>
