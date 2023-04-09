@@ -86,7 +86,7 @@ export default function Create({ navigation, route }) {
       await createDiary({		
         photos:imageAll,
         description: story,
-        species: species,
+        species: species.trim().toLowerCase(),
         location: location,
         userName: userName,
         date: [Date.now()]});

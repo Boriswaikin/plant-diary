@@ -1,12 +1,13 @@
-import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet } from 'react-native'
+import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import DropDownPicker from 'react-native-dropdown-picker';
 import DiaryCard from '../components/DiaryCard';
-import { getDiaryQueueByUser, getLatestDiariesQueue, getLikeList, getLikeListQueue } from '../Firebase/helper';
+import { getDiaryBySpecies, getDiaryQueueByUser, getLatestDiariesQueue, getLikeList, getLikeListQueue } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
 import { MaterialIcons } from '@expo/vector-icons';
 import PressableButton from '../components/PressableButton';
 import { onSnapshot } from 'firebase/firestore';
+import { Logs } from 'expo';
 
 export default function Home({ navigation, route }) {
   // const [diaries, setDiaries] = useState([{uid:'InsBmnicOLXLK3LAm1m2gdk5ND32',author:'lesly',species:'bamboo',date:'2023-03-24',location:'Downtown Vancouver', story:'this is my bamboo',like:4},{uid:'InsBmnicOLXLK3LAm1m2gdk5ND32',author:'boris',species:'rose',date:'2023-03-21',location:'Surrey',story:'this is my rose',like:16}]);
@@ -18,7 +19,7 @@ export default function Home({ navigation, route }) {
   const [items, setItems] = useState([
     {label: 'Sorted by: Recommand', value: 'recommand'},
     {label: 'By Location', value: 'location'},
-    {label: 'By Species', value: 'species'}
+    // {label: 'By Species', value: 'species'}
   ]);
   const [recommend, setRecommend] = useState(route.params.recommend);
   // const [url, setImageUrl]= useState([]);
@@ -61,6 +62,15 @@ export default function Home({ navigation, route }) {
       unsubscribe2();
     };
   },[])
+  async function searchDiaries(species){
+    //console.log(species);
+    if(!species.trim()){
+      Alert.alert("Species cannot be blank. Please input a species.");
+			return;
+    }
+    const searchResult = await getDiaryBySpecies(species.trim().toLowerCase());
+    setDiaries(searchResult);
+  }
 
 
 
@@ -73,9 +83,9 @@ export default function Home({ navigation, route }) {
         style={styles.input}
         placeholder='Search a plant' 
         value={search} 
-        onChangeText={(newSearch)=>{setEmail(newSearch)}} 
+        onChangeText={(newSearch)=>{setSearch(newSearch)}} 
         />
-        <PressableButton buttonPressed={()=>{console.log("search")}}>
+        <PressableButton buttonPressed={()=>{searchDiaries(search)}}>
           <MaterialIcons name="search" size={24} color="black" style={styles.icon} />
         </PressableButton>
       </View>
