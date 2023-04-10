@@ -17,6 +17,7 @@ import {
 } from "firebase/firestore";
 import { firestore } from "./firebase-setup";
 import { auth } from "./firebase-setup";
+import * as geofire from 'geofire-common';
 
 export async function createDiary(diary) {
 	const docRef = await addDoc(collection(firestore, "diary"), {
@@ -24,6 +25,7 @@ export async function createDiary(diary) {
 		description: diary.description,
 		species: diary.species,
 		location: diary.location,
+		geohash:diary.geohash,
 		date: diary.date,
 		userId: auth.currentUser.uid,
 		userName: diary.userName,
@@ -106,6 +108,41 @@ export function getLatestDiariesQueue() {
 	return q;
 }
 
+export async function getCloestDiariesQueue(location) {
+	if(!location) return getLatestDiariesQueue();
+	const boundaryRadius = 1;
+	const center = [location[2], location[3]];
+	//console.log(center);
+	const radiusInM = boundaryRadius * 1000;
+	// const bounds = geofire.geohashQueryBounds(center, radiusInM);
+	const diaries = []
+	const q = query(collection(firestore,'diary'),orderBy('geohash'));
+	
+	// for (const b of bounds) {
+	// 	const q = query(collection(firestore,'diary'),
+	// 		orderBy('geohash'),
+	// 		startAt(b[0]),
+	// 		endAt(b[1]));
+	
+	// 	diaries.push(q);
+	// }
+	const querySnapshot = await getDocs(q);
+	querySnapshot.forEach((doc) => {
+		diaries.push({ ...doc.data(), diaryId: doc.id });
+	});
+	
+	// console.log(q);
+	diaries.sort((a,b)=>{
+		const distanceFromA = geofire.distanceBetween([a.location[2],a.location[3]],center);
+		const distanceFromB = geofire.distanceBetween([b.location[2],b.location[3]],center);
+		return distanceFromA - distanceFromB;
+	});
+	console.log("sorted",diaries);
+	// return q
+	return diaries;
+	//console.log(diaries);
+	// return diaries;
+}
 export async function getDiaryByLocation(location) {
 	try {
 		const q = query(
