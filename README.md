@@ -229,12 +229,12 @@ Signup the account, warning if password mismatched. Navigate to home screen if s
 <img src="./images/Signup2.png"  width="150" />
 <img src="./images/Signup3.png"  width="150" />
 <img src="./images/Signup4.png"  width="150" />
-<img src="./images/Signup5.png"  width="150" />
+<img src="./images/Signup5.png"  width="150" height="100"/>
 </p>
 
 Login in the account, warn the user if the user account does not exist (No user account in authentication database):
 <p float="left">
-<img src="./images/Login_warning1.png"  width="150" />
+<img src="./images/Login_warning1.png"  width="150" height="100"/>
 <img src="./images/Login_warning2.png"  width="150" />
 <img src="./images/Login_warning3.png"  width="150" />
 </p>
@@ -299,12 +299,12 @@ If press "Don't allow", alert will be poped out.
 </p>
 If press "Allow Once/Allow While Using App", Location can be obtained by pressing 'Location Me!":
 <p float="left">
-<img src="./images/Library3.png"  width="150" />
+<img src="./images/Location3.png"  width="150" />
 </p>
 Pressing 'Go to Map!" if we want to change location, after clicking "Confirm your Location", new location will be updated:
 <p float="left">
-<img src="./images/Library4.png"  width="150" />
-<img src="./images/Library5.png"  width="150" />
+<img src="./images/Location4.png"  width="150" />
+<img src="./images/Location5.png"  width="150" />
 </p>
 
 
