@@ -79,9 +79,11 @@ export default function LocationManager({ locationHandler, screenName, setLoadin
         <PressableButton customizedStyle={styles.editButton} buttonPressed={()=>locateUserHandler()}>
           <Text style={styles.editText}>Locate Me!</Text>
         </PressableButton>
+        {screenName === "Create" && 
         <PressableButton customizedStyle={styles.editButton} buttonPressed={()=>navigation.navigate('Map',{currentLocation: location})}>
           <Text style={styles.editText}>Go to Map!</Text>
-        </PressableButton>
+        </PressableButton>}
+        
       </View>
     </View>
   )
