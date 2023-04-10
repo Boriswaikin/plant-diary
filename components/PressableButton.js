@@ -14,6 +14,7 @@ import Color from "./Color";
 export default function PressableButton({
   buttonPressed,
   customizedStyle,
+  disabled,
   children,
 }) {
   return (
@@ -28,6 +29,7 @@ export default function PressableButton({
       android_ripple={{ color: Color.rippleEffect }}
       onPress={buttonPressed}
       hitSlop={15}
+      disabled={disabled}
     >
       {children}
     </Pressable>
