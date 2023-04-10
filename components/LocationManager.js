@@ -1,4 +1,4 @@
-import { View, Text, Button, Image, StyleSheet } from 'react-native'
+import { View, Text, Button, Image, StyleSheet,Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import * as Location from 'expo-location';
 import { mapsApi }  from '@env';
@@ -7,7 +7,8 @@ import * as geofire from 'geofire-common';
 import PressableButton from './PressableButton';
 
 
-export default function LocationManager({ locationHandler, screenName }) {
+
+export default function LocationManager({ locationHandler, screenName, setLoadingLocation}) {
 
     const [location, setLocation] = useState();
     // const [street, setStreet] = useState();
@@ -54,11 +55,12 @@ export default function LocationManager({ locationHandler, screenName }) {
     async function locateUserHandler() {
         const hasPermission = await verifyPermission();
         if (!hasPermission) {
-            Alert.alert("You need to give access to camera.");
+            Alert.alert("You need to give access to get the Location.");
             return;
         }
 
         try {
+            setLoadingLocation(true);
             const newLocation = await Location.getCurrentPositionAsync();
             const street = await getStreet({latitude:newLocation.coords.latitude,longitude:newLocation.coords.longitude});
             const hash = geofire.geohashForLocation([newLocation.coords.latitude, newLocation.coords.longitude]);
@@ -66,6 +68,7 @@ export default function LocationManager({ locationHandler, screenName }) {
             locationHandler([hash, street, newLocation.coords.latitude,newLocation.coords.longitude]);
         }
         catch (err) { console.log(err); }
+        setLoadingLocation(false);
         }
 
   return (

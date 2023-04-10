@@ -7,8 +7,9 @@ import { Feather } from '@expo/vector-icons';
 
 export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUri,setPhotoNew}) {
     const [permissionInfo, requestPermission] = ImagePicker.useCameraPermissions();
+    const [libraryPermissionInfo, requestLibraryPermission] = ImagePicker.useMediaLibraryPermissions();
     const [imageURI, setImageURI] = useState([]);
-    const [edit, setEdit]=useState(false);
+    // const [edit, setEdit]=useState(false);
 
     useEffect(()=>{setImageURI([])},[removedUri])
 
@@ -24,6 +25,19 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
             console.log(err);
         }
     }
+
+    async function verifyLibraryPermission() {
+      if (libraryPermissionInfo.granted) {
+          return true;
+      }
+  
+      try {
+          const result = await requestLibraryPermission();
+          return result.granted;
+      } catch (err) {
+          console.log(err);
+      }
+  }
 
     async function imageHandler() {
         const hasPermission = await verifyPermission();
@@ -46,9 +60,9 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
     };
 
     async function imageFromLibraryHandler() {
-        const hasPermission = await verifyPermission();
+        const hasPermission = await verifyLibraryPermission();
         if (!hasPermission) {
-            Alert.alert("You need to give access to camera.");
+            Alert.alert("You need to give access to media library.");
             return;
         }
         try {
