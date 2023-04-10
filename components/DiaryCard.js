@@ -1,8 +1,7 @@
-import { View, Text } from "react-native";
-import React, { useState } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import React from "react";
 import CardComponent from "./CardComponent";
 import Grid from "./Grid";
-import Color from "./Color";
 import PressableButton from "./PressableButton";
 import { AntDesign } from "@expo/vector-icons";
 import StorageImage from "./StorageImage";
@@ -20,45 +19,41 @@ export default function DiaryCard({item, like}) {
   }
 
   return (
-    <CardComponent
-      flexDirection="column"
-      color={Color.headerTabColor}
-      width={350}
-      height={250}
-    >
-      <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-        <View style={{marginTop:20, marginLeft:20}}>
-        <StorageImage source={item.photos[0]} size={135} />
-        </View>
-        <Grid
-          items={item.photos}
-        ></Grid>
+    <CardComponent>
+      <View style={styles.imageContainer}>
+        <StorageImage source={item.photos[0]} size={150} />
+        <Grid items={item.photos} />
       </View>
-      <View
-        style={{
-          marginTop: 10,
-          flexDirection: "row",
-          justifyContent: "space-around",
-        }}
-      >
-        <View style={{ flexDirection: "column" }}> 
-          <Text>{item.userName}</Text>
-        </View>
-        <Text style={{ alignSelf: "center" }}>{item.description}</Text>
-      </View>
-      <View style={{ flexDirection: "row" ,justifyContent:"space-around"}}>
-      <Text style={{ marginTop: 10, marginLeft: 40 }}>{item.species}</Text>
-      <PressableButton
-          customizedStyle={{
-            flexDirection: "row",
-            // justifyContent:,
-            width: "10%",
-          }}
-          buttonPressed={()=>{pressLike()}}
-        >
-      <AntDesign  name={!like?"hearto":"heart"} color={like?"red":"black"} size={22}></AntDesign>
-      </PressableButton>
+      <View style={styles.diaryInfoLine}>
+        <Text style={styles.mediumFont}>{item.userName}<Text style={styles.lightFont}> #{item.species}</Text></Text>
+        <PressableButton buttonPressed={()=>{pressLike()}}>
+          <Text style={styles.likeCount}>{item.like} <AntDesign name={!like?"hearto":"heart"} color={like?"green":"black"} size={15}></AntDesign></Text>
+        </PressableButton>
       </View>
     </CardComponent>
   );
 }
+
+const styles = StyleSheet.create({
+  imageContainer: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  mediumFont: {
+    fontWeight: 600,
+    color: 'rgb(50,50,50)',
+  },
+  lightFont: {
+    fontWeight: 400,
+    color: 'rgb(50,50,50)',
+  },
+  diaryInfoLine: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 15,
+  },
+  likeCount: {
+    fontSize: 15,
+    color: 'rgb(100,100,100)',
+  }
+})

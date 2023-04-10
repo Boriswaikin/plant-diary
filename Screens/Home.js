@@ -91,7 +91,7 @@ export default function Home({ navigation, route }) {
       </View>
       </View>
       }
-      {diaries&&<View>
+      {diaries&&
         <FlatList
           data={diaries}
           keyExtractor={item=>item.diaryId}
@@ -102,8 +102,7 @@ export default function Home({ navigation, route }) {
               </Pressable>
             )
           }}
-        />
-      </View>}
+        />}
     </SafeAreaView>
   )
 }
