@@ -18,6 +18,31 @@ export default function DiaryCard({item, like}) {
     }
   }
 
+  function timeSince(date) {
+    let seconds = Math.floor((new Date() - date) / 1000);
+    let interval = seconds / 31536000;
+    if (interval > 1) {
+      return Math.floor(interval) + " years";
+    }
+    interval = seconds / 2592000;
+    if (interval > 1) {
+      return Math.floor(interval) + " months";
+    }
+    interval = seconds / 86400;
+    if (interval > 1) {
+      return Math.floor(interval) + " days";
+    }
+    interval = seconds / 3600;
+    if (interval > 1) {
+      return Math.floor(interval) + " hours";
+    }
+    interval = seconds / 60;
+    if (interval > 1) {
+      return Math.floor(interval) + " minutes";
+    }
+    return Math.floor(seconds) + " seconds";
+  }
+
   return (
     <CardComponent>
       <View style={styles.imageContainer}>
@@ -25,11 +50,12 @@ export default function DiaryCard({item, like}) {
         <Grid items={item.photos} />
       </View>
       <View style={styles.diaryInfoLine}>
-        <Text style={styles.mediumFont}>{item.userName}<Text style={styles.lightFont}> #{item.species}</Text></Text>
+        <Text style={styles.mediumFont}>{item.userName}<Text style={styles.lightFont}> #{item.species}</Text><Text style={styles.lightFont}> @{item.location[1]}</Text></Text>
         <PressableButton buttonPressed={()=>{pressLike()}}>
           <Text style={styles.likeCount}>{item.like} <AntDesign name={!like?"hearto":"heart"} color={like?"green":"black"} size={15}></AntDesign></Text>
         </PressableButton>
       </View>
+      <Text style={styles.timeText}>{timeSince(item.date[0])} ago</Text>
     </CardComponent>
   );
 }
@@ -41,11 +67,11 @@ const styles = StyleSheet.create({
   },
   mediumFont: {
     fontWeight: 600,
-    color: 'rgb(50,50,50)',
+    // color: 'rgb(50,50,50)',
   },
   lightFont: {
     fontWeight: 400,
-    color: 'rgb(50,50,50)',
+    // color: 'rgb(50,50,50)',
   },
   diaryInfoLine: {
     flexDirection: 'row',
@@ -54,6 +80,10 @@ const styles = StyleSheet.create({
   },
   likeCount: {
     fontSize: 15,
+    // color: 'rgb(50,50,50)',
+  },
+  timeText: {
+    fontSize: 13,
     color: 'rgb(100,100,100)',
   }
 })

@@ -7,7 +7,7 @@ export default function CardComponent(props) {
 };
 const styles = StyleSheet.create({
     body: {
-      backgroundColor: 'rgb(220,220,220)',
+      backgroundColor: 'white',
       marginVertical: 10,
       marginHorizontal: 30,
       padding: 25,
