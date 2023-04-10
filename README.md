@@ -183,9 +183,9 @@ Delete the item by clicking "Profile" in bottomTab, then click "edit". Click "De
 
 #### Iteration 2
 
-##### Tasks Distribution
+#### Contributed by member:
 
-**More CRUD Function**
+**CRUD Function** -- Siqi
 - followUser(id)
 - unfollowUser(id)
 - checkRelation(id)
@@ -194,29 +194,122 @@ Delete the item by clicking "Profile" in bottomTab, then click "edit". Click "De
 - checkLike(diaryId)
 - getSubscribedDiary()
 
-**Layout and Styles for Screens and Components**
+**Layout and Styles for Screens and Components and functionalities** -- Zhiyuan
 - Home
 - Gallery
 - Create
 - EditProfile
 - Profile
-- Follow
+- Authentication
+- Location use
 
-**Functions to Implement**
-- Take Photos, Pick Images
-- Get Location
-- External API (Plant Identification API)
-- Notification
+**Camera use functionalities and corresponding function on storage** -- Wai Kin
+- Take Photos using camera
+- Pick Images from libraries
+- Multiple images upload
+- upload and delete images in storage
 
-##### Comments
+##### Internal Comments for next iteration
 - update layout and style to align the prototype design: Home, Gallery, Create
 - implement search function
 - implement sort function
 - create customized seletion drop-down menu (current module's style is not customizable)
-- DiaryCard can only show 3 photos in grid
-- show multiple images in create screen instead of replacing current image when adding
-- show previous uploaded images in edit screen
+- DiaryCard can only show 3 photos in grid (Done)
+- show multiple images in create screen instead of replacing current image when adding (Done)
+- show previous uploaded images in edit screen (Done)
 - create notification for each diary when create/edit
+- explore if there are some external API we can use
 
+**Below functionalities are added in iteration 2, with screenshot provided as below**
+
+#### Authentication
+Signup the account, warning if password mismatched. Navigate to home screen if signup is successful:
+<p float="left">
+<img src="./images/Signup1.png"  width="150" />
+<img src="./images/Signup2.png"  width="150" />
+<img src="./images/Signup3.png"  width="150" />
+<img src="./images/Signup4.png"  width="150" />
+<img src="./images/Signup5.png"  width="150" />
+</p>
+
+Login in the account, warn the user if the user account does not exist (No user account in authentication database):
+<p float="left">
+<img src="./images/Login_warning1.png"  width="150" />
+<img src="./images/Login_warning2.png"  width="150" />
+<img src="./images/Login_warning3.png"  width="150" />
+</p>
+
+Login by typing the email and password. Warn the user if user inputs incorrect password. 
+Navigate to home screen if login is successful(input valid email and correct password):
+<p float="left">
+<img src="./images/Login1.png"  width="150" />
+<img src="./images/Login2.png"  width="150" />
+<img src="./images/Login3.png"  width="150" />
+<img src="./images/Login4.png"  width="150" />
+</p>
+
+#### Camera use
+
+Get image by camera by asking if the user can grant the permission, if yes, will use camera to take photos.
+Otherwise, will alert the user permission is required:
+Press "Take Photo...":
+<p float="left">
+<img src="./images/Camera1.png"  width="150" />
+<img src="./images/Camera2.png"  width="150" />
+</p>
+If press "Deny", alert will be poped out.
+<p float="left">
+<img src="./images/Camera3.png"  width="150" />
+</p>
+If press "Allow", camera can be used and photo be added:
+<p float="left">
+<img src="./images/Camera4.png"  width="150" />
+<img src="./images/Camera5.png"  width="150" />
+</p>
+
+
+
+Get image from media library by asking if the user can grant the permission, if yes, will get photos from media library.
+Otherwise, will alert the user permission is required:
+Press "Choose From Library":
+<p float="left">
+<img src="./images/Library1.png"  width="150" />
+<img src="./images/Library2.png"  width="150" />
+</p>
+If press "Deny", alert will be poped out.
+<p float="left">
+<img src="./images/Library3.png"  width="150" />
+</p>
+If press "Allow", camera can be used and photo be added:
+<p float="left">
+<img src="./images/Library4.png"  width="150" />
+<img src="./images/Library5.png"  width="150" />
+</p>
+
+
+#### Location use
+Get the location using expo-location by asking if the user can grant the permission, if yes, will location from map.
+Otherwise, will alert the user permission is required:
+<p float="left">
+<img src="./images/Location1.png"  width="150" />
+</p>
+If press "Don't allow", alert will be poped out.
+<p float="left">
+<img src="./images/Location2.png"  width="150" />
+</p>
+If press "Allow Once/Allow While Using App", Location can be obtained by pressing 'Location Me!":
+<p float="left">
+<img src="./images/Library3.png"  width="150" />
+</p>
+Pressing 'Go to Map!" if we want to change location, after clicking "Confirm your Location", new location will be updated:
+<p float="left">
+<img src="./images/Library4.png"  width="150" />
+<img src="./images/Library5.png"  width="150" />
+</p>
+
+
+**Below functionalities will be added in next iteration**
+- Notification
+- External API use
 
 </details>
