@@ -2,12 +2,14 @@ import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet, Alert }
 import React, { useEffect, useState } from 'react'
 import DropDownPicker from 'react-native-dropdown-picker';
 import DiaryCard from '../components/DiaryCard';
-import { getDiaryBySpecies, getDiaryQueueByUser, getLatestDiariesQueue, getLikeList, getLikeListQueue } from '../Firebase/helper';
+import { getCloestDiariesQueue, getDiaryBySpecies, getDiaryQueueByUser, getLatestDiariesQueue, getLikeList, getLikeListQueue } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
 import { MaterialIcons } from '@expo/vector-icons';
 import PressableButton from '../components/PressableButton';
 import { onSnapshot } from 'firebase/firestore';
 import { Logs } from 'expo';
+import LocationManager from '../components/LocationManager';
+import * as geofire from 'geofire-common';
 
 export default function Home({ navigation, route }) {
   // const [diaries, setDiaries] = useState([{uid:'InsBmnicOLXLK3LAm1m2gdk5ND32',author:'lesly',species:'bamboo',date:'2023-03-24',location:'Downtown Vancouver', story:'this is my bamboo',like:4},{uid:'InsBmnicOLXLK3LAm1m2gdk5ND32',author:'boris',species:'rose',date:'2023-03-21',location:'Surrey',story:'this is my rose',like:16}]);
@@ -23,33 +25,60 @@ export default function Home({ navigation, route }) {
   ]);
   const [recommend, setRecommend] = useState(route.params.recommend);
   // const [url, setImageUrl]= useState([]);
+  const [location, setLocation] = useState(null);
   useEffect(()=>{
+    async function fetchDiaries(){
       let q;
-      if (recommend) {
+      console.log(sort);
+      if (sort === "recommand") {
         q = getLatestDiariesQueue();
-      } else {
-        q = getDiaryQueueByUser(auth.currentUser.uid);
+        console.log("latest", q);
+        const unsubscribe1 = onSnapshot(q, (querySnapshot) => {
+          if (querySnapshot.empty){
+            setDiaries([]);
+          }
+          if (!querySnapshot.empty) {
+            const newdiaries = [];
+            querySnapshot.docs.forEach((doc) => {
+              newdiaries.push({ ...doc.data(), diaryId:doc.id});
+              // console.log(doc.data().photos[0]);
+            });
+            setDiaries(newdiaries);
+          }
+        },
+        (err) => {
+          console.log(err);
+        })
+       
+      } else if (sort === "location") {
+        //console.log("location",location);
+        
+          const cloestDiaries = await getCloestDiariesQueue(location);
+          const unsubscribe2 = () => {
+            setDiaries(cloestDiaries);
+          }
+          
+          setLocation(null);
+          // setStatus(!status);
+      
+          // await q.sort(async (a,b)=>{
+          //   	const distanceFromA = await geofire.distanceBetween([a.location[2],a.location[3]],center);
+          //   	const distanceFromB = await geofire.distanceBetween([b.location[2],b.location[3]],center);
+          //   	return distanceFromA - distanceFromB;
+          //   })
+       
+        // q = getDiaryQueueByUser(auth.currentUser.uid);
       }
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        if (querySnapshot.empty){
-          setDiaries([]);
-        }
-        if (!querySnapshot.empty) {
-          const newdiaries = [];
-          querySnapshot.docs.forEach((doc) => {
-            newdiaries.push({ ...doc.data(), diaryId:doc.id});
-            // console.log(doc.data().photos[0]);
-          });
-          setDiaries(newdiaries);
-        }
-      },
-      (err) => {
-        console.log(err);
-      });
+      ;
       return () => {
-        unsubscribe();
+        unsubscribe1();
+        unsubscribe2();
       };
-  },[])
+
+    }
+    fetchDiaries();
+      
+  },[sort,location])
 
   useEffect(()=>{
     const q = getLikeListQueue();
@@ -97,10 +126,12 @@ export default function Home({ navigation, route }) {
           setOpen={setOpen}
           setValue={setSort}
           setItems={setItems}
+          onChangeValue={setSort}
         />
       </View>
       </View>
       }
+      {sort === "location" && <LocationManager locationHandler = {setLocation} screenName={"Home"}/>}
       {diaries&&<View>
         <FlatList
           data={diaries}

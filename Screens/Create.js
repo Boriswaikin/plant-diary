@@ -88,6 +88,7 @@ export default function Create({ navigation, route }) {
         description: story,
         species: species.trim().toLowerCase(),
         location: location,
+        geohash: location[0],
         userName: userName,
         date: [Date.now()]});
     } catch (err) {
@@ -235,7 +236,7 @@ export default function Create({ navigation, route }) {
         :<TextInput style = {styles.textInput} placeholder='Select species' value={species} onChangeText={setSpecies} />}
         <Text style={styles.subtitle}>Location</Text>
         {edit?<Text style={styles.lightFont}>Locate @ <Text style={styles.heavyFont}>{location[1]}</Text></Text>
-        :<LocationManager locationHandler={setLocation}/>}
+        :<LocationManager locationHandler={setLocation} screenName={"Create"}/>}
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         {isLoading && <ActivityIndicator size="small" color="red" />}
         </View>
