@@ -1,4 +1,4 @@
-import { View, Text, Button, TextInput, StyleSheet } from 'react-native'
+import { View, Text, Button, TextInput, StyleSheet, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { auth } from '../Firebase/firebase-setup';
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -14,6 +14,10 @@ export default function Login({ navigation }) {
       const usreCred = await signInWithEmailAndPassword(auth, email, password);
           console.log(usreCred);
       } catch (err) {
+          if(err.code==="auth/invalid-email"){
+            Alert.alert("User does not exist");}
+          if(err.code==="auth/wrong-password"){
+            Alert.alert("Invalid password");}
           console.log("Login err", err);
       }
     // navigation.navigate('Home');
