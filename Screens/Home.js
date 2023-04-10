@@ -1,4 +1,4 @@
-import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet, Alert } from 'react-native'
+import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet, Alert, ActivityIndicator} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import DropDownPicker from 'react-native-dropdown-picker';
 import DiaryCard from '../components/DiaryCard';
@@ -26,6 +26,10 @@ export default function Home({ navigation, route }) {
   const [recommend, setRecommend] = useState(route.params.recommend);
   // const [url, setImageUrl]= useState([]);
   const [location, setLocation] = useState(null);
+  const [isLoading,setIsLoading]=useState(false);
+  function setLoadingLocation(status){
+    setIsLoading(status)
+  }
   useEffect(()=>{
     async function fetchDiaries(){
       let q;
@@ -131,7 +135,10 @@ export default function Home({ navigation, route }) {
       </View>
       </View>
       }
-      {sort === "location" && <LocationManager locationHandler = {setLocation} screenName={"Home"}/>}
+      {sort === "location" && <LocationManager locationHandler = {setLocation} screenName={"Home"} setLoadingLocation={setLoadingLocation}/>}
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        {isLoading && <ActivityIndicator size="small" color="red" />}
+      </View>
       {diaries&&<View>
         <FlatList
           data={diaries}

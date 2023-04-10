@@ -241,7 +241,7 @@ export default function Create({ navigation, route }) {
         <Text style={styles.subtitle}>Location</Text>
         {edit?<Text style={styles.lightFont}>Locate @ <Text style={styles.heavyFont}>{location[1]}</Text></Text>
 
-        :<LocationManager locationHandler={setLocation} screenName={"Create"}/> setLoadingLocation={setLoadingLocation}/>}
+        :<LocationManager locationHandler={setLocation} screenName={"Create"} setLoadingLocation={setLoadingLocation}/>}
 
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         {isLoading && <ActivityIndicator size="small" color="red" />}
