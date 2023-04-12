@@ -139,7 +139,7 @@ export default function Home({ navigation, route }) {
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         {isLoading && <ActivityIndicator size="small" color="red" />}
       </View>
-      {diaries&&<View>
+      {diaries&&
         <FlatList
           data={diaries}
           keyExtractor={item=>item.diaryId}
@@ -151,7 +151,7 @@ export default function Home({ navigation, route }) {
             )
           }}
         />
-      </View>}
+      }
     </SafeAreaView>
   )
 }
