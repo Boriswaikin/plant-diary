@@ -3,19 +3,18 @@ import React from "react";
 import StorageImage from "./StorageImage";
 
 export default function Grid ({items}) {
-  const tempData = items.length>1?items.slice(1,5):null;
-  const numberOfColumns = tempData?.length>1?2:1;
+  const moreThanOne = items&&items.length > 1;
   return (
     <View style={styles.container}>
-      {tempData&&<FlatList
-        data={tempData}
-        key={tempData?.length}
-        numColumns={tempData?.length>1?2:1}
+      {moreThanOne&&<FlatList
+        data={moreThanOne?items.slice(1,5):null}
+        keyExtractor={item => item}
+        numColumns={2}
         ItemSeparatorComponent={() => <View style={{height: 4}} />}
         columnWrapperStyle={styles.columnWrapper}
         renderItem={({ item }) => {
           return (
-            <StorageImage size={numberOfColumns===1?150:73} source={ item } />)
+            <StorageImage size={items.length===2?150:73} source={ item } />)
         }}
       />}
     </View>
