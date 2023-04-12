@@ -6,7 +6,7 @@ export default function Grid ({items}) {
   const tempData = items.length>1?items.slice(1,5):null;
   const numberOfColumns = tempData?.length>1?2:1;
   return (
-    <View>
+    <View style={styles.container}>
       {tempData&&<FlatList
         data={tempData}
         key={tempData?.length}
@@ -24,6 +24,10 @@ export default function Grid ({items}) {
 
 const styles =
 StyleSheet.create({
+  container: {
+    width: 150,
+    height: 150,
+  },
   item: {
     paddingLeft:2,
     paddingRight:2,

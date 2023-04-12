@@ -135,6 +135,10 @@ export default function Home({ navigation, route }) {
       </View>
       </View>
       }
+      {sort === "location" && <LocationManager locationHandler = {setLocation} screenName={"Home"} setLoadingLocation={setLoadingLocation}/>}
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        {isLoading && <ActivityIndicator size="small" color="red" />}
+      </View>
       {diaries&&
         <FlatList
           data={diaries}
@@ -146,7 +150,8 @@ export default function Home({ navigation, route }) {
               </Pressable>
             )
           }}
-        />}
+        />
+      }
     </SafeAreaView>
   )
 }
