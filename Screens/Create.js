@@ -298,9 +298,10 @@ export default function Create({ navigation, route }) {
           buttonPressed={() => {
             const status =createValidate();
             if (status){
-            pressCreateDiary(photos);
+              pressCreateDiary(photos);
+              }
             }
-          }}>
+          }>
           <Text style={styles.buttonText}>Create</Text>
           </PressableButton>}
         </View>
@@ -339,18 +340,6 @@ const styles = StyleSheet.create({
     // alignSelf: 'center',
     justifyContent: "center",
     flexDirection: "row",
-  },
-  editButton: {
-    borderRadius: 5,
-    padding: 2,
-    width: 80,
-    height: 22,
-    backgroundColor: 'rgb(220,220,220)',
-  },
-  editText: {
-    fontSize: 11,
-    color: 'black',
-    fontWeight: 600,
   },
   lightFont: {
     fontSize: 15,
