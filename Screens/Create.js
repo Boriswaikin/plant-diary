@@ -11,7 +11,7 @@ import Color from '../components/Color';
 import { async } from '@firebase/util';
 import LocationManager from '../components/LocationManager';
 import StorageImage from '../components/StorageImage';
-
+import NotificationManager from '../components/NotificationManager';
 
 
 export default function Create({ navigation, route }) {
@@ -101,6 +101,7 @@ export default function Create({ navigation, route }) {
     cleanup();
     setRemovedUri(true);
     setIsLoading(false);
+    NotificationManager();
     navigation.navigate("Home");
   }
 
@@ -285,7 +286,6 @@ export default function Create({ navigation, route }) {
             const status =createValidate();
             if (status){
             pressCreateDiary(photos);
-           
             }
           }}>
           <Text style={styles.buttonText}>Create</Text>
