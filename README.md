@@ -313,3 +313,26 @@ Pressing 'Go to Map!" if we want to change location, after clicking "Confirm you
 - External API use
 
 </details>
+
+<details>
+  <summary><b>Iteration 3</b></summary>
+#### Iteration 3
+
+#### Contributed by member:
+
+**Tasks**
+- Sort by location
+- Style of search and sort bar
+- Subscribed diaries query
+- Species selection on create screen
+- Achievement system design
+- Notification
+- Plant.id API
+
+**Optional Task**
+- Color Theme
+- App icon, slug
+- Control image size to be 400
+
+</details>
+
