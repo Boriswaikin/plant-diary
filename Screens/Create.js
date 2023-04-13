@@ -253,7 +253,20 @@ export default function Create({ navigation, route }) {
             <PressableButton
             customizedStyle={styles.button}
             buttonPressed={() => {
-              pressDeleteDiary();
+              Alert.alert(
+                "Important",
+                "Are you sure you want to delete the selected diary?",
+                [
+                  { text: "No" },
+                  {
+                    text: "Yes",
+                    onPress: () => {
+                      pressDeleteDiary();
+                    },
+                  },
+                ],
+                { cancelable: false }
+              );
             }}>
             <Text style={styles.buttonText}>Delete</Text>
             </PressableButton>
