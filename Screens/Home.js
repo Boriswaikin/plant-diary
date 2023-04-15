@@ -185,6 +185,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
     marginHorizontal: 30,
+    marginTop: 6,
     zIndex: 10,
     elevation: (Platform.OS === 'android') ? 10 : 0,
   }
