@@ -255,9 +255,6 @@ export default function Create({ navigation, route }) {
     navigation.goBack();
   }
 
-
-
-    
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.inputContainer}>
