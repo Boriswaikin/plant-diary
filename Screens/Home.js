@@ -1,15 +1,14 @@
 import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet, Alert, ActivityIndicator} from 'react-native'
 import React, { useEffect, useState } from 'react'
-import DropDownPicker from 'react-native-dropdown-picker';
 import DiaryCard from '../components/DiaryCard';
 import { getCloestDiariesQueue, getDiaryBySpecies, getDiaryQueueByUser, getLatestDiariesQueue, getLikeList, getLikeListQueue } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
 import { MaterialIcons } from '@expo/vector-icons';
 import PressableButton from '../components/PressableButton';
 import { onSnapshot } from 'firebase/firestore';
-import { Logs } from 'expo';
 import LocationManager from '../components/LocationManager';
 import * as geofire from 'geofire-common';
+import DropdownList from '../components/DropdownList';
 
 export default function Home({ navigation, route }) {
   // const [diaries, setDiaries] = useState([{uid:'InsBmnicOLXLK3LAm1m2gdk5ND32',author:'lesly',species:'bamboo',date:'2023-03-24',location:'Downtown Vancouver', story:'this is my bamboo',like:4},{uid:'InsBmnicOLXLK3LAm1m2gdk5ND32',author:'boris',species:'rose',date:'2023-03-21',location:'Surrey',story:'this is my rose',like:16}]);
@@ -17,12 +16,10 @@ export default function Home({ navigation, route }) {
   const [likeList, setLikeList] = useState(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("recommand");
-  const [open, setOpen] = useState(false);
-  const [items, setItems] = useState([
+  const items = [
     {label: 'Sorted by: Recommand', value: 'recommand'},
     {label: 'By Location', value: 'location'},
-    // {label: 'By Species', value: 'species'}
-  ]);
+  ];
   const [recommend, setRecommend] = useState(route.params.recommend);
   // const [url, setImageUrl]= useState([]);
   const [location, setLocation] = useState(null);
@@ -111,28 +108,18 @@ export default function Home({ navigation, route }) {
     <SafeAreaView style={styles.container}>
       {recommend && 
       <View style={styles.topContainer}>
-      <View style={styles.iconInput}>
-        <TextInput 
-        style={styles.input}
-        placeholder='Search a plant' 
-        value={search} 
-        onChangeText={(newSearch)=>{setSearch(newSearch)}} 
-        />
-        <PressableButton buttonPressed={()=>{searchDiaries(search)}}>
-          <MaterialIcons name="search" size={24} color="black" style={styles.icon} />
-        </PressableButton>
-      </View>
-      <View style={styles.drop}>
-        <DropDownPicker
-          open={open}
-          value={sort}
-          items={items}
-          setOpen={setOpen}
-          setValue={setSort}
-          setItems={setItems}
-          onChangeValue={setSort}
-        />
-      </View>
+        <DropdownList options={items} onSelect={setSort} />
+        <View style={styles.iconInput}>
+          <TextInput 
+          style={styles.input}
+          placeholder='Search a plant' 
+          value={search} 
+          onChangeText={(newSearch)=>{setSearch(newSearch)}} 
+          />
+          <PressableButton buttonPressed={()=>{searchDiaries(search)}}>
+            <MaterialIcons name="search" size={24} color="black" style={styles.icon} />
+          </PressableButton>
+        </View>
       </View>
       }
       {sort === "location" && <LocationManager locationHandler = {setLocation} screenName={"Home"} setLoadingLocation={setLoadingLocation}/>}
@@ -164,23 +151,29 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontSize:18, 
-    padding:14,
-  },
-  inputContainer: {
-    width: 300,
+    fontSize:16, 
+    padding:12,
+    paddingHorizontal: 20,
   },
   iconInput: {
     flexDirection: 'row',
-    borderWidth: 1,
+    backgroundColor: 'white',
     marginVertical: 10,
-    borderRadius: 10,
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    width: 300,
+    flex: 1,
+    shadowOffset: {
+      width: 5,
+      height: 5,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: (Platform.OS === 'android') ? 9 : 0,
   },
   icon: {
     padding: 10,
+    paddingRight: 15,
   },
   drop: {
     width: 300,
@@ -188,6 +181,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   topContainer: {
-    zIndex: 100,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginHorizontal: 30,
+    zIndex: 10,
+    elevation: (Platform.OS === 'android') ? 10 : 0,
   }
 })

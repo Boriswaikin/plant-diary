@@ -74,7 +74,7 @@ export default function EditProfile({ navigation, route }) {
           return;
       }
       try {
-      const result = await ImagePicker.launchCameraAsync({allowsEditing: true})
+      const result = await ImagePicker.launchCameraAsync({allowsEditing: true, quality:0.5, maxWidth: 200, maxHeight: 200,})
       if (!result.canceled) {
         setNewhead(result.assets[0].uri);
         setHead(result.assets[0].uri);
@@ -91,7 +91,7 @@ export default function EditProfile({ navigation, route }) {
         return;
     }
     try {
-    const result = await ImagePicker.launchImageLibraryAsync()
+    const result = await ImagePicker.launchImageLibraryAsync({quality:0.5, maxWidth: 200, maxHeight: 200,})
     if (!result.canceled) {
       setNewhead(result.assets[0].uri);
       setHead(result.assets[0].uri);

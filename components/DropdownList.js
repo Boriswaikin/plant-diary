@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
+import PressableButton from './PressableButton';
 
 export default function DropdownList ({ options, onSelect }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,24 +16,44 @@ export default function DropdownList ({ options, onSelect }) {
   const handleOptionSelect = (option) => {
     setSelectedOption(option);
     setIsOpen(false);
-    onSelect(option);
+    onSelect(option.value);
   };
 
   return (
-    <View style={{ position: 'relative' }}>
-      <TouchableOpacity onPress={toggleDropdown} style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={{ marginRight: 5 }}>{selectedOption ? selectedOption.label : 'Select an option'}</Text>
-        <Icon name={isOpen ? 'keyboard-arrow-up' : 'keyboard-arrow-down'} size={20} color="#999" />
+    <View>
+      <TouchableOpacity onPress={toggleDropdown}>
+        <Entypo name={isOpen?"chevron-up":"chevron-down"} size={26} color="black" />
       </TouchableOpacity>
-      {isOpen && (
-        <View style={{ position: 'absolute', top: '100%', width: '100%', backgroundColor: '#fff', borderRadius: 4, elevation: 4 }}>
-          {options.map((option) => (
-            <TouchableOpacity key={option.value} onPress={() => handleOptionSelect(option)} style={{ padding: 10 }}>
-              <Text>{option.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
+      {options&&isOpen &&
+        <FlatList
+          style={styles.optionContainer}
+          data={options}
+          keyExtractor={item=>item.value}
+          renderItem={({item})=>{
+            return (
+              <PressableButton customizedStyle={styles.optionItem} buttonPressed={() => handleOptionSelect(item)} >
+                <Text>{item.label}    {selectedOption&&selectedOption.value===item.value&&<FontAwesome5 name="check" size={16} color="black" />}</Text>
+              </PressableButton>
+            )
+          }}
+        />}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  optionContainer: {
+    maxHeight: 300,
+    width: 300,
+    position: 'absolute', 
+    top: 50, 
+    left: 0,
+    backgroundColor: '#fff', 
+    borderRadius: 10, 
+  },
+  optionItem: {
+    borderBottomColor: 'rgb(200,200,200)',
+    borderBottomWidth: 1,
+    paddingVertical: 15, 
+  }
+})
