@@ -46,7 +46,7 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
             return;
         }
         try {
-        const result = await ImagePicker.launchCameraAsync({allowsEditing: true})
+        const result = await ImagePicker.launchCameraAsync({allowsEditing: true,quality:0.5, maxWidth: 500, maxHeight: 500,})
         if (!result.canceled) {
             var arr = [];
             arr.push(result.assets[0].uri);
@@ -69,6 +69,7 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
         const result = await ImagePicker.launchImageLibraryAsync(
             {
                 // allowsEditing: true,
+                quality:0.5, maxWidth: 500, maxHeight: 500,
                 allowsMultipleSelection:true})
                 const arr = result.assets.map(
                     item=>item.uri

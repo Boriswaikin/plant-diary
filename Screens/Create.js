@@ -1,4 +1,4 @@
-import { View, Text, Button, TextInput, FlatList, StyleSheet, Alert, SafeAreaView,ActivityIndicator} from 'react-native'
+import { View, Text, ScrollView, TextInput, FlatList, StyleSheet, Alert, SafeAreaView,ActivityIndicator} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { createDiary, deleteDiary, editDiary, getDiaryById, getProfileById } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
@@ -11,6 +11,7 @@ import Color from '../components/Color';
 import { async } from '@firebase/util';
 import LocationManager from '../components/LocationManager';
 import StorageImage from '../components/StorageImage';
+import APIManager from '../components/APIManager';
 
 
 
@@ -212,7 +213,7 @@ export default function Create({ navigation, route }) {
     
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.inputContainer}>
+      <ScrollView style={styles.inputContainer}>
         {edit&&photos&&  
         <View>
         <Text style={styles.subtitle}>Previous Photos</Text>
@@ -237,16 +238,19 @@ export default function Create({ navigation, route }) {
         <TextInput style = {styles.textInput} placeholder='Tell us your story' value={story} onChangeText={setStory} />
         <Text style={styles.subtitle}>Species</Text>
         {edit?<Text style={styles.heavyFont}>{species}</Text>
-        :<TextInput style = {styles.textInput} placeholder='Select species' value={species} onChangeText={setSpecies} />}
+        :<View>
+          <TextInput style = {styles.textInput} placeholder='Select species' value={species} onChangeText={setSpecies} />
+          {photos.length!==0&&<APIManager uri={photos[photos.length - 1]} />}
+        </View>}
         <Text style={styles.subtitle}>Location</Text>
         {edit?<Text style={styles.lightFont}>Locate @ <Text style={styles.heavyFont}>{location[1]}</Text></Text>
 
         :<LocationManager locationHandler={setLocation} screenName={"Create"} setLoadingLocation={setLoadingLocation}/>}
 
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        {isLoading && <ActivityIndicator size="small" color="red" />}
+        {isLoading && <ActivityIndicator size="small" color="black" />}
         </View>
-      </View>
+      </ScrollView>
       <View style={styles.buttonContainer}>
         {edit ? 
             <PressableButton
@@ -297,8 +301,8 @@ export default function Create({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 30,
-    marginTop: 10,
+    marginHorizontal: 30,
+    marginVertical: 10,
     justifyContent: 'center',
   },
   subtitle: {
@@ -315,7 +319,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     margin: 10,
-    marginTop: 30,
+    // marginTop: 30,
     width: 120,
   },
   buttonText: {
@@ -326,6 +330,7 @@ const styles = StyleSheet.create({
     // alignSelf: 'center',
     justifyContent: "center",
     flexDirection: "row",
+    gap: 20,
   },
   editButton: {
     borderRadius: 5,

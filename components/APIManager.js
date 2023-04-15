@@ -1,44 +1,84 @@
 import React, { useState } from 'react';
-import { View, Text, Button } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import PressableButton from './PressableButton';
+import {readAsStringAsync} from 'expo-file-system';
 
-const API_KEY = 'YOUR_API_KEY_HERE';
+const API_KEY = 'p7amMGJ1HIB0c7gVw9QcDLcP8Dv9JvT7q0249zg2xbeTqZknct';
 
 export default function APIManager({ uri }) {
   const [result, setResult] = useState(null);
 
   async function identifyPlant (uri) {
-    const formData = new FormData();
-    formData.append('organs', 'flower,leaf');
-    formData.append('images', { uri, name: 'image.jpg', type: 'image/jpg' });
-
     try {
+      const base64 = await readAsStringAsync(uri,{ encoding: 'base64' });
+      const data = {
+        api_key: API_KEY,
+        images: [base64],
+        modifiers: ['crops_fast', 'similar_images'],
+        plant_language: 'en',
+        plant_details: ["common_names",
+        "url",
+        "name_authority",
+        "wiki_description",
+        "taxonomy",
+        "synonyms"],
+      }
+
       const response = await fetch('https://api.plant.id/v2/identify', {
         method: 'POST',
         headers: {
-          'Content-Type': 'multipart/form-data',
-          'Api-Key': API_KEY,
+          'Content-Type': 'application/json',
         },
-        body: formData,
+        body: JSON.stringify(data),
       });
 
-      const data = await response.json();
-      setResult(data);
-      console.log(result);
+      const output = await response.json();
+      setResult(output.suggestions[0]);
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Button title="Identify the plant" onPress={()=>identifyPlant(uri)} />
+    <View>
+      <View style={styles.buttonContainer}>
+      <PressableButton customizedStyle={styles.editButton} buttonPressed={()=>identifyPlant(uri)} >
+        <Text style={styles.editText}>Identify Me!</Text>
+      </PressableButton>
+      </View>
       {result && (
         <>
-          <Text style={{ fontWeight: 'bold', fontSize: 20, marginVertical: 10 }}>Identification result:</Text>
-          <Text>{result.suggestions[0].plant_name}</Text>
-          <Text>{result.suggestions[0].probability}</Text>
+          <Text style={styles.title}>{result.plant_name}</Text>
+          <Text>{result.plant_details.wiki_description.value}</Text>
         </>
       )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  title: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    marginBottom: 3,
+  },
+  buttonContainer: {
+    justifyContent: "flex-end",
+    flexDirection: "row",
+    marginTop: 10,
+  },
+  editButton: {
+    borderRadius: 5,
+    padding: 2,
+    margin: 5,
+    width: 85,
+    height: 22,
+    backgroundColor: 'rgb(220,220,220)',
+  },
+  editText: {
+    fontSize: 11,
+    color: 'black',
+    fontWeight: 600,
+  },
+})
