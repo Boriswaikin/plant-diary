@@ -66,7 +66,7 @@ export default function Home({ navigation, route }) {
 						// console.log(doc.data().photos[0]);
 					});
 					if (sort === "location" && location !== null) {
-						console.log(location);
+						//console.log(location);
 						const center = [location[2], location[3]];
 						newdiaries.sort((a, b) => {
 							const distanceFromA = geofire.distanceBetween(
@@ -91,61 +91,7 @@ export default function Home({ navigation, route }) {
 		return () => {
 			unsubscribe();
 		};
-	}, [sort, location]);
-
-	// useEffect(()=>{
-	//   async function fetchDiaries(){
-	//     let q;
-	//     console.log(sort);
-	//     if (sort === "recommand") {
-	//       q = getLatestDiariesQueue();
-	//       console.log("latest", q);
-	//       const unsubscribe1 = onSnapshot(q, (querySnapshot) => {
-	//         if (querySnapshot.empty){
-	//           setDiaries([]);
-	//         }
-	//         if (!querySnapshot.empty) {
-	//           const newdiaries = [];
-	//           querySnapshot.docs.forEach((doc) => {
-	//             newdiaries.push({ ...doc.data(), diaryId:doc.id});
-	//             // console.log(doc.data().photos[0]);
-	//           });
-	//           setDiaries(newdiaries);
-	//         }
-	//       },
-	//       (err) => {
-	//         console.log(err);
-	//       })
-
-	//     } else if (sort === "location") {
-	//       //console.log("location",location);
-
-	//         const cloestDiaries = await getCloestDiariesQueue(location);
-	//         const unsubscribe2 = () => {
-	//           setDiaries(cloestDiaries);
-	//         }
-
-	//         setLocation(null);
-	//         // setStatus(!status);
-
-	//         // await q.sort(async (a,b)=>{
-	//         //   	const distanceFromA = await geofire.distanceBetween([a.location[2],a.location[3]],center);
-	//         //   	const distanceFromB = await geofire.distanceBetween([b.location[2],b.location[3]],center);
-	//         //   	return distanceFromA - distanceFromB;
-	//         //   })
-
-	//       // q = getDiaryQueueByUser(auth.currentUser.uid);
-	//     }
-	//     ;
-	//     return () => {
-	//       unsubscribe1();
-	//       unsubscribe2();
-	//     };
-
-	//   }
-	//   fetchDiaries();
-
-	// },[sort,location])
+	}, [sort, location, search]);
 
 	useEffect(() => {
 		const q = getLikeListQueue();
@@ -167,7 +113,10 @@ export default function Home({ navigation, route }) {
 		const searchResult = await getDiaryBySpecies(species.trim().toLowerCase());
 		setDiaries(searchResult);
 	}
-
+	function clearSearchContent() {
+		// console.log("press clear up");
+		setSearch("");
+	}
 	return (
 		<SafeAreaView style={styles.container}>
 			{recommend && (
@@ -181,6 +130,18 @@ export default function Home({ navigation, route }) {
 								setSearch(newSearch);
 							}}
 						/>
+						{search && (
+							<PressableButton
+								buttonPressed={() => {
+									clearSearchContent();
+								}}>
+								<MaterialIcons
+									name="highlight-remove"
+									size={24}
+									color="black"
+								/>
+							</PressableButton>
+						)}
 						<PressableButton
 							buttonPressed={() => {
 								searchDiaries(search);
