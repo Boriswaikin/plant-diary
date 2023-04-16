@@ -148,7 +148,10 @@ export default function Create({ navigation, route }) {
     cleanup();
     setRemovedUri(true);
     setIsLoading(false);
-    NotificationManager();
+    NotificationManager(
+      "Diary created!"
+      ,"Congratulation! Your diary is created and published. Keep publishing more diaries to record your plant growth."
+    );
     navigation.navigate("Home");
   }
 

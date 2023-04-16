@@ -9,7 +9,8 @@ import Icon from '../components/Icon';
 import { checkFollowingRelation } from '../Firebase/helper';
 import StorageImage from '../components/StorageImage';
 import { Feather } from '@expo/vector-icons';
-import { async } from '@firebase/util';
+
+
 
 const w = Dimensions.get('window').width;
 

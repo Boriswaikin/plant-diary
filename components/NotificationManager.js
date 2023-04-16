@@ -17,7 +17,7 @@ export async function verifyPermission() {
     }
 }
 
-export default function NotificationManager(){
+export default function NotificationManager(title,body){
     async function scheduleNotificationHandler(){
         const hasPermission = verifyPermission();
         if (!hasPermission){
@@ -27,8 +27,8 @@ export default function NotificationManager(){
         try {
             await Notifications.scheduleNotificationAsync(
                 {content:
-                    {title:"Diary created!",
-                    body:"Congratulation! Your diary is published. Keep publishing more diaries to record your plant growth."
+                    {title:title,
+                    body:body
                 ,data:{url:"http://google.com"}},trigger:null}
             )
         }
