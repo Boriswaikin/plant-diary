@@ -184,7 +184,7 @@ export async function createProfile(user) {
 			uid: auth.currentUser.uid,
 			name: user.name,
 			email: user.email,
-			achievement: ["very", "good"],
+			achievement: [],
 			followerCount: 0,
 			followingCount: 0,
 			headPhoto: "https://ui-avatars.com/api/?name=XX",
@@ -461,6 +461,18 @@ export async function getSubscribedDiariesQueue() {
 		const following = docSnap.data().following;
 		const q = query(collection(firestore, "diary"), where('userId', 'in', following), orderBy("date", "desc"));
 		return q;
+	} catch (err) {
+		console.log(err);
+	}
+}
+
+export async function addAchievement(uid,text) {
+	try {
+		const achievementRef = doc(firestore, "profile", uid);
+		await updateDoc(achievementRef, {
+			achievement: arrayUnion(text) 
+		})
+
 	} catch (err) {
 		console.log(err);
 	}

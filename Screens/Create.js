@@ -1,17 +1,16 @@
-import { View, Text, Button, TextInput, FlatList, StyleSheet, Alert, SafeAreaView,ActivityIndicator} from 'react-native'
+import { View, Text,TextInput, FlatList, StyleSheet, Alert, SafeAreaView,ActivityIndicator} from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { createDiary, deleteDiary, editDiary, getDiaryById, getProfileById } from '../Firebase/helper';
+import { createDiary, deleteDiary, editDiary, getProfileById } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
 import { ref, uploadBytesResumable,deleteObject } from "firebase/storage";
 import ImageManager from '../components/ImageManager';
 import { storage } from '../Firebase/firebase-setup';
 import GallaryBox from '../components/GallaryBox';
 import PressableButton from '../components/PressableButton';
-import Color from '../components/Color';
-import { async } from '@firebase/util';
 import LocationManager from '../components/LocationManager';
 import StorageImage from '../components/StorageImage';
-
+import NotificationManager from '../components/NotificationManager';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 
 export default function Create({ navigation, route }) {
@@ -26,6 +25,52 @@ export default function Create({ navigation, route }) {
   const [previousPhoto,setPreviousPhoto]=useState([]);
   const [newPhoto, setNewPhoto]=useState([]);
   const [isLoading,setIsLoading]=useState(false);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("");
+  const [items, setItems] = useState([
+    {label: 'African Violet', value: 'African Violet'},
+    {label: 'Air Plant', value: 'Air Plant'},
+    {label: 'Alocasia', value: 'Alocasia'},
+    {label: 'Aloe Vera', value: 'Aloe Vera'},
+    {label: 'Anthurium', value: 'Anthurium'},
+    {label: 'Asparagus Fern', value: 'Asparagus Fern'},
+    {label: 'Begonia', value: 'Begonia'},
+    {label: 'Bromeliad', value: 'Bromeliad'},
+    {label: 'Cactus', value: 'Cactus'},
+    {label: 'Calathea', value: 'Calathea'},
+    {label: 'Chinese Evergreen', value: 'Chinese Evergreen'},
+    {label: 'Chinese Money Plant', value: 'Chinese Money Plant'},
+    {label: 'Coleus', value: 'Coleus'},
+    {label: 'Croton', value: 'Croton'},
+    {label: 'Dieffenbachia', value: 'Dieffenbachia'},
+    {label: 'Dracaena', value: 'Dracaena'},
+    {label: 'English Ivy', value: 'English Ivy'},
+    {label: 'Fiddle Leaf Fig', value: 'Fiddle Leaf Fig'},
+    {label: 'Fittonia', value: 'Fittonia'},
+    {label: 'Geranium', value: 'Geranium'},
+    {label: 'Guiana Chestnut', value: 'Guiana Chestnut'},
+    {label: 'Haworthia', value: 'Haworthia'},
+    {label: 'Jade Plant', value: 'Jade Plant'},
+    {label: 'Jew', value: 'Jew'},
+    {label: 'Kalanchoe', value: 'Kalanchoe'},
+    {label: 'Lavender', value: 'Lavender'},
+    {label: 'Maranta Prayer Plant', value: 'Maranta Prayer Plant'},
+    {label: 'Monstera', value: 'Monstera'},
+    {label: 'Palm', value: 'Palm'},
+    {label: 'Peace Lily', value: 'Peace Lily'},
+    {label: 'Peperomia', value: 'Peperomia'},
+    {label: 'Philodendron', value: 'Philodendron'},
+    {label: 'Pothos', value: 'Pothos'},
+    {label: 'Rubber Plant', value: 'Rubber Plant'},
+    {label: 'Schefflera', value: 'Schefflera'},
+    {label: 'Snake Plant', value: 'Snake Plant'},
+    {label: 'Spider Plant', value: 'Spider Plant'},
+    {label: 'String of Pearls', value: 'String of Pearls'},
+    {label: 'Swiss Cheese Plant', value: 'Swiss Cheese Plant'},
+    {label: 'Yucca', value: 'Yucca'},
+    {label: 'ZZ Plant', value: 'ZZ Plant'},
+    {label: 'Others', value: 'Others'},
+  ]);
 
   function resetRemovedUri(){
     setRemovedUri(false); 
@@ -37,18 +82,20 @@ export default function Create({ navigation, route }) {
 
   function setLoadingLocation(status){
     setIsLoading(status)
-  }
+  } 
 
   useEffect(()=>{
     if (route.params  && route.params.diary) {
       setEdit(true);
       const currentDiary = route.params.diary;
+      console.log(currentDiary.species);
       setPhotos(currentDiary.photos);
       setPreviousPhoto(currentDiary.photos);
       setLocation(currentDiary.location);
       setStory(currentDiary.description);
       setSpecies(currentDiary.species);
       setDate(currentDiary.date);
+      setValue(currentDiary.species);
     }
   },[])
 
@@ -90,7 +137,7 @@ export default function Create({ navigation, route }) {
       await createDiary({		
         photos:imageAll,
         description: story,
-        species: species.trim().toLowerCase(),
+        species: species.trim(),
         location: location,
         geohash: location[0],
         userName: userName,
@@ -101,16 +148,20 @@ export default function Create({ navigation, route }) {
     cleanup();
     setRemovedUri(true);
     setIsLoading(false);
+    NotificationManager(
+      "Diary created!"
+      ,"Congratulation! Your diary is created and published. Keep publishing more diaries to record your plant growth."
+    );
     navigation.navigate("Home");
   }
 
   function cleanup() {
     // setPhotos(['url1', 'url2']);
     setPhotos([]);
-    setSpecies("");
     setLocation([]);
     setDate([]);
     setStory("");
+    setValue("");
   }
 
   function createValidate(){
@@ -127,7 +178,7 @@ export default function Create({ navigation, route }) {
     return false;
     }
     else if(
-      !location
+      location.length===0
     )
     { Alert.alert("Kindly provide the location of the plant");
     return false;
@@ -207,9 +258,6 @@ export default function Create({ navigation, route }) {
     navigation.goBack();
   }
 
-
-
-    
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.inputContainer}>
@@ -236,8 +284,20 @@ export default function Create({ navigation, route }) {
         <Text style={styles.subtitle}>Story</Text>
         <TextInput style = {styles.textInput} placeholder='Tell us your story' value={story} onChangeText={setStory} />
         <Text style={styles.subtitle}>Species</Text>
-        {edit?<Text style={styles.heavyFont}>{species}</Text>
-        :<TextInput style = {styles.textInput} placeholder='Select species' value={species} onChangeText={setSpecies} />}
+        {/* {edit?<Text style={styles.heavyFont}>{species}</Text>
+        : */}
+         {/* <TextInput style = {styles.textInput} placeholder='Select species' value={species} onChangeText={setSpecies} /> */}
+        <DropDownPicker
+        open={open}
+        value={value}
+        items={items}
+        setOpen={setOpen}
+        setValue={setValue}
+        setItems={setItems}
+        onChangeValue={()=>{
+          setSpecies(value);}}
+      />
+        {/* } */}
         <Text style={styles.subtitle}>Location</Text>
         {edit?<Text style={styles.lightFont}>Locate @ <Text style={styles.heavyFont}>{location[1]}</Text></Text>
 
@@ -252,7 +312,20 @@ export default function Create({ navigation, route }) {
             <PressableButton
             customizedStyle={styles.button}
             buttonPressed={() => {
-              pressDeleteDiary();
+              Alert.alert(
+                "Important",
+                "Are you sure you want to delete the selected diary?",
+                [
+                  { text: "No" },
+                  {
+                    text: "Yes",
+                    onPress: () => {
+                      pressDeleteDiary();
+                    },
+                  },
+                ],
+                { cancelable: false }
+              );
             }}>
             <Text style={styles.buttonText}>Delete</Text>
             </PressableButton>
@@ -284,10 +357,10 @@ export default function Create({ navigation, route }) {
           buttonPressed={() => {
             const status =createValidate();
             if (status){
-            pressCreateDiary(photos);
-           
+              pressCreateDiary(photos);
+              }
             }
-          }}>
+          }>
           <Text style={styles.buttonText}>Create</Text>
           </PressableButton>}
         </View>
@@ -326,18 +399,6 @@ const styles = StyleSheet.create({
     // alignSelf: 'center',
     justifyContent: "center",
     flexDirection: "row",
-  },
-  editButton: {
-    borderRadius: 5,
-    padding: 2,
-    width: 80,
-    height: 22,
-    backgroundColor: 'rgb(220,220,220)',
-  },
-  editText: {
-    fontSize: 11,
-    color: 'black',
-    fontWeight: 600,
   },
   lightFont: {
     fontSize: 15,

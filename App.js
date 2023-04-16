@@ -14,8 +14,21 @@ import { auth } from './Firebase/firebase-setup';
 import { onAuthStateChanged } from 'firebase/auth';
 import Create from './Screens/Create';
 import Map from './Screens/Map';
+import * as Notifications from 'expo-notifications'
+import { Linking } from 'react-native';
 
 const Stack = createNativeStackNavigator();
+
+Notifications.setNotificationHandler({
+  handleNotification:async()=>{
+    return {
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,}
+    }
+  }
+)
+
 
 export default function App() {
 
@@ -29,6 +42,24 @@ export default function App() {
               setIsAuthenticated(false);
           }
       });
+  },[]);
+
+
+  useEffect(()=>{
+    const subscription1 =Notifications.addNotificationReceivedListener(
+      (notification) => {
+        console.log("notification received :", notification);
+      });
+
+    const subscription2 = Notifications.addNotificationResponseReceivedListener(
+      response => {
+        const url = response.notification.request.content.data.url;
+        Linking.openURL(url);
+      })
+    return () => {
+      subscription1.remove();
+      subscription2.remove();}
+  
   },[]);
 
   const AuthStack = (

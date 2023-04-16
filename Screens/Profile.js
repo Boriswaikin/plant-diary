@@ -1,6 +1,6 @@
 import { View, Text, FlatList, Button, Pressable, StyleSheet, SafeAreaView, Image, Dimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { followUser, getDiaryQueueByUser, getProfileById, unfollowUser } from '../Firebase/helper';
+import { followUser, getDiaryQueueByUser, getProfileById, unfollowUser,addAchievement } from '../Firebase/helper';
 import { auth, firestore } from '../Firebase/firebase-setup';
 import { signOut } from 'firebase/auth';
 import { doc, onSnapshot, query } from 'firebase/firestore';
@@ -9,6 +9,8 @@ import Icon from '../components/Icon';
 import { checkFollowingRelation } from '../Firebase/helper';
 import StorageImage from '../components/StorageImage';
 import { Feather } from '@expo/vector-icons';
+
+
 
 const w = Dimensions.get('window').width;
 
@@ -19,6 +21,7 @@ export default function Profile({ navigation, route }) {
   const [self, setSelf] = useState(true);
   const [following, setFollowing] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [achievement,setAchievement]=useState([]);
 
   useEffect( ()=>{
       (async()=>{
@@ -37,10 +40,37 @@ export default function Profile({ navigation, route }) {
     )();
   },[])
 
+  async function addAchievementStatus(uid,text) {
+    // followUser(selfId,thirdId);
+    await addAchievement(uid,text);
+  }
+
   useEffect (()=>{
+   
     const unsubscribe1 = onSnapshot(doc(firestore, "profile", route.params && route.params.id || auth.currentUser.uid), (doc) => {
       setProfile(doc.data());
+        if(doc.data().postCount===1 && !doc.data().achievement.includes("FirstPost")){
+          addAchievementStatus(auth.currentUser.uid,"FirstPost");
+        }
+        const achievement=doc.data().achievement; 
+        setAchievement(achievement.map(item=>{
+          let imageUrl;
+          switch (item){
+              case "Followed":
+                imageUrl= require('../images/Followed.png');
+                break;
+              case "FirstPost":
+              imageUrl= require('../images/FirstPost.png');
+              break;
+              default:
+              imageUrl = '';
+          }
+        return{
+          imageUrl:imageUrl
+        }
+      }));
     });
+    
     return () => {
       unsubscribe1();
     };
@@ -69,6 +99,8 @@ export default function Profile({ navigation, route }) {
     // followUser(selfId,thirdId);
     await followUser(id);
     setFollowing(true);
+    if(profile.followerCount===0 && !profile.achievement.includes("Followed")){
+     await addAchievement(id,"Followed");}
     console.log('Follow user');
   }
 
@@ -108,13 +140,13 @@ export default function Profile({ navigation, route }) {
           <View>
           <FlatList 
           horizontal={true}
-          data={profile.achievement}
+          data={achievement}
           renderItem={({item})=>{
             return (
               <View style={styles.icon}>
-              <Icon size={80} source={"https://ui-avatars.com/api/?name=" + item}/>
+              <Image style={styles.image} source={item.imageUrl}/>
               </View>
-            )
+            ) 
           }}
           />
           </View>
@@ -213,6 +245,12 @@ const styles = StyleSheet.create({
   icon: {
     padding: 3,
   },
+  image:{
+    width:80,
+    height:80,
+    borderRadius:80,
+  },
+
   achievementText: {
     fontWeight: 600,
     color: 'gray',
