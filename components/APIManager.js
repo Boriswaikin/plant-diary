@@ -6,11 +6,12 @@ import {readAsStringAsync} from 'expo-file-system';
 
 const API_KEY = 'p7amMGJ1HIB0c7gVw9QcDLcP8Dv9JvT7q0249zg2xbeTqZknct';
 
-export default function APIManager({ uri }) {
+export default function APIManager({ uri, setLoading, setOutput }) {
   const [result, setResult] = useState(null);
 
   async function identifyPlant (uri) {
     try {
+      setLoading(true);
       const base64 = await readAsStringAsync(uri,{ encoding: 'base64' });
       const data = {
         api_key: API_KEY,
@@ -35,6 +36,8 @@ export default function APIManager({ uri }) {
 
       const output = await response.json();
       setResult(output.suggestions[0]);
+      setOutput(output.suggestions[0].plant_name);
+      setLoading(!output);
     } catch (error) {
       console.error(error);
     }

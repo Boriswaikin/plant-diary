@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TextInput, FlatList, StyleSheet, Alert, SafeAreaView,ActivityIndicator} from 'react-native'
+import { View, Text, ScrollView, TextInput, FlatList, StyleSheet, Alert, SafeAreaView,ActivityIndicator, LogBox} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { createDiary, deleteDiary, editDiary, getProfileById } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
@@ -10,9 +10,8 @@ import PressableButton from '../components/PressableButton';
 import LocationManager from '../components/LocationManager';
 import StorageImage from '../components/StorageImage';
 import APIManager from '../components/APIManager';
-
+import DropdownList from '../components/DropdownList';
 import NotificationManager from '../components/NotificationManager';
-import DropDownPicker from 'react-native-dropdown-picker';
 
 
 export default function Create({ navigation, route }) {
@@ -85,6 +84,10 @@ export default function Create({ navigation, route }) {
   function setLoadingLocation(status){
     setIsLoading(status)
   } 
+
+  useEffect(() => {
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+  }, [])
 
   useEffect(()=>{
     if (route.params  && route.params.diary) {
@@ -288,24 +291,19 @@ export default function Create({ navigation, route }) {
         <Text style={styles.subtitle}>Species</Text>
         {edit?<Text style={styles.heavyFont}>{species}</Text>
         :
-        <DropDownPicker
-        open={open}
-        value={value}
-        items={items}
-        setOpen={setOpen}
-        setValue={setValue}
-        setItems={setItems}
-        onChangeValue={()=>{
-          setSpecies(value);}}
-        />}
+        <View  style={styles.speciesContainer}>
+          <View style={styles.speciesLine}>
+            <DropdownList options={items} onSelect={setSpecies} />
+            <View style={styles.speciesInput}>
+              <Text style={styles.heavyFont}>{species}</Text>
+            </View>
+          </View>
+          {photos.length!==0&&<APIManager uri={photos[photos.length - 1]} setLoading={setIsLoading} setOutput={setSpecies} />}
+        </View>}
         <Text style={styles.subtitle}>Location</Text>
         {edit?<Text style={styles.lightFont}>Locate @ <Text style={styles.heavyFont}>{location[1]}</Text></Text>
 
         :<LocationManager locationHandler={setLocation} screenName={"Create"} setLoadingLocation={setLoadingLocation}/>}
-
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        {isLoading && <ActivityIndicator size="small" color="black" />}
-        </View>
       </ScrollView>
       <View style={styles.buttonContainer}>
         {edit ? 
@@ -364,6 +362,9 @@ export default function Create({ navigation, route }) {
           <Text style={styles.buttonText}>Create</Text>
           </PressableButton>}
         </View>
+        {isLoading && <View style={styles.indicator}>
+          <ActivityIndicator size="small" color="black" />
+        </View>}
       </SafeAreaView>
   )
 }
@@ -425,5 +426,32 @@ const styles = StyleSheet.create({
   },
   columnWrapper: {
     gap: 5,
-  }
+  },
+  speciesContainer: {
+    zIndex: 10,
+    elevation: (Platform.OS === 'android') ? 10 : 0,
+  },
+  speciesLine: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+    zIndex: 11,
+    elevation: (Platform.OS === 'android') ? 11 : 0,
+  },
+  speciesInput: {
+    borderBottomColor: 'gray',
+    borderBottomWidth: 1,
+    marginTop: 5,
+    height: 40,
+    padding: 4,
+    fontSize: 15,
+    flex: 1,
+  },
+  indicator: {
+    position: 'absolute', 
+    top: 0, left: 0, 
+    right: 0, bottom: 0, 
+    justifyContent: 'center', 
+    alignItems: 'center',
+  },
 })
