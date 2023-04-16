@@ -79,6 +79,7 @@ export default function Home({ navigation, route }) {
 							);
 							return distanceFromA - distanceFromB;
 						});
+						//setLocation(null);
 					}
 					setDiaries(newdiaries);
 				}
