@@ -129,6 +129,7 @@ export default function EditProfile({ navigation, route }) {
           style={styles.input}
           placeholder='User Name' 
           value={newname} 
+          autoCapitalize="none"
           onChangeText={(changeText)=>{setNewname(changeText)}} 
           />
         </View>
@@ -138,6 +139,7 @@ export default function EditProfile({ navigation, route }) {
           style={styles.input}
           placeholder='Favorite Plant' 
           value={favplant} 
+          autoCapitalize="none"
           onChangeText={(changeText)=>{setFavplant(changeText)}} 
           />
         </View>

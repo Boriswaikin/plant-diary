@@ -46,22 +46,6 @@ export default function Home({ navigation, route }) {
 					querySnapshot.docs.forEach((doc) => {
 						newdiaries.push({ ...doc.data(), diaryId: doc.id });
 					});
-					// if (sort === "location" && location !== null) {
-					// 	//console.log(location);
-					// 	const center = [location[2], location[3]];
-					// 	newdiaries.sort((a, b) => {
-					// 		const distanceFromA = geofire.distanceBetween(
-					// 			[a.location[2], a.location[3]],
-					// 			center
-					// 		);
-					// 		const distanceFromB = geofire.distanceBetween(
-					// 			[b.location[2], b.location[3]],
-					// 			center
-					// 		);
-					// 		return distanceFromA - distanceFromB;
-					// 	});
-					// 	//setLocation(null);
-					// }
 					setDiaries(newdiaries);
 				}
 			},
@@ -74,7 +58,6 @@ export default function Home({ navigation, route }) {
 		};
 	}, []);
 
-	//useeffect to check the changes on sort
 	useEffect(()=>{
 		if (location !== null) {
 			console.log(location);
@@ -137,6 +120,7 @@ export default function Home({ navigation, route }) {
 							style={styles.input}
 							placeholder="Search a plant"
 							value={search}
+							autoCapitalize="none"
 							onChangeText={(newSearch) => {
 								setSearch(newSearch);
 							}}

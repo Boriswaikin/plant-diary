@@ -287,7 +287,7 @@ export default function Create({ navigation, route }) {
         <ImageManager imageUriHandler={(uri)=>
           imageUriHandler(uri)} removedUri={removedUri} resetRemovedUri={resetRemovedUri} setPhotoNew={setPhotoNew}/>
         <Text style={styles.subtitle}>Story</Text>
-        <TextInput style = {styles.textInput} placeholder='Tell us your story' value={story} onChangeText={setStory} />
+        <TextInput style = {styles.textInput} placeholder='Tell us your story' value={story} autoCapitalize="none" onChangeText={setStory} />
         <Text style={styles.subtitle}>Species</Text>
         {edit?<Text style={styles.heavyFont}>{species}</Text>
         :
