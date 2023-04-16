@@ -70,7 +70,8 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
             {
                 // allowsEditing: true,
                 quality:0.5, maxWidth: 500, maxHeight: 500,
-                allowsMultipleSelection:true})
+                allowsMultipleSelection:true,
+                selectionLimit:4-imageURI.length})
                 const arr = result.assets.map(
                     item=>item.uri
                 )
@@ -87,6 +88,7 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
   function toggleRemove(filteredItem){
     setImageURI((prev)=>prev.filter(item=>item!==filteredItem));
     imageUriHandler((prev)=>prev.filter(item=>item!==filteredItem));
+    setPhotoNew((prev)=>prev.filter(item=>item!==filteredItem));
   }
 
 
@@ -109,7 +111,12 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
                 </View>;
           })}
         <PressableButton 
+        
             buttonPressed={() => {
+              if (imageURI.length>=4){
+                Alert.alert("Maximum four photos could be added to a diary.")
+              }
+              else{
             Alert.alert(
             "Select Image",
             "",
@@ -135,7 +142,7 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
           ],
           { cancelable: false }
         );
-      }}>
+      }}}>
         <Image 
           style={{width:60,height:60}}
           source={require('../images/add.png')}/>
