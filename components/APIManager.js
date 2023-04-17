@@ -52,8 +52,8 @@ export default function APIManager({ uri, setLoading, setOutput }) {
       </View>
       {result && (
         <>
-          <Text style={styles.title}>{result.plant_name}</Text>
-          <Text>{result.plant_details.wiki_description.value}</Text>
+          <Text style={styles.title}>Result: {result.plant_name}</Text>
+          {result.plant_details&&result.plant_details.wiki_description&&<Text>{result.plant_details.wiki_description.value}</Text>}
         </>
       )}
     </View>
