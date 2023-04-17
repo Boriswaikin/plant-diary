@@ -39,6 +39,7 @@ export default function Signup({ navigation }) {
           style={styles.input}
           placeholder='Email Address' 
           value={email} 
+          autoCapitalize="none"
           onChangeText={(newEmail)=>{setEmail(newEmail)}} 
           />
         </View>
@@ -48,6 +49,7 @@ export default function Signup({ navigation }) {
           style={styles.input}
           placeholder='User Name' 
           value={name} 
+          autoCapitalize="none"
           onChangeText={(newName)=>{setName(newName)}} 
           />
         </View>
@@ -58,6 +60,7 @@ export default function Signup({ navigation }) {
           placeholder='Password'
           value={password}
           secureTextEntry={true}
+          autoCapitalize="none"
           onChangeText = {(newPassword) => {setPassword(newPassword)}}
           />
         </View>
@@ -68,6 +71,7 @@ export default function Signup({ navigation }) {
           placeholder='Confirm Password'
           value = {confirmpassword}
           secureTextEntry = {true}
+          autoCapitalize="none"
           onChangeText = {(newPassword) => {setConfirmpassword(newPassword)}}
           />
         </View>

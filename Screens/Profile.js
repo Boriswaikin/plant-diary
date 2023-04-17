@@ -154,7 +154,7 @@ export default function Profile({ navigation, route }) {
         }
       </View>
       }
-      {self&&diaries&&
+      {self&&diaries&&diaries.length>0&&
       <View style={styles.editDiariesLine}>
         <PressableButton customizedStyle={edit?styles.editToggleButton:styles.editButton} buttonPressed={()=>toggleEdit()}>
           {edit ? <Text style={styles.editToggleText}>Finish Edit</Text> : <Text style={styles.editText}>Edit Diaries</Text>}

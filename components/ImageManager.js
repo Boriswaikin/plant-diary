@@ -46,7 +46,7 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
             return;
         }
         try {
-        const result = await ImagePicker.launchCameraAsync({allowsEditing: true})
+        const result = await ImagePicker.launchCameraAsync({allowsEditing: true,quality:0.5, maxWidth: 500, maxHeight: 500,})
         if (!result.canceled) {
             var arr = [];
             arr.push(result.assets[0].uri);
@@ -69,6 +69,7 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
         const result = await ImagePicker.launchImageLibraryAsync(
             {
                 // allowsEditing: true,
+                quality:0.5, maxWidth: 500, maxHeight: 500,
                 allowsMultipleSelection:true,
                 selectionLimit:4-imageURI.length})
                 const arr = result.assets.map(
@@ -98,7 +99,7 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
             return <View key={item} style={{paddingTop:2,paddingRight:8}}>
               <Image 
                 // resizeMode='cover'
-                style={{width:80,height:80}}
+                style={{width:90,height:90}}
                 source={{uri:item}}/>
                 <PressableButton
                 buttonPressed={
@@ -143,7 +144,7 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
         );
       }}}>
         <Image 
-          style={{width:60,height:60}}
+          style={{width:60,height:60,margin:10}}
           source={require('../images/add.png')}/>
         </PressableButton>
     </View>

@@ -1,51 +1,33 @@
-import {
-	View,
-	FlatList,
-	TextInput,
-	SafeAreaView,
-	Pressable,
-	StyleSheet,
-	Alert,
-	ActivityIndicator,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import DropDownPicker from "react-native-dropdown-picker";
-import DiaryCard from "../components/DiaryCard";
-import {
-	getCloestDiariesQueue,
-	getDiaryBySpecies,
-	getDiaryQueueByUser,
-	getLatestDiariesQueue,
-	getLikeList,
-	getLikeListQueue,
-} from "../Firebase/helper";
-import { auth } from "../Firebase/firebase-setup";
-import { MaterialIcons } from "@expo/vector-icons";
-import PressableButton from "../components/PressableButton";
-import { onSnapshot } from "firebase/firestore";
-import { Logs } from "expo";
-import LocationManager from "../components/LocationManager";
-import * as geofire from "geofire-common";
+import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet, Alert, ActivityIndicator} from 'react-native'
+import React, { useEffect, useState } from 'react'
+import DiaryCard from '../components/DiaryCard';
+import {  getDiaryBySpecies, getDiaryQueueByUser, getLatestDiariesQueue, getLikeListQueue } from '../Firebase/helper';
+import { auth } from '../Firebase/firebase-setup';
+import { MaterialIcons } from '@expo/vector-icons';
+import PressableButton from '../components/PressableButton';
+import { onSnapshot } from 'firebase/firestore';
+import LocationManager from '../components/LocationManager';
+import * as geofire from 'geofire-common';
+import DropdownList from '../components/DropdownList';
 
 export default function Home({ navigation, route }) {
-	// const [diaries, setDiaries] = useState([{uid:'InsBmnicOLXLK3LAm1m2gdk5ND32',author:'lesly',species:'bamboo',date:'2023-03-24',location:'Downtown Vancouver', story:'this is my bamboo',like:4},{uid:'InsBmnicOLXLK3LAm1m2gdk5ND32',author:'boris',species:'rose',date:'2023-03-21',location:'Surrey',story:'this is my rose',like:16}]);
 	const [diaries, setDiaries] = useState(null);
+	const [filteredDiary, setFilteredDiary] = useState(null);
 	const [likeList, setLikeList] = useState(null);
 	const [search, setSearch] = useState("");
 	const [sort, setSort] = useState("recommand");
-	const [open, setOpen] = useState(false);
-	const [items, setItems] = useState([
+	const items = [
 		{ label: "Sorted by: Recommand", value: "recommand" },
 		{ label: "By Location", value: "location" },
-		// {label: 'By Species', value: 'species'}
-	]);
+	];
 	const [recommend, setRecommend] = useState(route.params.recommend);
-	// const [url, setImageUrl]= useState([]);
 	const [location, setLocation] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
+
 	function setLoadingLocation(status) {
 		setIsLoading(status);
 	}
+
 	useEffect(() => {
 		let q;
 		if (recommend) {
@@ -63,24 +45,7 @@ export default function Home({ navigation, route }) {
 					const newdiaries = [];
 					querySnapshot.docs.forEach((doc) => {
 						newdiaries.push({ ...doc.data(), diaryId: doc.id });
-						// console.log(doc.data().photos[0]);
 					});
-					if (sort === "location" && location !== null) {
-						//console.log(location);
-						const center = [location[2], location[3]];
-						newdiaries.sort((a, b) => {
-							const distanceFromA = geofire.distanceBetween(
-								[a.location[2], a.location[3]],
-								center
-							);
-							const distanceFromB = geofire.distanceBetween(
-								[b.location[2], b.location[3]],
-								center
-							);
-							return distanceFromA - distanceFromB;
-						});
-						//setLocation(null);
-					}
 					setDiaries(newdiaries);
 				}
 			},
@@ -91,7 +56,32 @@ export default function Home({ navigation, route }) {
 		return () => {
 			unsubscribe();
 		};
-	}, [sort, location, search]);
+	}, []);
+
+	useEffect(()=>{
+		if (location !== null) {
+			console.log(location);
+			const center = [location[2], location[3]];
+			diaries.sort((a, b) => {
+				const distanceFromA = geofire.distanceBetween(
+					[a.location[2], a.location[3]],
+					center
+				);
+				const distanceFromB = geofire.distanceBetween(
+					[b.location[2], b.location[3]],
+					center
+				);
+				return distanceFromA - distanceFromB;
+			});
+		}
+		setFilteredDiary(diaries);
+	},[location]);
+
+	useEffect(()=>{
+		if (sort==='recommand') {
+			setFilteredDiary(null);
+		}
+	},[sort])
 
 	useEffect(() => {
 		const q = getLikeListQueue();
@@ -104,28 +94,33 @@ export default function Home({ navigation, route }) {
 			unsubscribe2();
 		};
 	}, []);
+
 	async function searchDiaries(species) {
 		//console.log(species);
 		if (!species.trim()) {
 			Alert.alert("Species cannot be blank. Please input a species.");
 			return;
 		}
-		const searchResult = await getDiaryBySpecies(species.trim().toLowerCase());
-		setDiaries(searchResult);
+		const searchResult = await getDiaryBySpecies(species.trim());
+		setFilteredDiary(searchResult);
 	}
+
 	function clearSearchContent() {
-		// console.log("press clear up");
 		setSearch("");
+		setFilteredDiary(null);
 	}
+
 	return (
 		<SafeAreaView style={styles.container}>
 			{recommend && (
 				<View style={styles.topContainer}>
+					<DropdownList options={items} onSelect={setSort} />
 					<View style={styles.iconInput}>
 						<TextInput
 							style={styles.input}
 							placeholder="Search a plant"
 							value={search}
+							autoCapitalize="none"
 							onChangeText={(newSearch) => {
 								setSearch(newSearch);
 							}}
@@ -139,6 +134,7 @@ export default function Home({ navigation, route }) {
 									name="highlight-remove"
 									size={24}
 									color="black"
+									style={styles.icon}
 								/>
 							</PressableButton>
 						)}
@@ -154,17 +150,6 @@ export default function Home({ navigation, route }) {
 							/>
 						</PressableButton>
 					</View>
-					<View style={styles.drop}>
-						<DropDownPicker
-							open={open}
-							value={sort}
-							items={items}
-							setOpen={setOpen}
-							setValue={setSort}
-							setItems={setItems}
-							onChangeValue={setSort}
-						/>
-					</View>
 				</View>
 			)}
 			{sort === "location" && (
@@ -174,12 +159,10 @@ export default function Home({ navigation, route }) {
 					setLoadingLocation={setLoadingLocation}
 				/>
 			)}
-			<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-				{isLoading && <ActivityIndicator size="small" color="red" />}
-			</View>
 			{diaries && (
+				<View style={styles.diariesContainer}>
 				<FlatList
-					data={diaries}
+					data={filteredDiary?filteredDiary:diaries}
 					keyExtractor={(item) => item.diaryId}
 					renderItem={({ item }) => {
 						return (
@@ -193,43 +176,69 @@ export default function Home({ navigation, route }) {
 						);
 					}}
 				/>
+				</View>
 			)}
+			{isLoading && <View style={styles.indicator}>
+				<ActivityIndicator size="small" color="black" />
+			</View>}
 		</SafeAreaView>
 	);
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		textAlign: "center",
-		alignItems: "center",
-	},
-	input: {
-		flex: 1,
-		fontSize: 18,
-		padding: 14,
-	},
-	inputContainer: {
-		width: 300,
-	},
-	iconInput: {
-		flexDirection: "row",
-		borderWidth: 1,
-		marginVertical: 10,
-		borderRadius: 10,
-		justifyContent: "center",
-		alignItems: "center",
-		width: 300,
-	},
-	icon: {
-		padding: 10,
-	},
-	drop: {
-		width: 300,
-		fontSize: 18,
-		borderRadius: 10,
-	},
-	topContainer: {
-		zIndex: 100,
-	},
+  container: {
+    flex: 1,
+    textAlign: 'center',
+    alignItems: 'center',
+  },
+  input: {
+    flex: 1,
+    fontSize:16, 
+    padding:12,
+    paddingHorizontal: 20,
+  },
+  iconInput: {
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    marginVertical: 10,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    shadowOffset: {
+      width: 5,
+      height: 5,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: (Platform.OS === 'android') ? 9 : 0,
+  },
+  icon: {
+    padding: 10,
+    paddingRight: 15,
+  },
+  drop: {
+    width: 300,
+    fontSize: 18,
+    borderRadius: 10,
+  },
+  topContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginHorizontal: 30,
+    marginTop: 6,
+    zIndex: 10,
+    elevation: (Platform.OS === 'android') ? 10 : 0,
+  },
+  diariesContainer: {
+	flex: 1,
+  },
+  indicator: {
+    position: 'absolute', 
+    top: 0, left: 0, 
+    right: 0, bottom: 0, 
+    justifyContent: 'center', 
+    alignItems: 'center',
+  },
 });

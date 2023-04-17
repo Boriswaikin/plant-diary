@@ -1,16 +1,16 @@
-import { View, Text,TextInput, FlatList, StyleSheet, Alert, SafeAreaView,ActivityIndicator} from 'react-native'
+import { View, Text, ScrollView, TextInput, FlatList, StyleSheet, Alert, SafeAreaView,ActivityIndicator, LogBox} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { createDiary, deleteDiary, editDiary, getProfileById } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
 import { ref, uploadBytesResumable,deleteObject } from "firebase/storage";
 import ImageManager from '../components/ImageManager';
 import { storage } from '../Firebase/firebase-setup';
-import GallaryBox from '../components/GallaryBox';
 import PressableButton from '../components/PressableButton';
 import LocationManager from '../components/LocationManager';
 import StorageImage from '../components/StorageImage';
+import APIManager from '../components/APIManager';
+import DropdownList from '../components/DropdownList';
 import NotificationManager from '../components/NotificationManager';
-import DropDownPicker from 'react-native-dropdown-picker';
 
 
 export default function Create({ navigation, route }) {
@@ -83,6 +83,10 @@ export default function Create({ navigation, route }) {
   function setLoadingLocation(status){
     setIsLoading(status)
   } 
+
+  useEffect(() => {
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+  }, [])
 
   useEffect(()=>{
     if (route.params  && route.params.diary) {
@@ -260,7 +264,7 @@ export default function Create({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.inputContainer}>
+      <ScrollView style={styles.inputContainer}>
         {edit&&photos&&  
         <View>
         <Text style={styles.subtitle}>Previous Photos</Text>
@@ -278,35 +282,27 @@ export default function Create({ navigation, route }) {
         </View>
         }
         <Text style={styles.subtitle}>Add Photos</Text>
-        {edit ? (route.params.uri&& <GallaryBox galleryItem={route.params.uri}/>):<></>}
         <ImageManager imageUriHandler={(uri)=>
           imageUriHandler(uri)} removedUri={removedUri} resetRemovedUri={resetRemovedUri} setPhotoNew={setPhotoNew}/>
         <Text style={styles.subtitle}>Story</Text>
-        <TextInput style = {styles.textInput} placeholder='Tell us your story' value={story} onChangeText={setStory} />
+        <TextInput style = {styles.textInput} placeholder='Tell us your story' value={story} autoCapitalize="none" onChangeText={setStory} />
         <Text style={styles.subtitle}>Species</Text>
-        {/* {edit?<Text style={styles.heavyFont}>{species}</Text>
-        : */}
-         {/* <TextInput style = {styles.textInput} placeholder='Select species' value={species} onChangeText={setSpecies} /> */}
-        <DropDownPicker
-        open={open}
-        value={value}
-        items={items}
-        setOpen={setOpen}
-        setValue={setValue}
-        setItems={setItems}
-        onChangeValue={()=>{
-          setSpecies(value);}}
-      />
-        {/* } */}
+        {edit?<Text style={styles.heavyFont}>{species}</Text>
+        :
+        <View  style={styles.speciesContainer}>
+          <View style={styles.speciesLine}>
+            <DropdownList options={items} onSelect={setSpecies} />
+            <View style={styles.speciesInput}>
+              <Text style={styles.heavyFont}>{species}</Text>
+            </View>
+          </View>
+          {photos.length!==0&&<APIManager uri={photos[photos.length - 1]} setLoading={setIsLoading} setOutput={setSpecies} />}
+        </View>}
         <Text style={styles.subtitle}>Location</Text>
         {edit?<Text style={styles.lightFont}>Locate @ <Text style={styles.heavyFont}>{location[1]}</Text></Text>
 
         :<LocationManager locationHandler={setLocation} screenName={"Create"} setLoadingLocation={setLoadingLocation}/>}
-
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        {isLoading && <ActivityIndicator size="small" color="red" />}
-        </View>
-      </View>
+      </ScrollView>
       <View style={styles.buttonContainer}>
         {edit ? 
             <PressableButton
@@ -364,14 +360,17 @@ export default function Create({ navigation, route }) {
           <Text style={styles.buttonText}>Create</Text>
           </PressableButton>}
         </View>
+        {isLoading && <View style={styles.indicator}>
+          <ActivityIndicator size="small" color="black" />
+        </View>}
       </SafeAreaView>
   )
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 30,
-    marginTop: 10,
+    marginHorizontal: 30,
+    marginVertical: 10,
     justifyContent: 'center',
   },
   subtitle: {
@@ -388,7 +387,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     margin: 10,
-    marginTop: 30,
+    // marginTop: 30,
     width: 120,
   },
   buttonText: {
@@ -399,6 +398,7 @@ const styles = StyleSheet.create({
     // alignSelf: 'center',
     justifyContent: "center",
     flexDirection: "row",
+    gap: 15,
   },
   lightFont: {
     fontSize: 15,
@@ -424,5 +424,32 @@ const styles = StyleSheet.create({
   },
   columnWrapper: {
     gap: 5,
-  }
+  },
+  speciesContainer: {
+    zIndex: 10,
+    elevation: (Platform.OS === 'android') ? 10 : 0,
+  },
+  speciesLine: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+    zIndex: 11,
+    elevation: (Platform.OS === 'android') ? 11 : 0,
+  },
+  speciesInput: {
+    borderBottomColor: 'gray',
+    borderBottomWidth: 1,
+    marginTop: 5,
+    height: 40,
+    padding: 4,
+    fontSize: 15,
+    flex: 1,
+  },
+  indicator: {
+    position: 'absolute', 
+    top: 0, left: 0, 
+    right: 0, bottom: 0, 
+    justifyContent: 'center', 
+    alignItems: 'center',
+  },
 })
