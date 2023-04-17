@@ -454,11 +454,8 @@ export async function getSubscribedDiaries() {
 	}
 }
 
-export async function getSubscribedDiariesQueue() {
+export function getSubscribedDiariesQueue(following) {
 	try {
-		const docRef = doc(firestore, "following", auth.currentUser.uid);
-		const docSnap = await getDoc(docRef);
-		const following = docSnap.data().following;
 		const q = query(collection(firestore, "diary"), where('userId', 'in', following), orderBy("date", "desc"));
 		return q;
 	} catch (err) {
@@ -473,6 +470,16 @@ export async function addAchievement(uid,text) {
 			achievement: arrayUnion(text) 
 		})
 
+	} catch (err) {
+		console.log(err);
+	}
+}
+
+export function getFollowingQueue() {
+	try {
+		const followingRef = doc(firestore, "following", auth.currentUser.uid);
+		const q = query(followingRef);
+		return q;
 	} catch (err) {
 		console.log(err);
 	}
