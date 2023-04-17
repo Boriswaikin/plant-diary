@@ -321,18 +321,26 @@ Pressing 'Go to Map!" if we want to change location, after clicking "Confirm you
 #### Contributed by member:
 
 **Tasks**
-- Sort by location
-- Style of search and sort bar
-- Subscribed diaries query
-- Species selection on create screen
-- Achievement system design
-- Notification
-- Plant.id API
+- Sort by location --Siqi
+- Style of search and sort bar --Zhiyuan
+- Subscribed diaries query --Siqi
+- Species selection on create screen --Wai Kin
+- Achievement system design --Wai Kin
+- Notification --WaiKin
+- Plant.id API --Zhiyuan
 
 **Optional Task**
 - Color Theme
-- App icon, slug
-- Control image size to be 400
+- App icon, slug --Zhiyuan
+- Control image size to be 400 
+
+**Internal Comments**
+- Subscribed diaries query
+- Hide 'locate me' or switch to an icon?
+- Warning about nested Flatlist
+- Pop an alert when user got an achievement?
+- Replace the achievement icon related to achievement content
+- fully tested before iteration 3 submission
 
 </details>
 
