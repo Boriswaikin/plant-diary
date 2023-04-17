@@ -1,7 +1,7 @@
 import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet, Alert, ActivityIndicator} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import DiaryCard from '../components/DiaryCard';
-import {  getDiaryBySpecies, getDiaryQueueByUser, getLatestDiariesQueue, getLikeListQueue } from '../Firebase/helper';
+import {  getDiaryBySpecies, getDiaryQueueByUser, getFollowingQueue, getLatestDiariesQueue, getLikeListQueue, getSubscribedDiariesQueue } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
 import { MaterialIcons } from '@expo/vector-icons';
 import PressableButton from '../components/PressableButton';
@@ -23,6 +23,7 @@ export default function Home({ navigation, route }) {
 	const [recommend, setRecommend] = useState(route.params.recommend);
 	const [location, setLocation] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
+	const [following, setFollowing] = useState(null);
 
 	function setLoadingLocation(status) {
 		setIsLoading(status);
@@ -33,7 +34,7 @@ export default function Home({ navigation, route }) {
 		if (recommend) {
 			q = getLatestDiariesQueue();
 		} else {
-			q = getDiaryQueueByUser(auth.currentUser.uid);
+			q = getFollowingQueue();
 		}
 		const unsubscribe = onSnapshot(
 			q,
@@ -41,6 +42,31 @@ export default function Home({ navigation, route }) {
 				if (querySnapshot.empty) {
 					setDiaries([]);
 				}
+				if (!querySnapshot.empty) {
+					if (recommend) {
+						const newdiaries = [];
+						querySnapshot.docs.forEach((doc) => {
+							newdiaries.push({ ...doc.data(), diaryId: doc.id });
+						});
+						setDiaries(newdiaries);
+					} else if (typeof querySnapshot.data() !== "undefined"){
+						setFollowing(querySnapshot.data().following);
+					}
+				}
+			},
+			(err) => {
+				console.log(err);
+			}
+		);
+		return () => {
+			unsubscribe();
+		};
+	}, []);
+
+	useEffect(()=>{
+		if (following && following.length>0) {
+			const q = getSubscribedDiariesQueue(following);
+			const unsubscribe3 = onSnapshot(q,(querySnapshot) => {
 				if (!querySnapshot.empty) {
 					const newdiaries = [];
 					querySnapshot.docs.forEach((doc) => {
@@ -52,11 +78,12 @@ export default function Home({ navigation, route }) {
 			(err) => {
 				console.log(err);
 			}
-		);
-		return () => {
-			unsubscribe();
-		};
-	}, []);
+			);
+			return () => {
+				unsubscribe3();
+			};
+		}
+	},[following])
 
 	useEffect(()=>{
 		if (location !== null) {

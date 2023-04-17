@@ -63,7 +63,7 @@ export default function Profile({ navigation, route }) {
               imageUrl= require('../images/FirstPost.png');
               break;
               default:
-              imageUrl = '';
+              imageUrl = require('../images/FirstPost.png');
           }
         return{
           imageUrl:imageUrl
