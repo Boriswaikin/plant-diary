@@ -101,7 +101,7 @@ export default function Home({ navigation, route }) {
 			Alert.alert("Species cannot be blank. Please input a species.");
 			return;
 		}
-		const searchResult = await getDiaryBySpecies(species.trim().toLowerCase());
+		const searchResult = await getDiaryBySpecies(species.trim());
 		setFilteredDiary(searchResult);
 	}
 
@@ -159,10 +159,8 @@ export default function Home({ navigation, route }) {
 					setLoadingLocation={setLoadingLocation}
 				/>
 			)}
-			<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-				{isLoading && <ActivityIndicator size="small" color="red" />}
-			</View>
 			{diaries && (
+				<View style={styles.diariesContainer}>
 				<FlatList
 					data={filteredDiary?filteredDiary:diaries}
 					keyExtractor={(item) => item.diaryId}
@@ -178,7 +176,11 @@ export default function Home({ navigation, route }) {
 						);
 					}}
 				/>
+				</View>
 			)}
+			{isLoading && <View style={styles.indicator}>
+				<ActivityIndicator size="small" color="black" />
+			</View>}
 		</SafeAreaView>
 	);
 }
@@ -228,5 +230,15 @@ const styles = StyleSheet.create({
     marginTop: 6,
     zIndex: 10,
     elevation: (Platform.OS === 'android') ? 10 : 0,
-  }
+  },
+  diariesContainer: {
+	flex: 1,
+  },
+  indicator: {
+    position: 'absolute', 
+    top: 0, left: 0, 
+    right: 0, bottom: 0, 
+    justifyContent: 'center', 
+    alignItems: 'center',
+  },
 });

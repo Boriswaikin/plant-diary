@@ -1,6 +1,5 @@
 import { View, Text, Button, FlatList, StyleSheet, SafeAreaView } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import UserList from '../components/UserList';
 import { followUser, getFollowerByUser, getFollowingByUser, unfollowUser } from '../Firebase/helper';
 import Icon from '../components/Icon';
 import PressableButton from '../components/PressableButton';

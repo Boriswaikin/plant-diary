@@ -50,7 +50,7 @@ export default function DiaryCard({item, like}) {
         <Grid items={item.photos} />
       </View>
       <View style={styles.diaryInfoLine}>
-        <Text style={styles.mediumFont}>{item.userName}<Text style={styles.lightFont}> #{item.species}</Text><Text style={styles.lightFont}> @{item.location[1]}</Text></Text>
+        <Text numberOfLines={1} style={[styles.mediumFont, styles.singleLine]}>{item.userName}<Text style={styles.lightFont}> #{item.species}</Text><Text style={styles.lightFont}> @{item.location[1]}</Text></Text>
         <PressableButton buttonPressed={()=>{pressLike()}}>
           <Text style={styles.likeCount}>{item.like} <AntDesign name={!like?"hearto":"heart"} color={like?"green":"black"} size={15}></AntDesign></Text>
         </PressableButton>
@@ -85,5 +85,8 @@ const styles = StyleSheet.create({
   timeText: {
     fontSize: 13,
     color: 'rgb(100,100,100)',
-  }
+  },
+  singleLine: {
+    width: 250,
+  },
 })

@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
       justifyContent: "flex-end",
       flexDirection: "row",
       marginTop: 10,
+      alignItems: "center",
     },
     editButton: {
       borderRadius: 5,

@@ -5,7 +5,6 @@ import { auth } from '../Firebase/firebase-setup';
 import { ref, uploadBytesResumable,deleteObject } from "firebase/storage";
 import ImageManager from '../components/ImageManager';
 import { storage } from '../Firebase/firebase-setup';
-import GallaryBox from '../components/GallaryBox';
 import PressableButton from '../components/PressableButton';
 import LocationManager from '../components/LocationManager';
 import StorageImage from '../components/StorageImage';
@@ -283,7 +282,6 @@ export default function Create({ navigation, route }) {
         </View>
         }
         <Text style={styles.subtitle}>Add Photos</Text>
-        {edit ? (route.params.uri&& <GallaryBox galleryItem={route.params.uri}/>):<></>}
         <ImageManager imageUriHandler={(uri)=>
           imageUriHandler(uri)} removedUri={removedUri} resetRemovedUri={resetRemovedUri} setPhotoNew={setPhotoNew}/>
         <Text style={styles.subtitle}>Story</Text>
@@ -400,7 +398,7 @@ const styles = StyleSheet.create({
     // alignSelf: 'center',
     justifyContent: "center",
     flexDirection: "row",
-    gap: 20,
+    gap: 15,
   },
   lightFont: {
     fontSize: 15,
