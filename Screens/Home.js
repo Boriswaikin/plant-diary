@@ -16,7 +16,7 @@ export default function Home({ navigation, route }) {
 	const [search, setSearch] = useState("");
 	const [sort, setSort] = useState("recommand");
 	const items = [
-		{ label: "Sorted by: Recommand", value: "recommand" },
+		{ label: "Sorted by: Date", value: "recommand" },
 		{ label: "By Location", value: "location" },
 	];
 	const [recommend, setRecommend] = useState(route.params.recommend);
@@ -48,7 +48,7 @@ export default function Home({ navigation, route }) {
 							newdiaries.push({ ...doc.data(), diaryId: doc.id });
 						});
 						setDiaries(newdiaries);
-					} else if (typeof querySnapshot.data() !== "undefined"){
+					} else if (typeof querySnapshot.data() !== "undefined") {
 						setFollowing(querySnapshot.data().following);
 					}
 				}
@@ -62,29 +62,31 @@ export default function Home({ navigation, route }) {
 		};
 	}, []);
 
-	useEffect(()=>{
-		if (following && following.length>0) {
+	useEffect(() => {
+		if (following && following.length > 0) {
 			const q = getSubscribedDiariesQueue(following);
-			const unsubscribe3 = onSnapshot(q,(querySnapshot) => {
-				if (!querySnapshot.empty) {
-					const newdiaries = [];
-					querySnapshot.docs.forEach((doc) => {
-						newdiaries.push({ ...doc.data(), diaryId: doc.id });
-					});
-					setDiaries(newdiaries);
+			const unsubscribe3 = onSnapshot(
+				q,
+				(querySnapshot) => {
+					if (!querySnapshot.empty) {
+						const newdiaries = [];
+						querySnapshot.docs.forEach((doc) => {
+							newdiaries.push({ ...doc.data(), diaryId: doc.id });
+						});
+						setDiaries(newdiaries);
+					}
+				},
+				(err) => {
+					console.log(err);
 				}
-			},
-			(err) => {
-				console.log(err);
-			}
 			);
 			return () => {
 				unsubscribe3();
 			};
 		}
-	},[following])
+	}, [following]);
 
-	useEffect(()=>{
+	useEffect(() => {
 		if (location !== null) {
 			console.log(location);
 			const center = [location[2], location[3]];
@@ -101,13 +103,13 @@ export default function Home({ navigation, route }) {
 			});
 		}
 		setFilteredDiary(diaries);
-	},[location]);
+	}, [location]);
 
-	useEffect(()=>{
-		if (sort==='recommand') {
+	useEffect(() => {
+		if (sort === "recommand") {
 			setFilteredDiary(null);
 		}
-	},[sort])
+	}, [sort]);
 
 	useEffect(() => {
 		const q = getLikeListQueue();
@@ -187,26 +189,30 @@ export default function Home({ navigation, route }) {
 			)}
 			{diaries && (
 				<View style={styles.diariesContainer}>
-				<FlatList
-					data={filteredDiary?filteredDiary:diaries}
-					keyExtractor={(item) => item.diaryId}
-					renderItem={({ item }) => {
-						return (
-							<Pressable
-								onPress={() => navigation.navigate("Gallery", { item: item })}>
-								<DiaryCard
-									item={item}
-									like={likeList && likeList.includes(item.diaryId)}
-								/>
-							</Pressable>
-						);
-					}}
-				/>
+					<FlatList
+						data={filteredDiary ? filteredDiary : diaries}
+						keyExtractor={(item) => item.diaryId}
+						renderItem={({ item }) => {
+							return (
+								<Pressable
+									onPress={() =>
+										navigation.navigate("Gallery", { item: item })
+									}>
+									<DiaryCard
+										item={item}
+										like={likeList && likeList.includes(item.diaryId)}
+									/>
+								</Pressable>
+							);
+						}}
+					/>
 				</View>
 			)}
-			{isLoading && <View style={styles.indicator}>
-				<ActivityIndicator size="small" color="black" />
-			</View>}
+			{isLoading && (
+				<View style={styles.indicator}>
+					<ActivityIndicator size="small" color="black" />
+				</View>
+			)}
 		</SafeAreaView>
 	);
 }
