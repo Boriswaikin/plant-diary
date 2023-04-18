@@ -1,14 +1,30 @@
-import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet, Alert, ActivityIndicator} from 'react-native'
-import React, { useEffect, useState } from 'react'
-import DiaryCard from '../components/DiaryCard';
-import {  getDiaryBySpecies, getDiaryQueueByUser, getFollowingQueue, getLatestDiariesQueue, getLikeListQueue, getSubscribedDiariesQueue } from '../Firebase/helper';
-import { auth } from '../Firebase/firebase-setup';
-import { MaterialIcons } from '@expo/vector-icons';
-import PressableButton from '../components/PressableButton';
-import { onSnapshot } from 'firebase/firestore';
-import LocationManager from '../components/LocationManager';
-import * as geofire from 'geofire-common';
-import DropdownList from '../components/DropdownList';
+import {
+	View,
+	FlatList,
+	TextInput,
+	SafeAreaView,
+	Pressable,
+	StyleSheet,
+	Alert,
+	ActivityIndicator,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import DiaryCard from "../components/DiaryCard";
+import {
+	getDiaryBySpecies,
+	getDiaryQueueByUser,
+	getFollowingQueue,
+	getLatestDiariesQueue,
+	getLikeListQueue,
+	getSubscribedDiariesQueue,
+} from "../Firebase/helper";
+import { auth } from "../Firebase/firebase-setup";
+import { MaterialIcons } from "@expo/vector-icons";
+import PressableButton from "../components/PressableButton";
+import { onSnapshot } from "firebase/firestore";
+import LocationManager from "../components/LocationManager";
+import * as geofire from "geofire-common";
+import DropdownList from "../components/DropdownList";
 
 export default function Home({ navigation, route }) {
 	const [diaries, setDiaries] = useState(null);
@@ -17,7 +33,7 @@ export default function Home({ navigation, route }) {
 	const [search, setSearch] = useState("");
 	const [sort, setSort] = useState("recommand");
 	const items = [
-		{ label: "Sorted by: Recommand", value: "recommand" },
+		{ label: "Sorted by: Date", value: "recommand" },
 		{ label: "By Location", value: "location" },
 	];
 	const [recommend, setRecommend] = useState(route.params.recommend);
@@ -49,7 +65,7 @@ export default function Home({ navigation, route }) {
 							newdiaries.push({ ...doc.data(), diaryId: doc.id });
 						});
 						setDiaries(newdiaries);
-					} else if (typeof querySnapshot.data() !== "undefined"){
+					} else if (typeof querySnapshot.data() !== "undefined") {
 						setFollowing(querySnapshot.data().following);
 					}
 				}
@@ -63,29 +79,31 @@ export default function Home({ navigation, route }) {
 		};
 	}, []);
 
-	useEffect(()=>{
-		if (following && following.length>0) {
+	useEffect(() => {
+		if (following && following.length > 0) {
 			const q = getSubscribedDiariesQueue(following);
-			const unsubscribe3 = onSnapshot(q,(querySnapshot) => {
-				if (!querySnapshot.empty) {
-					const newdiaries = [];
-					querySnapshot.docs.forEach((doc) => {
-						newdiaries.push({ ...doc.data(), diaryId: doc.id });
-					});
-					setDiaries(newdiaries);
+			const unsubscribe3 = onSnapshot(
+				q,
+				(querySnapshot) => {
+					if (!querySnapshot.empty) {
+						const newdiaries = [];
+						querySnapshot.docs.forEach((doc) => {
+							newdiaries.push({ ...doc.data(), diaryId: doc.id });
+						});
+						setDiaries(newdiaries);
+					}
+				},
+				(err) => {
+					console.log(err);
 				}
-			},
-			(err) => {
-				console.log(err);
-			}
 			);
 			return () => {
 				unsubscribe3();
 			};
 		}
-	},[following])
+	}, [following]);
 
-	useEffect(()=>{
+	useEffect(() => {
 		if (location !== null) {
 			console.log(location);
 			const center = [location[2], location[3]];
@@ -102,13 +120,13 @@ export default function Home({ navigation, route }) {
 			});
 		}
 		setFilteredDiary(diaries);
-	},[location]);
+	}, [location]);
 
-	useEffect(()=>{
-		if (sort==='recommand') {
+	useEffect(() => {
+		if (sort === "recommand") {
 			setFilteredDiary(null);
 		}
-	},[sort])
+	}, [sort]);
 
 	useEffect(() => {
 		const q = getLikeListQueue();
@@ -188,84 +206,90 @@ export default function Home({ navigation, route }) {
 			)}
 			{diaries && (
 				<View style={styles.diariesContainer}>
-				<FlatList
-					data={filteredDiary?filteredDiary:diaries}
-					keyExtractor={(item) => item.diaryId}
-					renderItem={({ item }) => {
-						return (
-							<Pressable
-								onPress={() => navigation.navigate("Gallery", { item: item })}>
-								<DiaryCard
-									item={item}
-									like={likeList && likeList.includes(item.diaryId)}
-								/>
-							</Pressable>
-						);
-					}}
-				/>
+					<FlatList
+						data={filteredDiary ? filteredDiary : diaries}
+						keyExtractor={(item) => item.diaryId}
+						renderItem={({ item }) => {
+							return (
+								<Pressable
+									onPress={() =>
+										navigation.navigate("Gallery", { item: item })
+									}>
+									<DiaryCard
+										item={item}
+										like={likeList && likeList.includes(item.diaryId)}
+									/>
+								</Pressable>
+							);
+						}}
+					/>
 				</View>
 			)}
-			{isLoading && <View style={styles.indicator}>
-				<ActivityIndicator size="small" color="black" />
-			</View>}
+			{isLoading && (
+				<View style={styles.indicator}>
+					<ActivityIndicator size="small" color="black" />
+				</View>
+			)}
 		</SafeAreaView>
 	);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    textAlign: 'center',
-    alignItems: 'center',
-  },
-  input: {
-    flex: 1,
-    fontSize:16, 
-    padding:12,
-    paddingHorizontal: 20,
-  },
-  iconInput: {
-    flexDirection: 'row',
-    backgroundColor: 'white',
-    marginVertical: 10,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
-    shadowOffset: {
-      width: 5,
-      height: 5,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: (Platform.OS === 'android') ? 9 : 0,
-  },
-  icon: {
-    padding: 10,
-    paddingRight: 15,
-  },
-  drop: {
-    width: 300,
-    fontSize: 18,
-    borderRadius: 10,
-  },
-  topContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    marginHorizontal: 30,
-    marginTop: 6,
-    zIndex: 10,
-    elevation: (Platform.OS === 'android') ? 10 : 0,
-  },
-  diariesContainer: {
-	flex: 1,
-  },
-  indicator: {
-    position: 'absolute', 
-    top: 0, left: 0, 
-    right: 0, bottom: 0, 
-    justifyContent: 'center', 
-    alignItems: 'center',
-  },
+	container: {
+		flex: 1,
+		textAlign: "center",
+		alignItems: "center",
+	},
+	input: {
+		flex: 1,
+		fontSize: 16,
+		padding: 12,
+		paddingHorizontal: 20,
+	},
+	iconInput: {
+		flexDirection: "row",
+		backgroundColor: "white",
+		marginVertical: 10,
+		borderRadius: 30,
+		justifyContent: "center",
+		alignItems: "center",
+		flex: 1,
+		shadowOffset: {
+			width: 5,
+			height: 5,
+		},
+		shadowOpacity: 0.2,
+		shadowRadius: 4,
+		elevation: Platform.OS === "android" ? 9 : 0,
+	},
+	icon: {
+		padding: 10,
+		paddingRight: 15,
+	},
+	drop: {
+		width: 300,
+		fontSize: 18,
+		borderRadius: 10,
+	},
+	topContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+		gap: 10,
+		marginHorizontal: 30,
+		marginTop: 6,
+		zIndex: 10,
+		elevation: Platform.OS === "android" ? 10 : 0,
+	},
+	diariesContainer: {
+		flex: 1,
+	},
+	indicator: {
+		position: "absolute",
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+		justifyContent: "center",
+		alignItems: "center",
+	},
 });
