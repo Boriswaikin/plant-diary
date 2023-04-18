@@ -1,15 +1,30 @@
-import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet, Alert, ActivityIndicator} from 'react-native'
-import React, { useEffect, useState } from 'react'
-import DiaryCard from '../components/DiaryCard';
-import {  getDiaryBySpecies, getDiaryQueueByUser, getFollowingQueue, getLatestDiariesQueue, getLikeListQueue, getSubscribedDiariesQueue } from '../Firebase/helper';
-import { auth } from '../Firebase/firebase-setup';
-import { MaterialIcons } from '@expo/vector-icons';
-import PressableButton from '../components/PressableButton';
-import { onSnapshot } from 'firebase/firestore';
-import LocationManager from '../components/LocationManager';
-import * as geofire from 'geofire-common';
-import DropdownList from '../components/DropdownList';
-
+import {
+	View,
+	FlatList,
+	TextInput,
+	SafeAreaView,
+	Pressable,
+	StyleSheet,
+	Alert,
+	ActivityIndicator,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import DiaryCard from "../components/DiaryCard";
+import {
+	getDiaryBySpecies,
+	getDiaryQueueByUser,
+	getFollowingQueue,
+	getLatestDiariesQueue,
+	getLikeListQueue,
+	getSubscribedDiariesQueue,
+} from "../Firebase/helper";
+import { auth } from "../Firebase/firebase-setup";
+import { MaterialIcons } from "@expo/vector-icons";
+import PressableButton from "../components/PressableButton";
+import { onSnapshot } from "firebase/firestore";
+import LocationManager from "../components/LocationManager";
+import * as geofire from "geofire-common";
+import DropdownList from "../components/DropdownList";
 
 export default function Home({ navigation, route }) {
 	const [diaries, setDiaries] = useState(null);
@@ -50,7 +65,7 @@ export default function Home({ navigation, route }) {
 							newdiaries.push({ ...doc.data(), diaryId: doc.id });
 						});
 						setDiaries(newdiaries);
-					} else if (typeof querySnapshot.data() !== "undefined"){
+					} else if (typeof querySnapshot.data() !== "undefined") {
 						setFollowing(querySnapshot.data().following);
 					}
 				}
@@ -58,12 +73,18 @@ export default function Home({ navigation, route }) {
 			(err) => {
 				console.log(err);
 			}
-			const unsubscribe = onSnapshot(
+		);
+		return () => {
+			unsubscribe();
+		};
+	}, []);
+
+	useEffect(() => {
+		if (following && following.length > 0) {
+			const q = getSubscribedDiariesQueue(following);
+			const unsubscribe3 = onSnapshot(
 				q,
 				(querySnapshot) => {
-					if (querySnapshot.empty) {
-						setDiaries([]);
-					}
 					if (!querySnapshot.empty) {
 						const newdiaries = [];
 						querySnapshot.docs.forEach((doc) => {
@@ -77,35 +98,12 @@ export default function Home({ navigation, route }) {
 				}
 			);
 			return () => {
-				unsubscribe();
-			};
-		}
-		fetchDiaries();
-	}, []);
-
-	useEffect(()=>{
-		if (following && following.length>0) {
-			const q = getSubscribedDiariesQueue(following);
-			const unsubscribe3 = onSnapshot(q,(querySnapshot) => {
-				if (!querySnapshot.empty) {
-					const newdiaries = [];
-					querySnapshot.docs.forEach((doc) => {
-						newdiaries.push({ ...doc.data(), diaryId: doc.id });
-					});
-					setDiaries(newdiaries);
-				}
-			},
-			(err) => {
-				console.log(err);
-			}
-			);
-			return () => {
 				unsubscribe3();
 			};
 		}
-	},[following])
+	}, [following]);
 
-	useEffect(()=>{
+	useEffect(() => {
 		if (location !== null) {
 			console.log(location);
 			const center = [location[2], location[3]];
