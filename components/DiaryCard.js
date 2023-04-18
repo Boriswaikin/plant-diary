@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
 import React from "react";
 import CardComponent from "./CardComponent";
 import Grid from "./Grid";
@@ -7,6 +7,7 @@ import { AntDesign } from "@expo/vector-icons";
 import StorageImage from "./StorageImage";
 import { addLike, removeLike } from "../Firebase/helper";
 
+const w = Dimensions.get('window').width;
 
 export default function DiaryCard({item, like}) {
 
@@ -46,8 +47,8 @@ export default function DiaryCard({item, like}) {
   return (
     <CardComponent>
       <View style={styles.imageContainer}>
-        <StorageImage source={item.photos[0]} size={150} />
-        <Grid items={item.photos} />
+        <StorageImage source={item.photos[0]} size={(w-128)/2} />
+        <Grid items={item.photos} size={(w-128)/2}/>
       </View>
       <View style={styles.diaryInfoLine}>
         <Text numberOfLines={1} style={[styles.mediumFont, styles.singleLine]}>{item.userName}<Text style={styles.lightFont}> #{item.species}</Text><Text style={styles.lightFont}> @{item.location[1]}</Text></Text>
@@ -87,6 +88,6 @@ const styles = StyleSheet.create({
     color: 'rgb(100,100,100)',
   },
   singleLine: {
-    width: 250,
+    width: (w-120)*3/4,
   },
 })
