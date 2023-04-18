@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import PressableButton from './PressableButton';
 
-export default function DropdownList ({ options, onSelect }) {
+export default function DropdownList ({ options, onSelect, setScroll }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
 
   const toggleDropdown = () => {
+    // if(setScroll) {
+    //   setScroll(isOpen);
+    // }
     setIsOpen(!isOpen);
   };
 
@@ -19,45 +22,47 @@ export default function DropdownList ({ options, onSelect }) {
   };
 
   return (
-    <View>
-      <TouchableOpacity onPress={toggleDropdown}>
+    <SafeAreaView>
+      <TouchableOpacity onPress={toggleDropdown} style={{marginTop:20}}>
         <Entypo name={isOpen?"chevron-up":"chevron-down"} size={26} color="black" />
       </TouchableOpacity>
       {options&&isOpen &&
-      <View>
-      <ScrollView horizontal={true} scrollEnabled={false} style={{position:"absolute",width:300,height:320}}>
-          <FlatList
-            style={styles.optionContainer}
-            data={options}
-            keyExtractor={item=>item.value}
-            renderItem={({item})=>{
-              return (
-                <PressableButton customizedStyle={styles.optionItem} buttonPressed={() => handleOptionSelect(item)} >
-                  <Text>{item.label}    {selectedOption&&selectedOption.value===item.value&&<FontAwesome5 name="check" size={16} color="black" />}</Text>
-                </PressableButton>
-              )
-            }}
-          />
-        </ScrollView>
-        </View>
-        }
-    </View>
+        <FlatList
+          nestedScrollEnabled={true}
+          style={styles.optionContainer}
+          data={options}
+          keyExtractor={item=>item.value}
+          renderItem={({item})=>{
+            return (
+              <PressableButton customizedStyle={styles.optionItem} buttonPressed={() => handleOptionSelect(item)} >
+                <Text>{item.label}    {selectedOption&&selectedOption.value===item.value&&<FontAwesome5 name="check" size={16} color="black" />}</Text>
+              </PressableButton>
+            )
+          }}
+        />
+      }
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   optionContainer: {
-    maxHeight: 300,
-    width: 300,
-    position: 'absolute', 
-    left: 0,
-    top: 20,
+    // position: 'absolute',
+    // top:0,
+    // bottom:0,
+    // left:0,
+    // right: 0,
+    marginTop: 10,
+    maxHeight: 200,
+    width: 180,
     backgroundColor: '#fff', 
     borderRadius: 10, 
+    zIndex: 15,
+    elevation: (Platform.OS === 'android') ? 15 : 0,
   },
   optionItem: {
     borderBottomColor: 'rgb(200,200,200)',
     borderBottomWidth: 1,
     paddingVertical: 15, 
-  }
+  },
 })

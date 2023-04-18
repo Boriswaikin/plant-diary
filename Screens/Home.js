@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize:16, 
-    padding:12,
+    padding:6,
     paddingHorizontal: 20,
   },
   iconInput: {
@@ -232,6 +232,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
+	maxHeight: 50,
     shadowOffset: {
       width: 5,
       height: 5,
@@ -251,7 +252,7 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    // alignItems: 'center',
     gap: 10,
     marginHorizontal: 30,
     marginTop: 6,
