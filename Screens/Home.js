@@ -1,8 +1,7 @@
-import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet, Alert, ActivityIndicator} from 'react-native'
+import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet, Alert, ActivityIndicator, StatusBar} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import DiaryCard from '../components/DiaryCard';
-import {  getDiaryBySpecies, getDiaryQueueByUser, getFollowingQueue, getLatestDiariesQueue, getLikeListQueue, getSubscribedDiariesQueue } from '../Firebase/helper';
-import { auth } from '../Firebase/firebase-setup';
+import {  getDiaryBySpecies, getFollowingQueue, getLatestDiariesQueue, getLikeListQueue, getSubscribedDiariesQueue } from '../Firebase/helper';
 import { MaterialIcons } from '@expo/vector-icons';
 import PressableButton from '../components/PressableButton';
 import { onSnapshot } from 'firebase/firestore';

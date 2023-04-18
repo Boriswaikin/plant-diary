@@ -8,7 +8,7 @@ import Gallery from './Screens/Gallery';
 import Profile from './Screens/Profile';
 import EditProfile from './Screens/EditProfile';
 import BottomTab from './Screens/BottomTab';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView, StatusBar } from 'react-native';
 import FollowTab from './Screens/FollowTab';
 import { auth } from './Firebase/firebase-setup';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -83,7 +83,7 @@ export default function App() {
   )
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}>
     <NavigationContainer>
         {/* <Stack.Navigator screenOptions={{headerStyle:{backgroundColor:"pink"}, headerTitleStyle:{color:"purple", fontSize: 18}, headerTitleAlign:"center"}}> */}
         <Stack.Navigator screenOptions={{headerShown: false}}>

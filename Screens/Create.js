@@ -137,7 +137,7 @@ export default function Create({ navigation, route }) {
       await createDiary({		
         photos:imageAll,
         description: story,
-        species: species.trim(),
+        species: species.trim().toLowerCase(),
         location: location,
         geohash: location[0],
         userName: userName,
