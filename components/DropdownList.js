@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, ScrollView } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import PressableButton from './PressableButton';
@@ -25,18 +24,23 @@ export default function DropdownList ({ options, onSelect }) {
         <Entypo name={isOpen?"chevron-up":"chevron-down"} size={26} color="black" />
       </TouchableOpacity>
       {options&&isOpen &&
-        <FlatList
-          style={styles.optionContainer}
-          data={options}
-          keyExtractor={item=>item.value}
-          renderItem={({item})=>{
-            return (
-              <PressableButton customizedStyle={styles.optionItem} buttonPressed={() => handleOptionSelect(item)} >
-                <Text>{item.label}    {selectedOption&&selectedOption.value===item.value&&<FontAwesome5 name="check" size={16} color="black" />}</Text>
-              </PressableButton>
-            )
-          }}
-        />}
+      <View>
+      <ScrollView horizontal={true} scrollEnabled={false} style={{position:"absolute",width:300,height:320}}>
+          <FlatList
+            style={styles.optionContainer}
+            data={options}
+            keyExtractor={item=>item.value}
+            renderItem={({item})=>{
+              return (
+                <PressableButton customizedStyle={styles.optionItem} buttonPressed={() => handleOptionSelect(item)} >
+                  <Text>{item.label}    {selectedOption&&selectedOption.value===item.value&&<FontAwesome5 name="check" size={16} color="black" />}</Text>
+                </PressableButton>
+              )
+            }}
+          />
+        </ScrollView>
+        </View>
+        }
     </View>
   );
 };
@@ -46,8 +50,8 @@ const styles = StyleSheet.create({
     maxHeight: 300,
     width: 300,
     position: 'absolute', 
-    top: 50, 
     left: 0,
+    top: 20,
     backgroundColor: '#fff', 
     borderRadius: 10, 
   },

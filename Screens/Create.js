@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TextInput, FlatList, StyleSheet, Alert, SafeAreaView,ActivityIndicator, LogBox} from 'react-native'
+import { View, Text, ScrollView, TextInput, FlatList, StyleSheet, Alert, SafeAreaView, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { createDiary, deleteDiary, editDiary, getProfileById } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
@@ -25,9 +25,9 @@ export default function Create({ navigation, route }) {
   const [previousPhoto,setPreviousPhoto]=useState([]);
   const [newPhoto, setNewPhoto]=useState([]);
   const [isLoading,setIsLoading]=useState(false);
-  const [open, setOpen] = useState(false);
+  const [scroll, setScroll] = useState(true);
   const [value, setValue] = useState("");
-  const [items, setItems] = useState([
+  const items = [
     {label: 'African Violet', value: 'African Violet'},
     {label: 'Air Plant', value: 'Air Plant'},
     {label: 'Alocasia', value: 'Alocasia'},
@@ -70,7 +70,7 @@ export default function Create({ navigation, route }) {
     {label: 'Yucca', value: 'Yucca'},
     {label: 'ZZ Plant', value: 'ZZ Plant'},
     {label: 'Others', value: 'Others'},
-  ]);
+  ];
 
   function resetRemovedUri(){
     setRemovedUri(false); 
@@ -83,10 +83,6 @@ export default function Create({ navigation, route }) {
   function setLoadingLocation(status){
     setIsLoading(status)
   } 
-
-  useEffect(() => {
-    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-  }, [])
 
   useEffect(()=>{
     if (route.params  && route.params.diary) {
@@ -264,15 +260,14 @@ export default function Create({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.inputContainer}>
+      <ScrollView style={styles.inputContainer} nestedScrollEnabled={true}>
         {edit&&photos&&  
         <View>
         <Text style={styles.subtitle}>Previous Photos</Text>
         <FlatList 
           data={photos}
-          numColumns={4}
-          ItemSeparatorComponent={() => <View style={{height: 5}} />}
-          columnWrapperStyle={styles.columnWrapper}
+          horizontal={true}
+          contentContainerStyle={{gap:5,marginTop:2}}
           renderItem={({item})=>{
             return (
               <StorageImage source={item} size={90} />
@@ -291,7 +286,7 @@ export default function Create({ navigation, route }) {
         :
         <View  style={styles.speciesContainer}>
           <View style={styles.speciesLine}>
-            <DropdownList options={items} onSelect={setSpecies} />
+            <DropdownList options={items} onSelect={setSpecies} style={styles.dropdown} />
             <View style={styles.speciesInput}>
               <Text style={styles.heavyFont}>{species}</Text>
             </View>
@@ -452,4 +447,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center', 
     alignItems: 'center',
   },
+  dropdown: {
+    position: 'fixed',
+  }
 })
