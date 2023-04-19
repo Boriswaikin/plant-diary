@@ -73,7 +73,7 @@ export default function App() {
   const AppStack = (
     <>
     <Stack.Screen name="Plant Diary" component={BottomTab} />
-    <Stack.Screen name="Gallery" component={Gallery} />
+    <Stack.Screen name="Gallery" component={Gallery} options={{headerShown: true}}/>
     <Stack.Screen name="Follow" component={FollowTab} options={{headerShown: true}}/>
     <Stack.Screen name="Edit Profile" component={EditProfile} options={{headerShown: true}}/>
     <Stack.Screen name="Third Profile" component={Profile} options={{headerShown: true}}/>
