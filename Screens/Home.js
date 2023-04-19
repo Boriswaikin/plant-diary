@@ -59,6 +59,7 @@ export default function Home({ navigation, route }) {
 		);
 		return () => {
 			unsubscribe();
+			setFilteredDiary(null);
 		};
 	}, []);
 

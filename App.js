@@ -83,9 +83,9 @@ export default function App() {
   )
 
   return (
-    <SafeAreaView style={{ flex: 1, marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}>
+    <SafeAreaView style={[{ flex: 1}, Platform.OS === 'android'&& {marginTop: StatusBar.currentHeight}]}>
+
     <NavigationContainer>
-        {/* <Stack.Navigator screenOptions={{headerStyle:{backgroundColor:"pink"}, headerTitleStyle:{color:"purple", fontSize: 18}, headerTitleAlign:"center"}}> */}
         <Stack.Navigator screenOptions={{headerShown: false}}>
             {isAuthenticated ? AppStack : AuthStack}
         </Stack.Navigator>
