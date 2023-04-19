@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TextInput, FlatList, StyleSheet, Alert, SafeAreaView,ActivityIndicator, LogBox} from 'react-native'
+import { View, Text, ScrollView, TextInput, FlatList, StyleSheet, Alert, SafeAreaView, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { createDiary, deleteDiary, editDiary, getProfileById } from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
@@ -25,9 +25,9 @@ export default function Create({ navigation, route }) {
   const [previousPhoto,setPreviousPhoto]=useState([]);
   const [newPhoto, setNewPhoto]=useState([]);
   const [isLoading,setIsLoading]=useState(false);
-  const [open, setOpen] = useState(false);
+  const [scroll, setScroll] = useState(true);
   const [value, setValue] = useState("");
-  const [items, setItems] = useState([
+  const items = [
     {label: 'African Violet', value: 'African Violet'},
     {label: 'Air Plant', value: 'Air Plant'},
     {label: 'Alocasia', value: 'Alocasia'},
@@ -70,7 +70,7 @@ export default function Create({ navigation, route }) {
     {label: 'Yucca', value: 'Yucca'},
     {label: 'ZZ Plant', value: 'ZZ Plant'},
     {label: 'Others', value: 'Others'},
-  ]);
+  ];
 
   function resetRemovedUri(){
     setRemovedUri(false); 
@@ -83,10 +83,6 @@ export default function Create({ navigation, route }) {
   function setLoadingLocation(status){
     setIsLoading(status)
   } 
-
-  useEffect(() => {
-    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-  }, [])
 
   useEffect(()=>{
     if (route.params  && route.params.diary) {
@@ -141,7 +137,7 @@ export default function Create({ navigation, route }) {
       await createDiary({		
         photos:imageAll,
         description: story,
-        species: species.trim(),
+        species: species.trim().toLowerCase(),
         location: location,
         geohash: location[0],
         userName: userName,
@@ -264,15 +260,14 @@ export default function Create({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.inputContainer}>
-        {edit&&photos&&  
+      {edit?<View style={styles.inputContainer}>
+        {photos&&  
         <View>
         <Text style={styles.subtitle}>Previous Photos</Text>
         <FlatList 
           data={photos}
-          numColumns={4}
-          ItemSeparatorComponent={() => <View style={{height: 5}} />}
-          columnWrapperStyle={styles.columnWrapper}
+          horizontal={true}
+          contentContainerStyle={{gap:5,marginTop:2}}
           renderItem={({item})=>{
             return (
               <StorageImage source={item} size={90} />
@@ -281,28 +276,41 @@ export default function Create({ navigation, route }) {
         />
         </View>
         }
+      <ScrollView style={styles.inputContainer}>
         <Text style={styles.subtitle}>Add Photos</Text>
         <ImageManager imageUriHandler={(uri)=>
           imageUriHandler(uri)} removedUri={removedUri} resetRemovedUri={resetRemovedUri} setPhotoNew={setPhotoNew}/>
+        <Text style={styles.subtitle}>Species</Text>
+        <Text style={styles.heavyFont}>{species}</Text>
         <Text style={styles.subtitle}>Story</Text>
         <TextInput style = {styles.textInput} placeholder='Tell us your story' value={story} autoCapitalize="none" onChangeText={setStory} />
+        <Text style={styles.subtitle}>Location</Text>
+        <Text style={styles.lightFont}>Locate @ <Text style={styles.heavyFont}>{location[1]}</Text></Text>
+      </ScrollView>
+      </View>
+      :
+      <View style={styles.inputContainer}>
+        <Text style={styles.subtitle}>Add Photos</Text>
+        <ImageManager imageUriHandler={(uri)=>
+          imageUriHandler(uri)} removedUri={removedUri} resetRemovedUri={resetRemovedUri} setPhotoNew={setPhotoNew}/>
         <Text style={styles.subtitle}>Species</Text>
-        {edit?<Text style={styles.heavyFont}>{species}</Text>
-        :
         <View  style={styles.speciesContainer}>
           <View style={styles.speciesLine}>
-            <DropdownList options={items} onSelect={setSpecies} />
+            <DropdownList options={items} onSelect={setSpecies}/>
             <View style={styles.speciesInput}>
               <Text style={styles.heavyFont}>{species}</Text>
             </View>
           </View>
           {photos.length!==0&&<APIManager uri={photos[photos.length - 1]} setLoading={setIsLoading} setOutput={setSpecies} />}
-        </View>}
-        <Text style={styles.subtitle}>Location</Text>
-        {edit?<Text style={styles.lightFont}>Locate @ <Text style={styles.heavyFont}>{location[1]}</Text></Text>
-
-        :<LocationManager locationHandler={setLocation} screenName={"Create"} setLoadingLocation={setLoadingLocation}/>}
-      </ScrollView>
+        </View>
+        <ScrollView style={styles.inputContainer} scrollEnabled={scroll}>
+          <Text style={styles.subtitle}>Story</Text>
+          <TextInput style = {styles.textInput} placeholder='Tell us your story' value={story} autoCapitalize="none" onChangeText={setStory} />
+          <Text style={styles.subtitle}>Location</Text>
+          <LocationManager locationHandler={setLocation} screenName={"Create"} setLoadingLocation={setLoadingLocation}/>
+        </ScrollView>
+      </View>
+      }
       <View style={styles.buttonContainer}>
         {edit ? 
             <PressableButton
@@ -387,7 +395,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     margin: 10,
-    // marginTop: 30,
     width: 120,
   },
   buttonText: {
@@ -395,7 +402,6 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   buttonContainer: {
-    // alignSelf: 'center',
     justifyContent: "center",
     flexDirection: "row",
     gap: 15,
@@ -431,7 +437,6 @@ const styles = StyleSheet.create({
   },
   speciesLine: {
     flexDirection: 'row',
-    alignItems: 'center',
     gap: 20,
     zIndex: 11,
     elevation: (Platform.OS === 'android') ? 11 : 0,
@@ -439,7 +444,7 @@ const styles = StyleSheet.create({
   speciesInput: {
     borderBottomColor: 'gray',
     borderBottomWidth: 1,
-    marginTop: 5,
+    marginTop: 8,
     height: 40,
     padding: 4,
     fontSize: 15,

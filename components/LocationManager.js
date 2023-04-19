@@ -10,9 +10,7 @@ import PressableButton from './PressableButton';
 
 export default function LocationManager({ locationHandler, screenName, setLoadingLocation}) {
 
-    const [location, setLocation] = useState();
-    // const [street, setStreet] = useState();
-    // const [hash, setHash] = useState();
+    const [location, setLocation] = useState(null);
     const [permissionResponse, requestPermission] = Location.useForegroundPermissions();
     const navigation = useNavigation();
     const route = useRoute();
@@ -24,7 +22,7 @@ export default function LocationManager({ locationHandler, screenName, setLoadin
                 const street = await getStreet(route.params.selectedLocation);
                 const hash = geofire.geohashForLocation([route.params.selectedLocation.latitude, route.params.selectedLocation.longitude]);
                 setLocation({geohash:hash, street:street, ...route.params.selectedLocation});
-                locationHandler([hash, street]);
+                locationHandler([hash, street, route.params.selectedLocation.latitude, route.params.selectedLocation.longitude]);
             })();
         }
     },[route])
@@ -53,6 +51,10 @@ export default function LocationManager({ locationHandler, screenName, setLoadin
     }
 
     async function locateUserHandler() {
+        if (typeof mapsApi === 'undefined') {
+          Alert.alert("Maps API is not set! Add it to .env file.");
+          throw new Error("Needs maps api setup for env variable.");
+        }
         const hasPermission = await verifyPermission();
         if (!hasPermission) {
             Alert.alert("You need to give access to get the Location.");
@@ -70,6 +72,18 @@ export default function LocationManager({ locationHandler, screenName, setLoadin
         catch (err) { console.log(err); }
         setLoadingLocation(false);
         }
+    
+        function goMapHandler() {
+          if (typeof mapsApi === 'undefined') {
+            Alert.alert("Maps API is not set! Add it to .env file.");
+            throw new Error("Needs maps api setup for env variable.");
+          }
+          if (!location) {
+            navigation.navigate('Map');
+          } else {
+            navigation.navigate('Map',{currentLocation: location});
+          }
+        }
 
   return (
     <View>
@@ -80,7 +94,7 @@ export default function LocationManager({ locationHandler, screenName, setLoadin
           <Text style={styles.editText}>Locate Me!</Text>
         </PressableButton>
         {screenName === "Create" && 
-        <PressableButton customizedStyle={styles.editButton} buttonPressed={()=>navigation.navigate('Map',{currentLocation: location})}>
+        <PressableButton customizedStyle={styles.editButton} buttonPressed={()=>goMapHandler()}>
           <Text style={styles.editText}>Go to Map!</Text>
         </PressableButton>}
         
