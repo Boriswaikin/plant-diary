@@ -29,7 +29,7 @@ export default function NotificationManager(title,body){
                 {content:
                     {title:title,
                     body:body
-                ,data:{url:"http://google.com"}},trigger:null}
+                ,data:{url:"http://google.com"},categoryIdentifier: "welcome",},trigger:null}
             )
         }
         catch (err){
