@@ -18,12 +18,13 @@ export default function BottomTab() {
           iconName = focused ? "home-sharp" : "home-outline";
         }
         if (route.name === "Create") {
-          iconName = focused ? "add-circle-sharp" : "add-circle-outline";
+          // iconName = focused ? "add-circle-sharp" : "add-circle-outline";
+          iconName = focused ? "flower-sharp" : "flower-outline";
         }
         if (route.name === "Profile") {
-          iconName = focused ? "person-sharp" : "person-outline";
+          iconName = focused ? "person" : "person-outline";
         }
-        return <Ionicons name={iconName} size={22} color={color} />;
+        return <Ionicons name={iconName} size={24} color={color} />;
       },})}>
       <Tab.Screen name="Home" component={TopTab} />
       <Tab.Screen name="Create" component={Create} />

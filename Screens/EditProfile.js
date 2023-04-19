@@ -1,4 +1,4 @@
-import { View, Text, Button, TextInput, SafeAreaView, StyleSheet, Alert } from 'react-native'
+import { View, Text, TextInput, SafeAreaView, StyleSheet, Alert, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { editProfile } from '../Firebase/helper';
 import Icon from '../components/Icon';
@@ -15,6 +15,7 @@ export default function EditProfile({ navigation, route }) {
   const [head, setHead] = useState(route.params.profile.headPhoto);
   const [newhead, setNewhead] = useState(null);
   const [permissionInfo, requestPermission] = ImagePicker.useCameraPermissions();
+  const [isLoading, setIsLoading] = useState(false);
 
   async function verifyPermission() {
     if (permissionInfo.granted) {
@@ -106,10 +107,11 @@ export default function EditProfile({ navigation, route }) {
       // if (newhead) {
       //   setHead(await fetchImage(newhead));
       // }
+      setIsLoading(true);
       await editProfile(route.params.profile.uid, {name:newname,favouritePlant:favplant, headPhoto:newhead?await fetchImage(newhead):head});
       console.log("profile updated");
-      console.log(head);
       setNewhead(null);
+      setIsLoading(false);
       navigation.goBack();
     } catch (err) {
       console.log(err);
@@ -152,6 +154,9 @@ export default function EditProfile({ navigation, route }) {
           <Text style={styles.buttonText}>Confirm</Text>
         </PressableButton>
       </View>
+      {isLoading && <View style={styles.indicator}>
+          <ActivityIndicator size="small" color="black" />
+        </View>}
     </SafeAreaView>
   )
 }
@@ -218,5 +223,12 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: 'black',
     fontWeight: 600,
+  },
+  indicator: {
+    position: 'absolute', 
+    top: 0, left: 0, 
+    right: 0, bottom: 0, 
+    justifyContent: 'center', 
+    alignItems: 'center',
   },
 })
