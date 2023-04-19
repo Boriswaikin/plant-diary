@@ -22,7 +22,7 @@ export default function LocationManager({ locationHandler, screenName, setLoadin
                 const street = await getStreet(route.params.selectedLocation);
                 const hash = geofire.geohashForLocation([route.params.selectedLocation.latitude, route.params.selectedLocation.longitude]);
                 setLocation({geohash:hash, street:street, ...route.params.selectedLocation});
-                locationHandler([hash, street]);
+                locationHandler([hash, street, route.params.selectedLocation.latitude, route.params.selectedLocation.longitude]);
             })();
         }
     },[route])
