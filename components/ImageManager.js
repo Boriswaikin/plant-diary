@@ -52,7 +52,7 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
             arr.push(result.assets[0].uri);
             setImageURI((prev)=>[...prev,...arr]);
             imageUriHandler((prev)=>[...prev,...arr]);
-            setPhotoNew(arr);
+            setPhotoNew((prev)=>[...prev,...arr]);
         }
          } catch (err) {
             console.log(err);
@@ -78,7 +78,7 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
         if (!result.canceled) {
             setImageURI((prev)=>[...prev,...arr]);
             imageUriHandler((prev)=>[...prev,...arr]);
-            setPhotoNew(arr);
+            setPhotoNew((prev)=>[...prev,...arr]);
         }
          } catch (err) {
             console.log(err);

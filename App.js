@@ -51,16 +51,47 @@ export default function App() {
         console.log("notification received :", notification);
       });
 
-    const subscription2 = Notifications.addNotificationResponseReceivedListener(
-      response => {
-        const url = response.notification.request.content.data.url;
-        Linking.openURL(url);
-      })
+    // const subscription2 = Notifications.addNotificationResponseReceivedListener(
+    //   response => {
+    //     const url = response.notification.request.content.data.url;
+    //     Linking.openURL(url);
+    //   })
     return () => {
       subscription1.remove();
-      subscription2.remove();}
+      // subscription2.remove();
+    }
   
   },[]);
+
+  useEffect(() => {
+    async function notificationCateogry() {
+      await Notifications.setNotificationCategoryAsync("welcome", [
+        {
+          buttonTitle: `Don't open app`,
+          identifier: "first-button",
+          options: {
+            opensAppToForeground: false,
+          },
+        },
+        {
+          buttonTitle: "Respond with text",
+          identifier: "second-button-with-text",
+          textInput: {
+            submitButtonTitle: "Submit button",
+            placeholder: "Placeholder text",
+          },
+        },
+        {
+          buttonTitle: "Open app",
+          identifier: "third-button",
+          options: {
+            opensAppToForeground: true,
+          },
+        },
+      ]);
+    }
+    notificationCateogry();
+  }, []);
 
   const AuthStack = (
     <>
