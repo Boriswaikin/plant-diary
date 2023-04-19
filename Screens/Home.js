@@ -158,7 +158,7 @@ export default function Home({ navigation, route }) {
 		for (let diary of diaries) {
 			//console.log("species", diary);
 			if (
-				diary.species.includes(keyWord) ||
+				diary.species.toLowerCase().includes(keyWord) ||
 				diary.description.toLowerCase().includes(keyWord) ||
 				diary.location[1].toLowerCase().includes(keyWord) ||
 				diary.userName.toLowerCase().includes(keyWord)
@@ -167,7 +167,7 @@ export default function Home({ navigation, route }) {
 			}
 		}
 		if (searchResult.length === 0) {
-			Alert.alert("There are no relevant results.");
+			Alert.alert("There are no relevant diaries.");
 		}
 		setFilteredDiary(searchResult);
 	}
