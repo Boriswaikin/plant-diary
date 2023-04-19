@@ -1,7 +1,8 @@
+import { StatusBar } from "expo-status-bar";
 import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet, Alert, ActivityIndicator} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import DiaryCard from '../components/DiaryCard';
-import {  getDiaryBySpecies, getDiaryQueueByUser, getFollowingQueue, getLatestDiariesQueue, getLikeListQueue, getSubscribedDiariesQueue } from '../Firebase/helper';
+import {  getDiaryBySpecies, getDiaryQueueByUser, getFollowingQueue, getLatestDiariesQueue, getLikeListQueue, getSubscribedDiariesQueue,getFollowerList,getFollowerQueue} from '../Firebase/helper';
 import { auth } from '../Firebase/firebase-setup';
 import { MaterialIcons } from '@expo/vector-icons';
 import PressableButton from '../components/PressableButton';
@@ -9,6 +10,8 @@ import { onSnapshot } from 'firebase/firestore';
 import LocationManager from '../components/LocationManager';
 import * as geofire from 'geofire-common';
 import DropdownList from '../components/DropdownList';
+import NotificationManager from '../components/NotificationManager';
+import { async } from '@firebase/util';
 
 
 export default function Home({ navigation, route }) {
@@ -25,7 +28,8 @@ export default function Home({ navigation, route }) {
 	const [location, setLocation] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [following, setFollowing] = useState(null);
-	const [follower, setFollower] = useState(false);
+	const [follower, setFollower] = useState([]);
+	
 
 	function setLoadingLocation(status) {
 		setIsLoading(status);
@@ -142,25 +146,30 @@ export default function Home({ navigation, route }) {
 	}
 
 	useEffect(()=>{
-		(async ()=>{
-			const prev_data=await checkFollowerList();
-			
+		(async()=>{
+				if(recommend){
+				const followerData= await getFollowerList();
+				setFollower(followerData);}
+		})();
+	},[])
+
+	useEffect(()=>{
 		const q = getFollowerQueue();
 		const unsubscribe = onSnapshot(q, (snapshot) => {
-			
 		const newArray = snapshot.data().follower;
-		if (!follower && newArray.length > prev_data.length) {
-			NotificationManager("Got Followed","Check out who follows you")
-			setFollower(true);
-		}});
+		if (recommend && newArray.length > follower.length) {
+			NotificationManager("Someone has followed you!","See who are interested in your plant diaries")
+		}
+		setFollower(newArray);
+		});
 		return () => {
 			unsubscribe();
-		};})();
-		}
-		,[]);
+		};},[follower])
+
 
 	return (
 		<SafeAreaView style={styles.container}>
+			<StatusBar style="auto" />
 			{recommend && (
 				<View style={styles.topContainer}>
 					<DropdownList options={items} onSelect={setSort} />

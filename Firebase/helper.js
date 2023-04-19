@@ -485,7 +485,7 @@ export function getFollowingQueue() {
 	}
 }
 
-export async function checkFollowerList() {
+export async function getFollowerList() {
     try {
         const followerRef = doc(firestore, "follower", auth.currentUser.uid);
         const docSnap = await getDoc(followerRef);
