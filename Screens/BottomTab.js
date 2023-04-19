@@ -18,8 +18,7 @@ export default function BottomTab() {
           iconName = focused ? "home-sharp" : "home-outline";
         }
         if (route.name === "Create") {
-          // iconName = focused ? "add-circle-sharp" : "add-circle-outline";
-          iconName = focused ? "flower-sharp" : "flower-outline";
+          iconName = focused ? "add-circle-sharp" : "add-circle-outline";
         }
         if (route.name === "Profile") {
           iconName = focused ? "person" : "person-outline";

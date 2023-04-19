@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import PressableButton from './PressableButton';
 
-export default function DropdownList ({ options, onSelect, setScroll }) {
+export default function DropdownList ({ options, onSelect, value }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState();
+
+  useEffect(()=>{
+    setSelectedOption(options.filter(item=>item.value===value)[0])
+  },[value])
 
   const toggleDropdown = () => {
-    // if(setScroll) {
-    //   setScroll(isOpen);
-    // }
     setIsOpen(!isOpen);
   };
 

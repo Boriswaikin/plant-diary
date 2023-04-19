@@ -1,4 +1,4 @@
-import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet, Alert, ActivityIndicator, StatusBar} from 'react-native'
+import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet, Alert, ActivityIndicator, Text } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import DiaryCard from '../components/DiaryCard';
 import {  getDiaryBySpecies, getFollowingQueue, getLatestDiariesQueue, getLikeListQueue, getSubscribedDiariesQueue } from '../Firebase/helper';
@@ -8,21 +8,24 @@ import { onSnapshot } from 'firebase/firestore';
 import LocationManager from '../components/LocationManager';
 import * as geofire from 'geofire-common';
 import DropdownList from '../components/DropdownList';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function Home({ navigation, route }) {
 	const [diaries, setDiaries] = useState(null);
 	const [filteredDiary, setFilteredDiary] = useState(null);
 	const [likeList, setLikeList] = useState(null);
 	const [search, setSearch] = useState("");
-	const [sort, setSort] = useState("recommand");
+	const [sort, setSort] = useState("recommend");
 	const items = [
-		{ label: "Sorted by: Date", value: "recommand" },
+		{ label: "Sorted by: Date", value: "recommend" },
 		{ label: "By Location", value: "location" },
 	];
 	const [recommend, setRecommend] = useState(route.params.recommend);
 	const [location, setLocation] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [following, setFollowing] = useState(null);
+
+	const isFocused = useIsFocused();
 
 	function setLoadingLocation(status) {
 		setIsLoading(status);
@@ -59,9 +62,12 @@ export default function Home({ navigation, route }) {
 		);
 		return () => {
 			unsubscribe();
-			setFilteredDiary(null);
 		};
 	}, []);
+
+	useEffect(()=>{
+		setSort("recommend");
+	},[isFocused])
 
 	useEffect(() => {
 		if (following && following.length > 0) {
@@ -88,10 +94,11 @@ export default function Home({ navigation, route }) {
 	}, [following]);
 
 	useEffect(() => {
-		if (location !== null) {
+		if (location&&diaries) {
 			console.log(location);
 			const center = [location[2], location[3]];
-			diaries.sort((a, b) => {
+			const newDiaries = [...diaries];
+			newDiaries.sort((a, b) => {
 				const distanceFromA = geofire.distanceBetween(
 					[a.location[2], a.location[3]],
 					center
@@ -102,13 +109,16 @@ export default function Home({ navigation, route }) {
 				);
 				return distanceFromA - distanceFromB;
 			});
+			setFilteredDiary(newDiaries);
 		}
-		setFilteredDiary(diaries);
+		
 	}, [location]);
 
 	useEffect(() => {
-		if (sort === "recommand") {
+		if (sort === "recommend") {
 			setFilteredDiary(null);
+		} else {
+			console.log("sort by location")
 		}
 	}, [sort]);
 
@@ -143,7 +153,7 @@ export default function Home({ navigation, route }) {
 		<SafeAreaView style={styles.container}>
 			{recommend && (
 				<View style={styles.topContainer}>
-					<DropdownList options={items} onSelect={setSort} />
+					<DropdownList options={items} onSelect={setSort} value={sort} />
 					<View style={styles.iconInput}>
 						<TextInput
 							style={styles.input}
@@ -191,7 +201,7 @@ export default function Home({ navigation, route }) {
 			{diaries && (
 				<View style={styles.diariesContainer}>
 					<FlatList
-						data={filteredDiary ? filteredDiary : diaries}
+						data={filteredDiary?filteredDiary:diaries}
 						keyExtractor={(item) => item.diaryId}
 						renderItem={({ item }) => {
 							return (
