@@ -1,7 +1,7 @@
-import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet, Alert, ActivityIndicator, Text } from 'react-native'
+import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet, Alert, ActivityIndicator, StatusBar } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import DiaryCard from '../components/DiaryCard';
-import {  getDiaryBySpecies, getFollowingQueue, getLatestDiariesQueue, getLikeListQueue, getSubscribedDiariesQueue } from '../Firebase/helper';
+import {  getFollowingQueue, getLatestDiariesQueue, getLikeListQueue, getSubscribedDiariesQueue, getFollowerList, getFollowerQueue } from '../Firebase/helper';
 import { MaterialIcons } from '@expo/vector-icons';
 import PressableButton from '../components/PressableButton';
 import { onSnapshot } from 'firebase/firestore';
@@ -9,6 +9,7 @@ import LocationManager from '../components/LocationManager';
 import * as geofire from 'geofire-common';
 import DropdownList from '../components/DropdownList';
 import { useIsFocused } from '@react-navigation/native';
+import NotificationManager from '../components/NotificationManager';
 
 export default function Home({ navigation, route }) {
 	const [diaries, setDiaries] = useState(null);
@@ -118,8 +119,6 @@ export default function Home({ navigation, route }) {
 	useEffect(() => {
 		if (sort === "recommend") {
 			setFilteredDiary(null);
-		} else {
-			console.log("sort by location")
 		}
 	}, [sort]);
 
@@ -176,6 +175,7 @@ export default function Home({ navigation, route }) {
 	}, []);
 
 	useEffect(() => {
+		if (follower && follower.length > 0) {
 		const q = getFollowerQueue();
 		const unsubscribe = onSnapshot(q, (snapshot) => {
 			const newArray = snapshot.data().follower;
@@ -190,6 +190,7 @@ export default function Home({ navigation, route }) {
 		return () => {
 			unsubscribe();
 		};
+	}
 	}, [follower]);
 
 	return (

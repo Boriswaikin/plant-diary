@@ -8,14 +8,13 @@ import Gallery from './Screens/Gallery';
 import Profile from './Screens/Profile';
 import EditProfile from './Screens/EditProfile';
 import BottomTab from './Screens/BottomTab';
-import { SafeAreaView, StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import FollowTab from './Screens/FollowTab';
 import { auth } from './Firebase/firebase-setup';
 import { onAuthStateChanged } from 'firebase/auth';
 import Create from './Screens/Create';
 import Map from './Screens/Map';
 import * as Notifications from 'expo-notifications'
-import { Linking } from 'react-native';
 
 const Stack = createNativeStackNavigator();
 
@@ -114,7 +113,7 @@ export default function App() {
   )
 
   return (
-    <SafeAreaView style={[{ flex: 1}, Platform.OS === 'android'&& {marginTop: StatusBar.currentHeight}]}>
+    <SafeAreaView style={{ flex: 1}}>
 
     <NavigationContainer>
         <Stack.Navigator screenOptions={{headerShown: false}}>

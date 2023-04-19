@@ -16,15 +16,41 @@ export default function Signup({ navigation }) {
     navigation.replace('Login');
   }
 
+  function validEmail() {
+    let validRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    if (validRegex.test(email) === false) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  function validPassword() {
+    if (password.length < 8) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   async function signupHandler() {
-    if (password !== confirmpassword) {
+  if (!validEmail()) {
+    Alert.alert("Please enter a valid email address");
+    return;
+  }
+   else if (!validPassword()) {
+    Alert.alert("You password must be at least 8 character");
+  }
+    else if (password !== confirmpassword) {
       Alert.alert("Passwords are not matched");
-  } else {
+      return;
+    }
+    else {
       try {
           await createUserWithEmailAndPassword(auth, email, password);
           await createProfile({name:name,email:email});
       } catch (err) {
-          console.log("signup err", err);
+          Alert.alert("Signup err", JSON.stringify(err));
       }
   }
   };
