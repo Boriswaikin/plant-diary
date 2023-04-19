@@ -484,3 +484,26 @@ export function getFollowingQueue() {
 		console.log(err);
 	}
 }
+
+export async function checkFollowerList() {
+    try {
+        const followerRef = doc(firestore, "follower", auth.currentUser.uid);
+        const docSnap = await getDoc(followerRef);
+        if (docSnap.exists()) {
+            return docSnap.data().follower;
+        } else {
+            console.log("user does not exist");
+        }
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export function getFollowerQueue() {
+    try {
+        const ref = doc(firestore, "follower", auth.currentUser.uid)
+        return ref;
+    } catch (err) {
+        console.log(err);
+    }
+}

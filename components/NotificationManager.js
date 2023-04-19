@@ -9,7 +9,7 @@ export async function verifyPermission() {
         return true;
     }
     try {
-        const permissionResult = await Notifications.requestPermissionAsync();
+        const permissionResult = await Notifications.requestPermissionsAsync();
         return permissionResult.granted;
     }
     catch (err){

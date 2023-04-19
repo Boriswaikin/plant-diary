@@ -1,15 +1,33 @@
-import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet, Alert, ActivityIndicator} from 'react-native'
-import React, { useEffect, useState } from 'react'
-import DiaryCard from '../components/DiaryCard';
-import {  getDiaryBySpecies, getDiaryQueueByUser, getFollowingQueue, getLatestDiariesQueue, getLikeListQueue, getSubscribedDiariesQueue } from '../Firebase/helper';
-import { auth } from '../Firebase/firebase-setup';
-import { MaterialIcons } from '@expo/vector-icons';
-import PressableButton from '../components/PressableButton';
-import { onSnapshot } from 'firebase/firestore';
-import LocationManager from '../components/LocationManager';
-import * as geofire from 'geofire-common';
-import DropdownList from '../components/DropdownList';
-
+import {
+	View,
+	FlatList,
+	TextInput,
+	SafeAreaView,
+	Pressable,
+	StyleSheet,
+	Alert,
+	ActivityIndicator,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import DiaryCard from "../components/DiaryCard";
+import {
+	getDiaryBySpecies,
+	getDiaryQueueByUser,
+	getFollowingQueue,
+	getLatestDiariesQueue,
+	getLikeListQueue,
+	getSubscribedDiariesQueue,
+	checkFollowerList,
+	getFollowerQueue,
+} from "../Firebase/helper";
+import { auth } from "../Firebase/firebase-setup";
+import { MaterialIcons } from "@expo/vector-icons";
+import PressableButton from "../components/PressableButton";
+import { onSnapshot } from "firebase/firestore";
+import LocationManager from "../components/LocationManager";
+import * as geofire from "geofire-common";
+import DropdownList from "../components/DropdownList";
+import NotificationManager from "../components/NotificationManager";
 
 export default function Home({ navigation, route }) {
 	const [diaries, setDiaries] = useState(null);
@@ -25,6 +43,7 @@ export default function Home({ navigation, route }) {
 	const [location, setLocation] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [following, setFollowing] = useState(null);
+	const [follower, setFollower] = useState(false);
 
 	function setLoadingLocation(status) {
 		setIsLoading(status);
@@ -50,7 +69,7 @@ export default function Home({ navigation, route }) {
 							newdiaries.push({ ...doc.data(), diaryId: doc.id });
 						});
 						setDiaries(newdiaries);
-					} else if (typeof querySnapshot.data() !== "undefined"){
+					} else if (typeof querySnapshot.data() !== "undefined") {
 						setFollowing(querySnapshot.data().following);
 					}
 				}
@@ -58,12 +77,18 @@ export default function Home({ navigation, route }) {
 			(err) => {
 				console.log(err);
 			}
-			const unsubscribe = onSnapshot(
+		);
+		return () => {
+			unsubscribe();
+		};
+	}, []);
+
+	useEffect(() => {
+		if (following && following.length > 0) {
+			const q = getSubscribedDiariesQueue(following);
+			const unsubscribe3 = onSnapshot(
 				q,
 				(querySnapshot) => {
-					if (querySnapshot.empty) {
-						setDiaries([]);
-					}
 					if (!querySnapshot.empty) {
 						const newdiaries = [];
 						querySnapshot.docs.forEach((doc) => {
@@ -77,35 +102,12 @@ export default function Home({ navigation, route }) {
 				}
 			);
 			return () => {
-				unsubscribe();
-			};
-		}
-		fetchDiaries();
-	}, []);
-
-	useEffect(()=>{
-		if (following && following.length>0) {
-			const q = getSubscribedDiariesQueue(following);
-			const unsubscribe3 = onSnapshot(q,(querySnapshot) => {
-				if (!querySnapshot.empty) {
-					const newdiaries = [];
-					querySnapshot.docs.forEach((doc) => {
-						newdiaries.push({ ...doc.data(), diaryId: doc.id });
-					});
-					setDiaries(newdiaries);
-				}
-			},
-			(err) => {
-				console.log(err);
-			}
-			);
-			return () => {
 				unsubscribe3();
 			};
 		}
-	},[following])
+	}, [following]);
 
-	useEffect(()=>{
+	useEffect(() => {
 		if (location !== null) {
 			console.log(location);
 			const center = [location[2], location[3]];
@@ -156,6 +158,24 @@ export default function Home({ navigation, route }) {
 		setSearch("");
 		setFilteredDiary(null);
 	}
+
+	useEffect(()=>{
+		(async ()=>{
+			const prev_data=await checkFollowerList();
+			
+		const q = getFollowerQueue();
+		const unsubscribe = onSnapshot(q, (snapshot) => {
+			
+		const newArray = snapshot.data().follower;
+		if (!follower && newArray.length > prev_data.length) {
+			NotificationManager("Got Followed","Check out who follows you")
+			setFollower(true);
+		}});
+		return () => {
+			unsubscribe();
+		};})();
+		}
+		,[]);
 
 	return (
 		<SafeAreaView style={styles.container}>
