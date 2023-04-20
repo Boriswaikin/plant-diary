@@ -50,7 +50,7 @@ An app that allows plant lovers to record the growth of plants by taking photos 
     - EditProfile
 
 - Components -- Wai Kin
-  
+
   - CardComponent
   - Color
   - DiaryCard
@@ -63,7 +63,7 @@ An app that allows plant lovers to record the growth of plants by taking photos 
   - UserItem
   - UserList
 
-#### Internal Comments for next iteration 
+#### Internal Comments for next iteration
 
 **Components**
 DiaryCard:
@@ -153,7 +153,9 @@ Other comments:
 </p>
 
 #### CRUD Demonstration
+
 Create an item by clicking create button in bottomTab:
+
 <p float="left">
 <img src="./images/CRUD_Create.png"  width="150" />
 </p>
@@ -171,6 +173,7 @@ Back to Home screen to view the update:
 </p>
 
 Delete the item by clicking "Profile" in bottomTab, then click "edit". Click "Delete". Back to Home screen to view the item is deleted:
+
 <p float="left">
 <img src="./images/CRUD_Delete1.png"  width="150" />
 <img src="./images/CRUD_Delete2.png"  width="150" />
@@ -186,6 +189,7 @@ Delete the item by clicking "Profile" in bottomTab, then click "edit". Click "De
 #### Contributed by member:
 
 **CRUD Function** -- Siqi
+
 - followUser(id)
 - unfollowUser(id)
 - checkRelation(id)
@@ -195,6 +199,7 @@ Delete the item by clicking "Profile" in bottomTab, then click "edit". Click "De
 - getSubscribedDiary()
 
 **Layout and Styles for Screens and Components and functionalities** -- Zhiyuan
+
 - Home
 - Gallery
 - Create
@@ -204,12 +209,14 @@ Delete the item by clicking "Profile" in bottomTab, then click "edit". Click "De
 - Location use
 
 **Camera use functionalities and corresponding function on storage** -- Wai Kin
+
 - Take Photos using camera
 - Pick Images from libraries
 - Multiple images upload
 - upload and delete images in storage
 
 ##### Internal Comments for next iteration
+
 - update layout and style to align the prototype design: Home, Gallery, Create
 - implement search function
 - implement sort function
@@ -223,7 +230,9 @@ Delete the item by clicking "Profile" in bottomTab, then click "edit". Click "De
 **Below functionalities are added in iteration 2, with screenshot provided as below**
 
 #### Authentication
+
 Signup the account, warning if password mismatched. Navigate to home screen if signup is successful:
+
 <p float="left">
 <img src="./images/Signup1.png"  width="150" />
 <img src="./images/Signup2.png"  width="150" />
@@ -233,14 +242,16 @@ Signup the account, warning if password mismatched. Navigate to home screen if s
 </p>
 
 Login in the account, warn the user if the user account does not exist (No user account in authentication database):
+
 <p float="left">
 <img src="./images/Login_warning1.png"  width="150" height="100"/>
 <img src="./images/Login_warning2.png"  width="150" />
 <img src="./images/Login_warning3.png"  width="150" />
 </p>
 
-Login by typing the email and password. Warn the user if user inputs incorrect password. 
+Login by typing the email and password. Warn the user if user inputs incorrect password.
 Navigate to home screen if login is successful(input valid email and correct password):
+
 <p float="left">
 <img src="./images/Login1.png"  width="150" />
 <img src="./images/Login2.png"  width="150" />
@@ -253,6 +264,7 @@ Navigate to home screen if login is successful(input valid email and correct pas
 Get image by camera by asking if the user can grant the permission, if yes, will use camera to take photos.
 Otherwise, will alert the user permission is required:
 Press "Take Photo...":
+
 <p float="left">
 <img src="./images/Camera1.png"  width="150" />
 <img src="./images/Camera2.png"  width="150" />
@@ -267,11 +279,10 @@ If press "Allow", camera can be used and photo be added:
 <img src="./images/Camera5.png"  width="150" />
 </p>
 
-
-
 Get image from media library by asking if the user can grant the permission, if yes, will get photos from media library.
 Otherwise, will alert the user permission is required:
 Press "Choose From Library":
+
 <p float="left">
 <img src="./images/Library1.png"  width="150" />
 <img src="./images/Library2.png"  width="150" />
@@ -286,10 +297,11 @@ If press "Allow", camera can be used and photo be added:
 <img src="./images/Library5.png"  width="150" />
 </p>
 
-
 #### Location use
+
 Get the location using expo-location by asking if the user can grant the permission, if yes, will location from map.
 Otherwise, will alert the user permission is required:
+
 <p float="left">
 <img src="./images/Location1.png"  width="150" />
 </p>
@@ -307,8 +319,8 @@ Pressing 'Go to Map!" if we want to change location, after clicking "Confirm you
 <img src="./images/Location5.png"  width="150" />
 </p>
 
-
 **Below functionalities will be added in next iteration**
+
 - Notification
 - External API use
 
@@ -320,7 +332,13 @@ Pressing 'Go to Map!" if we want to change location, after clicking "Confirm you
 
 #### Contributed by member:
 
+**Note**
+For the first time of running this project, it will shows the firebase error "FirebaseError: The query requires an index. You can create it here: a link to your databse". You only need to create index for the query and reload the project, the error will not be shown again.
+
+.env file should include following variables: apiKey, authDomain, projectId, storageBucket, messagingSenderId, appId, mapsApi
+
 **Tasks**
+
 - Sort by location --Siqi
 - Style of search and sort bar --Zhiyuan
 - Subscribed diaries query --Siqi
@@ -330,11 +348,13 @@ Pressing 'Go to Map!" if we want to change location, after clicking "Confirm you
 - Plant.id API --Zhiyuan
 
 **Optional Task**
+
 - Color Theme
 - App icon, slug --Zhiyuan
-- Control image size to be 400 
+- Control image size to be 400
 
 **Internal Comments**
+
 - Subscribed diaries query
 - Hide 'locate me' or switch to an icon?
 - Warning about nested Flatlist
@@ -343,4 +363,3 @@ Pressing 'Go to Map!" if we want to change location, after clicking "Confirm you
 - fully tested before iteration 3 submission
 
 </details>
-
