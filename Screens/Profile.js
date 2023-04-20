@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Button, Pressable, StyleSheet, SafeAreaView, Image, Dimensions,ActivityIndicator } from 'react-native'
+import { View, Text, FlatList, Button, Pressable, StyleSheet, SafeAreaView, Image, Dimensions,ActivityIndicator, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { followUser, getDiaryQueueByUser, getProfileById, unfollowUser,addAchievement } from '../Firebase/helper';
 import { auth, firestore } from '../Firebase/firebase-setup';
@@ -41,18 +41,9 @@ export default function Profile({ navigation, route }) {
     )();
   },[])
 
-  async function addAchievementStatus(uid,text) {
-    // followUser(selfId,thirdId);
-    await addAchievement(uid,text);
-  }
-
   useEffect (()=>{
-   
     const unsubscribe1 = onSnapshot(doc(firestore, "profile", route.params && route.params.id || auth.currentUser.uid), (doc) => {
-      setProfile(doc.data());
-        if(doc.data().postCount===1 && !doc.data().achievement.includes("FirstPost")){
-          addAchievementStatus(auth.currentUser.uid,"FirstPost");
-        }
+        setProfile(doc.data());
         const achievement=doc.data().achievement; 
         setAchievement(achievement.map(item=>{
           let imageUrl;
@@ -63,8 +54,11 @@ export default function Profile({ navigation, route }) {
               case "FirstPost":
               imageUrl= require('../images/FirstPost.png');
               break;
+              case "FirstFollow":
+              imageUrl= require('../images/FirstFollow.png');
+              break;
               default:
-              imageUrl = require('../images/FirstPost.png');
+              imageUrl = require('../images/Other.png');
           }
         return{
           imageUrl:imageUrl

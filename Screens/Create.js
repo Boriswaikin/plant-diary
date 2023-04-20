@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import {
+	addAchievement,
 	createDiary,
 	deleteDiary,
 	editDiary,
@@ -148,6 +149,7 @@ export default function Create({ navigation, route }) {
 		try {
 			const userProfile = await getProfileById(auth.currentUser.uid);
 			const userName = userProfile.name;
+			const firstPost = userProfile.postCount === 0;
 			await createDiary({
 				photos: imageAll,
 				description: story,
@@ -157,6 +159,10 @@ export default function Create({ navigation, route }) {
 				userName: userName,
 				date: [Date.now()],
 			});
+			if (firstPost) {
+				await addAchievement(auth.currentUser.uid, "FirstPost");
+				Alert.alert("'First Diary' Achievement Unlocked!");
+			};
 		} catch (err) {
 			console.log(err);
 		}
