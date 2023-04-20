@@ -1,4 +1,5 @@
-import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet, Alert, ActivityIndicator, StatusBar } from 'react-native'
+import { View, FlatList, TextInput, SafeAreaView, Pressable, StyleSheet, Alert, ActivityIndicator } from 'react-native'
+import {StatusBar} from 'expo-status-bar'
 import React, { useEffect, useState } from 'react'
 import DiaryCard from '../components/DiaryCard';
 import {  getFollowingQueue, getLatestDiariesQueue, getLikeListQueue, getSubscribedDiariesQueue, getFollowerList, getFollowerQueue } from '../Firebase/helper';
@@ -195,7 +196,7 @@ export default function Home({ navigation, route }) {
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<StatusBar style="auto" />
+			<StatusBar style={{backgroundColor:"black"}}/>
 			{recommend && (
 				<View style={styles.topContainer}>
 					<DropdownList options={items} onSelect={setSort} value={sort} />
