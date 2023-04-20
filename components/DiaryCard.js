@@ -51,9 +51,12 @@ export default function DiaryCard({item, like}) {
         <Grid items={item.photos} size={(w-128)/2}/>
       </View>
       <View style={styles.diaryInfoLine}>
-        <Text numberOfLines={1} style={[styles.mediumFont, styles.singleLine]}>{item.userName}<Text style={styles.lightFont}> #{item.species}</Text><Text style={styles.lightFont}> @{item.location[1]}</Text></Text>
+        <View>
+          <Text numberOfLines={1} style={[styles.mediumFont, styles.singleLine]}>{item.userName}<Text style={styles.lightFont}> {item.description}</Text></Text>
+          <Text numberOfLines={1} style={[styles.lightFont, styles.singleLine]}>#{item.species}<Text style={styles.lightFont}> @{item.location[1]}</Text></Text>
+        </View>
         <PressableButton buttonPressed={()=>{pressLike()}}>
-          <Text style={styles.likeCount}>{item.like} <AntDesign name={!like?"hearto":"heart"} color={like?"green":"black"} size={15}></AntDesign></Text>
+          <Text style={styles.likeCount}>{item.like} <AntDesign name={!like?"hearto":"heart"} color={like?"red":"black"} size={15}></AntDesign></Text>
         </PressableButton>
       </View>
       <Text style={styles.timeText}>{timeSince(item.date[0])} ago</Text>
