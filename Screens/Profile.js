@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Button, Pressable, StyleSheet, SafeAreaView, Image, Dimensions } from 'react-native'
+import { View, Text, FlatList, Button, Pressable, StyleSheet, SafeAreaView, Image, Dimensions,ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { followUser, getDiaryQueueByUser, getProfileById, unfollowUser,addAchievement } from '../Firebase/helper';
 import { auth, firestore } from '../Firebase/firebase-setup';
@@ -22,6 +22,7 @@ export default function Profile({ navigation, route }) {
   const [following, setFollowing] = useState(false);
   const [edit, setEdit] = useState(false);
   const [achievement,setAchievement]=useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect( ()=>{
       (async()=>{
@@ -97,18 +98,32 @@ export default function Profile({ navigation, route }) {
 
   async function pressFollow() {
     // followUser(selfId,thirdId);
+    try{
+      setIsLoading(true);
     await followUser(id);
     setFollowing(true);
     if(profile.followerCount===0 && !profile.achievement.includes("Followed")){
      await addAchievement(id,"Followed");}
     console.log('Follow user');
+    }
+    catch (err){
+      console.log("error")
+    }
+    setIsLoading(false);
   }
 
   async function pressUnfollow() {
     // unfollowUser(selfId,thirdId);
+    try{
+      setIsLoading(true);
     await unfollowUser(id);
     setFollowing(false);
     console.log('Unfollow user');
+    }
+    catch (err){
+      console.log("error")
+    }
+    setIsLoading(false);
   }
 
   function toggleEdit() {
@@ -198,6 +213,11 @@ export default function Profile({ navigation, route }) {
         <Text style={styles.buttonText}>Follow</Text>
       </PressableButton>}
       </View>
+      {isLoading && (
+          <View style={styles.indicator}>
+            <ActivityIndicator size="small" color="black" />
+				</View>
+			)}
     </SafeAreaView>
   )
 }
@@ -307,4 +327,13 @@ const styles = StyleSheet.create({
     top: 8,
     right: 16,
   },
+  indicator: {
+		position: "absolute",
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+		justifyContent: "center",
+		alignItems: "center",
+	},
 })

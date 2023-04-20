@@ -35,7 +35,7 @@ export default function Create({ navigation, route }) {
 	const [date, setDate] = useState([]);
 	const [edit, setEdit] = useState(false);
 	const [removedUri, setRemovedUri] = useState(false);
-	const imageUriHandler = (uri) => setPhotos(uri);
+	
 	const [previousPhoto, setPreviousPhoto] = useState([]);
 	const [newPhoto, setNewPhoto] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
@@ -97,6 +97,10 @@ export default function Create({ navigation, route }) {
 	function setLoadingLocation(status) {
 		setIsLoading(status);
 	}
+
+  function imageUriHandler(uri){
+    setPhotos(uri);
+  }
 
 	useEffect(() => {
 		if (route.params && route.params.diary) {
@@ -278,10 +282,11 @@ export default function Create({ navigation, route }) {
 					<ScrollView style={styles.inputContainer}>
 						<Text style={styles.subtitle}>Add Photos</Text>
 						<ImageManager
-							imageUriHandler={(uri) => imageUriHandler(uri)}
+							imageUriHandler={imageUriHandler}
 							removedUri={removedUri}
 							resetRemovedUri={resetRemovedUri}
 							setPhotoNew={setPhotoNew}
+              editStatus={edit}
 						/>
 						<Text style={styles.subtitle}>Species</Text>
 						<Text style={styles.heavyFont}>{species}</Text>
@@ -303,10 +308,11 @@ export default function Create({ navigation, route }) {
 				<View style={styles.inputContainer}>
 					<Text style={styles.subtitle}>Add Photos</Text>
 					<ImageManager
-						imageUriHandler={(uri) => imageUriHandler(uri)}
+						imageUriHandler={imageUriHandler}
 						removedUri={removedUri}
 						resetRemovedUri={resetRemovedUri}
 						setPhotoNew={setPhotoNew}
+            editStatus={edit}
 					/>
 					<Text style={styles.subtitle}>Species</Text>
 					<View style={styles.speciesContainer}>

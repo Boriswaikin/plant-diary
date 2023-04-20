@@ -1,4 +1,4 @@
-import { View, Text, Button, FlatList, StyleSheet, SafeAreaView } from 'react-native'
+import { View, Text, Button, FlatList, StyleSheet, SafeAreaView,ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { followUser, getFollowerByUser, getFollowingByUser, unfollowUser } from '../Firebase/helper';
 import Icon from '../components/Icon';
@@ -11,6 +11,7 @@ export default function Follow({ navigation, route }) {
   const [follower, setFollower] = useState(null);
   const [localFollowing, setLocalFollowing] = useState(null);
   const [followState, setFollowState] = useState(route.params.followState);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(()=>{
     (async()=>{
@@ -29,14 +30,27 @@ export default function Follow({ navigation, route }) {
 
   async function pressFollow(item) {
     console.log('Follow user', item.uid);
-    await followUser(item.uid);
-    setLocalFollowing((prev)=>[...prev, item]);
+    try{
+      setIsLoading(true);
+      await followUser(item.uid);
+      setLocalFollowing((prev)=>[...prev, item]);
+    }
+    catch (err){
+      console.log('error');
+    }
+      setIsLoading(false);
   }
 
   async function pressUnfollow(id) {
     console.log('Unfollow user', id);
+    try{
+      setIsLoading(true);
     await unfollowUser(id);
     setLocalFollowing((prev)=>prev.filter(item => item.uid !== id));
+    }
+    catch (err){ console.log('error');
+    } 
+    setIsLoading(false);
   }
 
   return (
@@ -67,6 +81,11 @@ export default function Follow({ navigation, route }) {
         )
       }}
       />}
+      {isLoading && (
+          <View style={styles.indicator}>
+            <ActivityIndicator size="small" color="black" />
+				</View>
+			)}
     </SafeAreaView>
   )
 }
@@ -124,4 +143,13 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     color: 'rgb(50,50,50)',
   },
+  indicator: {
+		position: "absolute",
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+		justifyContent: "center",
+		alignItems: "center",
+	},
 })

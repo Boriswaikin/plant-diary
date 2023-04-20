@@ -5,7 +5,7 @@ import PressableButton from './PressableButton';
 import { Feather } from '@expo/vector-icons';
 
 
-export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUri,setPhotoNew}) {
+export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUri,setPhotoNew,editStatus}) {
     const [permissionInfo, requestPermission] = ImagePicker.useCameraPermissions();
     const [libraryPermissionInfo, requestLibraryPermission] = ImagePicker.useMediaLibraryPermissions();
     const [imageURI, setImageURI] = useState([]);
@@ -51,8 +51,7 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
             var arr = [];
             arr.push(result.assets[0].uri);
             setImageURI((prev)=>[...prev,...arr]);
-            imageUriHandler((prev)=>[...prev,...arr]);
-            setPhotoNew((prev)=>[...prev,...arr]);
+            !editStatus?imageUriHandler((prev)=>[...prev,...arr]):setPhotoNew((prev)=>[...prev,...arr]);
         }
          } catch (err) {
             console.log(err);
@@ -77,8 +76,7 @@ export default function ImageManager({ imageUriHandler,removedUri,resetRemovedUr
                 )
         if (!result.canceled) {
             setImageURI((prev)=>[...prev,...arr]);
-            imageUriHandler((prev)=>[...prev,...arr]);
-            setPhotoNew((prev)=>[...prev,...arr]);
+            !editStatus?imageUriHandler((prev)=>[...prev,...arr]):setPhotoNew((prev)=>[...prev,...arr]);
         }
          } catch (err) {
             console.log(err);
