@@ -8,6 +8,11 @@ Wai Kin Chu, Siqi Chen, Zhiyuan Yang
 
 An app that allows plant lovers to record the growth of plants by taking photos week by week. Users can obtain achievements by sharing diaries, extending the length of a diary, getting likes and followers, or publishing a diary of a unique plant species.
 
+#### !!!Requirement
+For the first time of running this project, it will shows the firebase error `FirebaseError: The query requires an index. You can create it here: a link to your databse.` You only need to click the link and create index for the query and reload the project, the error will not be shown again.
+
+`.env` file should include following variables: `apiKey, authDomain, projectId, storageBucket, messagingSenderId, appId, mapsApi`
+
 <details>
   <summary><b>Iteration 1</b></summary>
 ### Iteration 1
@@ -328,14 +333,10 @@ Pressing 'Go to Map!" if we want to change location, after clicking "Confirm you
 
 <details>
   <summary><b>Iteration 3</b></summary>
+
 #### Iteration 3
 
 #### Contributed by member:
-
-**Note**
-For the first time of running this project, it will shows the firebase error "FirebaseError: The query requires an index. You can create it here: a link to your databse". You only need to create index for the query and reload the project, the error will not be shown again.
-
-.env file should include following variables: apiKey, authDomain, projectId, storageBucket, messagingSenderId, appId, mapsApi
 
 **Tasks**
 
@@ -351,15 +352,47 @@ For the first time of running this project, it will shows the firebase error "Fi
 
 - Color Theme
 - App icon, slug --Zhiyuan
-- Control image size to be 400
+- Control image size to be 500 --Zhiyuan
 
 **Internal Comments**
 
-- Subscribed diaries query
+- Subscribed diaries query, Done
 - Hide 'locate me' or switch to an icon?
-- Warning about nested Flatlist
-- Pop an alert when user got an achievement?
-- Replace the achievement icon related to achievement content
-- fully tested before iteration 3 submission
+- Warning about nested Flatlist , Done
+- Pop an alert when user got an achievement?, Done
+- Replace the achievement icon related to achievement content, Done
+- fully tested before iteration 3 submission, Done
+
+**Android Screenshots**
+
+Home page, search, and sort by location:
+<p float="left">
+<img src="./images/it3-android-1.jpg"  width="150" />
+<img src="./images/it3-android-2.jpg"  width="150" />
+<img src="./images/it3-android-3.jpg"  width="150" />
+<img src="./images/it3-android-4.jpg"  width="150" />
+</p>
+
+Gallery, user profile, third user profile, and follower/following list:
+<p float="left">
+<img src="./images/it3-android-5.jpg"  width="150" />
+<img src="./images/it3-android-6.jpg"  width="150" />
+<img src="./images/it3-android-7.jpg"  width="150" />
+<img src="./images/it3-android-8.jpg"  width="150" />
+</p>
+
+Subscribed diaries, create diary and select species, and plant identification API :
+<p float="left">
+<img src="./images/it3-android-9.jpg"  width="150" />
+<img src="./images/it3-android-10.jpg"  width="150" />
+<img src="./images/it3-android-12.jpg"  width="150" />
+</p>
+
+After create first diary, got achievement and notification:
+<p float="left">
+<img src="./images/it3-android-13.jpg"  width="150" />
+<img src="./images/it3-android-14.jpg"  width="150" />
+</p>
+
 
 </details>

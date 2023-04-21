@@ -53,7 +53,7 @@ export default function APIManager({ uri, setLoading, setOutput }) {
       {result && (
         <>
           <Text style={styles.title}>Result: {result.plant_name}</Text>
-          {result.plant_details&&result.plant_details.wiki_description&&<Text>{result.plant_details.wiki_description.value}</Text>}
+          {result.plant_details&&result.plant_details.wiki_description&&<Text numberOfLines={5}>{result.plant_details.wiki_description.value}</Text>}
         </>
       )}
     </View>
