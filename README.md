@@ -18,7 +18,7 @@ For the first time of running this project, it will shows the firebase error `Fi
 - Camera use: users can take picture when they want to create/edit diaries
 - Location use: app uses user location when user create diaries or choose sort by location in home screen
 - Notification: users will receive notification when they create a new diary or there is new follower
-- External API use: "Plant.id" api is used when user choose iden
+- External API use: "Plant.id" api is used in create diary screen, when user upload at least one picture, there is a button "Identify Me!" shown. If user press this button, it will use the last photo uploaded by user to identify the plant species in the photo.
 
 <details>
   <summary><b>Iteration 1</b></summary>
