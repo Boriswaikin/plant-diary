@@ -9,9 +9,16 @@ Wai Kin Chu, Siqi Chen, Zhiyuan Yang
 An app that allows plant lovers to record the growth of plants by taking photos week by week. Users can obtain achievements by sharing diaries, extending the length of a diary, getting likes and followers, or publishing a diary of a unique plant species.
 
 #### !!!Requirement
+
 For the first time of running this project, it will shows the firebase error `FirebaseError: The query requires an index. You can create it here: a link to your databse.` You only need to click the link and create index for the query and reload the project, the error will not be shown again.
 
 `.env` file should include following variables: `apiKey, authDomain, projectId, storageBucket, messagingSenderId, appId, mapsApi`
+
+- Authentication：users should sign up/login in to use our app
+- Camera use: users can take picture when they want to create/edit diaries
+- Location use: app uses user location when user create diaries or choose sort by location in home screen
+- Notification: users will receive notification when they create a new diary or there is new follower
+- External API use: "Plant.id" api is used when user choose iden
 
 <details>
   <summary><b>Iteration 1</b></summary>
@@ -366,6 +373,7 @@ Pressing 'Go to Map!" if we want to change location, after clicking "Confirm you
 **Android Screenshots**
 
 Home page, search, and sort by location:
+
 <p float="left">
 <img src="./images/it3-android-1.jpg"  width="150" />
 <img src="./images/it3-android-2.jpg"  width="150" />
@@ -374,6 +382,7 @@ Home page, search, and sort by location:
 </p>
 
 Gallery, user profile, third user profile, and follower/following list:
+
 <p float="left">
 <img src="./images/it3-android-5.jpg"  width="150" />
 <img src="./images/it3-android-6.jpg"  width="150" />
@@ -382,6 +391,7 @@ Gallery, user profile, third user profile, and follower/following list:
 </p>
 
 Subscribed diaries, create diary and select species, and plant identification API :
+
 <p float="left">
 <img src="./images/it3-android-9.jpg"  width="150" />
 <img src="./images/it3-android-10.jpg"  width="150" />
@@ -389,10 +399,10 @@ Subscribed diaries, create diary and select species, and plant identification AP
 </p>
 
 After create first diary, got achievement and notification:
+
 <p float="left">
 <img src="./images/it3-android-13.jpg"  width="150" />
 <img src="./images/it3-android-14.jpg"  width="150" />
 </p>
-
 
 </details>
