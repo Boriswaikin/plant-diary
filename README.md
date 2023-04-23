@@ -10,7 +10,7 @@ An app that allows plant lovers to record the growth of plants by taking photos 
 
 #### Demo Video
 
-iOS Demo Video Link: https://youtu.be/VOfUR96cOWk
+iOS Demo Video Link: https://youtu.be/VOfUR96cOWk      
 Android Demo Video Link: https://youtu.be/5WW81BhGRCk (screen recorder black out when entering password)
 
 #### Requirement
