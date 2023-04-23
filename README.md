@@ -8,17 +8,32 @@ Wai Kin Chu, Siqi Chen, Zhiyuan Yang
 
 An app that allows plant lovers to record the growth of plants by taking photos week by week. Users can obtain achievements by sharing diaries, extending the length of a diary, getting likes and followers, or publishing a diary of a unique plant species.
 
-#### !!!Requirement
+#### Demo Video
+
+iOS Demo Video Link: https://youtu.be/VOfUR96cOWk
+Android Demo Video Link: https://youtu.be/5WW81BhGRCk (screen recorder black out when entering password)
+
+#### Requirement
+
+Create `Firestore`, `Authentication`, and `Storage` from Google Firebase.
+
+Create a `.env` file under project folder and include following variables: `apiKey, authDomain, projectId, storageBucket, messagingSenderId, appId` from Firebase and **`mapsApi`** from Google Maps Static API.
+
+Run `npm i` in project folder before start the app. Then run `npx expo start` to start the app.
 
 For the first time of running this project, it will shows the firebase error `FirebaseError: The query requires an index. You can create it here: a link to your databse.` You only need to click the link and create index for the query and reload the project, the error will not be shown again.
 
-`.env` file should include following variables: `apiKey, authDomain, projectId, storageBucket, messagingSenderId, appId, mapsApi`
+#### Functionality
 
 - Authentication：users should sign up/login in to use our app
 - Camera use: users can take picture when they want to create/edit diaries
 - Location use: app uses user location when user create diaries or choose sort by location in home screen
 - Notification: users will receive notification when they create a new diary or there is new follower
 - External API use: "Plant.id" api is used in create diary screen, when user upload at least one picture, there is a button "Identify Me!" shown. If user press this button, it will use the last photo uploaded by user to identify the plant species in the photo.
+
+
+#### Development Iteration
+
 
 <details>
   <summary><b>Iteration 1</b></summary>

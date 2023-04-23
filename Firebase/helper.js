@@ -430,7 +430,7 @@ export async function checkFollowingRelation(uid) {
 		if (docSnap.exists()) {
 			return docSnap.data().following.includes(uid);
 		} else {
-			console.log("user does not exist");
+			console.log("welcome new user");
 		}
 	} catch (err) {
 		console.log(err);
