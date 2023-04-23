@@ -8,6 +8,10 @@ Wai Kin Chu, Siqi Chen, Zhiyuan Yang
 
 An app that allows plant lovers to record the growth of plants by taking photos week by week. Users can obtain achievements by sharing diaries, extending the length of a diary, getting likes and followers, or publishing a diary of a unique plant species.
 
+#### Demo Video
+
+Video Link: https://www.youtube.com/watch?v=VOfUR96cOWk
+
 #### Requirement
 
 Create `Firestore`, `Authentication`, and `Storage` from Google Firebase.
@@ -25,6 +29,10 @@ For the first time of running this project, it will shows the firebase error `Fi
 - Location use: app uses user location when user create diaries or choose sort by location in home screen
 - Notification: users will receive notification when they create a new diary or there is new follower
 - External API use: "Plant.id" api is used in create diary screen, when user upload at least one picture, there is a button "Identify Me!" shown. If user press this button, it will use the last photo uploaded by user to identify the plant species in the photo.
+
+
+#### Development Iteration
+
 
 <details>
   <summary><b>Iteration 1</b></summary>
